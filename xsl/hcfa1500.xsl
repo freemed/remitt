@@ -1427,29 +1427,35 @@
 			<content><xsl:value-of select="($curproc/cptunits)+0" /></content>
 		</element>
 
+		<xsl:if test="$curproc/cptepsdt = 1" />
 		<element>
 			<!-- Box 24h: EPSDT -->
 			<row><xsl:value-of select="$cptline" /></row>
 			<column>62</column>
 			<length>1</length>
-			<content><xsl:value-of select="$curproc/cptepsdt" /></content>
+			<content>X</content>
 		</element>
+		</xsl:if>
 
+		<xsl:if test="$curproc/cptemergency = 1">
 		<element>
 			<!-- Box 24i: Emergency -->
 			<row><xsl:value-of select="$cptline" /></row>
 			<column>66</column>
 			<length>1</length>
-			<content><xsl:value-of select="$curproc/cptemergency" /></content>
+			<content>X</content>
 		</element>
+		</xsl:if>
 
+		<xsl:if test="$curproc/cptcob = 1">
 		<element>
 			<!-- Box 24j: COB -->
 			<row><xsl:value-of select="$cptline" /></row>
 			<column>69</column>
 			<length>1</length>
-			<content><xsl:value-of select="$curproc/cptcob" /></content>
+			<content>X</content>
 		</element>
+		</xsl:if>
 
 	</xsl:template>
 
