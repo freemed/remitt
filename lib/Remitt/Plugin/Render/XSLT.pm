@@ -32,7 +32,7 @@ sub Config {
 			'837p' => {
 				'Description' => 'X12 NSF 837 Professional',
 				'Media' => 'Electronic',
-				'OutputFormat' => 'X12XML'
+				'OutputFormat' => 'x12xml'
 			}
 		},
 		'InputFormat' => 'remittxml',
