@@ -85,3 +85,18 @@ if ($action & 8) {
 
 #$call = $xmlrpc->call('something', {param=>1, param=>2});
 #$result = $xmlrpc->result;
+
+if ($action & 16) {
+	undef $/;
+	open FILE, "remitt.test.xml" or die("Could not open remitt test file\n");
+	my $input = <FILE>;
+	close FILE;
+	print " * Running Execute(XSLT, hcfa1500, FixedFormText) test ... ";
+	my $call = $xmlrpc->call('Remitt.Interface.Execute', $input, 'XSLT', 'hcfa1500', 'Text');
+	my $result = $call->result;
+	print "done\n";
+	print Dumper($result);
+}
+
+#$call = $xmlrpc->call('something', {param=>1, param=>2});
+#$result = $xmlrpc->result;
