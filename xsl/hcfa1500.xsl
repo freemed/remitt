@@ -996,7 +996,7 @@
 			<!-- FIXME: Check for first occurance and insert date -->
 			<!-- FIXME: isCantWork equiv -->
 
-			<xsl:if test="($patientobj/referringprovider + 0) &lt; 1">
+			<xsl:if test="($patientobj/referringprovider + 0) &gt; 0">
 			<element>
 				<!-- Box 17: Referring Physician / Name -->
 				<row>34</row>
