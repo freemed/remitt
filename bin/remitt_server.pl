@@ -23,6 +23,9 @@ my $path = $config->val('installation', 'path');
 
 my $debug = 1;
 
+# Enable basic authentication
+$auth = 1;
+
 #my $plugin_types = [
 #	'Render',
 #	'Translation',

@@ -87,6 +87,8 @@ sub Fault {
 #	fails.
 #
 sub ForceAuthentication {
+	# Check for XMLRPC/basic authentication
+	if (!defined $main::auth) { return 1; }
 	my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
 	my ($auth, $sessionid) = Remitt::Utilities::Authenticate($authstring);
 	Remitt::Utilities::Fault() if (!$auth);

@@ -72,6 +72,11 @@ sub GetConfigFromXSL {
 	open FILE, $path.'/xsl/'.$xsl.'.xsl' or die("Could not open $option");
 	my $line = 0;
 	my %c;
+
+	# Make sure that the line delimiter is set properly
+	$/ = "\n";
+
+	# Read file
 	while (<FILE>) {
 		$line ++;
 		my $buf = $_;
