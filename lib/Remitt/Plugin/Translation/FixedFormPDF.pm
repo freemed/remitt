@@ -64,9 +64,13 @@ sub ProcessPage {
 
 	# Import template page if one is specified
 	if (-f $path . '/pdf/' . $template . '.pdf') {
-		#print "Imported page $path/pdf/$template.pdf\n";
+		#print "Importing page $path/pdf/$template.pdf ... \n";
 		my $original = PDF::API2->open ( $path . '/pdf/' . $template . '.pdf' );
-		$pdf->importpage( $original, $template_page, $pagecount);
+		#my $img = $pdf->pdfimageobj($original, $template_page);
+		#my $gfx = $page->gfx;
+		#$gfx->pdfimage($img, 10, -45, 1);
+		$pdf->importpage( $original, $template_page, $pagecount );
+		#print "[done]\n";
 	}
 
 	# Create text page object

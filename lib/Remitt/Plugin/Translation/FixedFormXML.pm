@@ -88,6 +88,8 @@ sub ProcessPage {
 	# Set initial position
 	my $currow = 1; my $curcol = 1; my $count = 0;
 
+	#print "translation: processing page\n";
+
 	foreach my $k (@h) {
 		foreach my $e (values %{$k}) {
 			#print Dumper($e);
@@ -113,7 +115,9 @@ sub ProcessPage {
 	while ($currow < $p->{format}->{pagelength}) {
 		$currow++; $output .= "\x0d\x0a";
 	}
-	
+
+	#print "end page\n";
+
 	return $output;
 } # end sub ProcessPage
 
@@ -132,8 +136,10 @@ sub Translate {
 
 	# Loop through pages
 	foreach my $p (@{$i->{page}}) {
+		#print "looping into page\n";
 		$output .= Remitt::Plugin::Translation::FixedFormXML::ProcessPage($p);
 		#$output .= "content = ".$p->{content}."\x0d\x0a";
+		#print "end page loop\n";
 	}
 
 	return $output;	

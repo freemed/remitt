@@ -21,7 +21,8 @@ Plugin
 		* Dummy transport module (to file) [done]
 XSL
 	* Proof of concept test XSL [done]
-	* 837p.xsl	
+	* 837p.xsl [done]
+	* hcfa1500.xsl [done]
 FreeMED
 	class.Remitt.php
 		* Create XML export [done]
