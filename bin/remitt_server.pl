@@ -1,9 +1,13 @@
-#!/usr/bin/perl -I./lib -I../lib
+#!/usr/bin/perl
 #
 #	$Id$
 #	$Author$
 #
 
+# Force internal use of SOAP::Lite patched library and Remitt libs
+use lib qw(./lib ../lib);
+
+# Actual includes
 use XMLRPC::Transport::HTTP;
 use Data::Dumper;
 
