@@ -390,9 +390,17 @@ sub SystemLogin {
 
 	# Do we authenticate username/password pair against access list?	
 	my $config = Remitt::Utilities::Configuration ( );
+
 	# Only verify if we are sure that we need to
-	if ($config->val('installation', 'authorization') != 'none') {
+	if ($config->val('installation', 'authentication') eq 'conf') {
+		# Built-in configuration file
 		die ("Incorrect username or password") if ($password != $config->val('users', $username));
+	} elsif ($config->val('installation', 'authentication') eq 'none') {
+		# Skip, no auth here	
+	} else {
+		# Use plugin
+		eval 'use Remitt::Plugin::Authentication::'.$config->val('installation', 'authentication').';';
+		eval 'die ("Incorrect username or password") if (!Remitt::Plugin::Authentication::'.$config->val('installation', 'authentication').'($username, $password);';
 	}
 
 	# Create new session
