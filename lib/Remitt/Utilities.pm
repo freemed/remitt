@@ -54,6 +54,7 @@ sub Authenticate {
 
 	return +(
 		$session->{session}->param('authenticated') and ($session->{session}->param('passkey') == $key),
+		$sessionid,
 		$session->{session}->param('username')
 	);
 } # end sub Authenticate
@@ -223,9 +224,7 @@ sub StoreContents {
 		my $session = Remitt::Session->new($sessionid);
 		$session->load();
 		#print "StoreContents: session = ".Dumper($session->{session});
-		#my $username = $session->{session}->param('username');
-		my $username = $session->{session}->{"_OPTIONS"}[0];
-		#print "username = $username\n";
+		my $username = $session->{session}->param('username');
 
 		my $filename = strftime('%Y%m%d.%H%M%S', localtime(time)).
 			'.' . $transport . '.' . $extension;

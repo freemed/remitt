@@ -104,7 +104,7 @@ sub FileList {
 	# Get username information
 	my $session = Remitt::Session->new($sessionid);
 	$session->load();
-	my $username = $session->{session}->{"_OPTIONS"}[0];
+	my $username = $session->{session}->param('username');
 
 	# Get configuration information
 	my $config = Remitt::Utilities::Configuration ( );
@@ -147,7 +147,9 @@ sub GetFile {
         my $category = shift;
 	my $file = shift;
 	my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
+	print "authstring = $authstring\n";
 	my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
+	print "auth = $auth, sessionid = $sessionid, pass = $pass\n";
 	return Remitt::Utilities::Fault() if (!$auth);
 
 	# Get username information
@@ -163,8 +165,8 @@ sub GetFile {
 	return [ ] if $file =~ /[\;\[\]\(\)]/;
 
 	my $filename = $config->val('installation', 'path') .
-		'/spool/' . $user . '/' . $category . '/' . $file;
-	#print "filename resolved to $filename\n";
+		'/spool/' . $username . '/' . $category . '/' . $file;
+	print "filename resolved to $filename\n";
 
 	# Retrieve file and return (will autotype to base64)
 	my $buffer;
