@@ -405,11 +405,27 @@
 			</element>
 
 			<element>
+				<!-- Box 3: Birth Date / Seperator -->
+				<row>10</row>
+				<column>33</column>
+				<length>1</length>
+				<content>/</content>
+			</element>
+
+			<element>
 				<!-- Box 3: Birth Date / DD -->
 				<row>10</row>
 				<column>34</column>
 				<length>2</length>
 				<content><xsl:value-of select="$patientobj/dateofbirth/day" /></content>
+			</element>
+
+			<element>
+				<!-- Box 3: Birth Date / Seperator -->
+				<row>10</row>
+				<column>36</column>
+				<length>1</length>
+				<content>/</content>
 			</element>
 
 			<element>
@@ -694,11 +710,27 @@
 			</element>
 
 			<element>
+				<!-- Box 11: Insured DOB / Seperator -->
+				<row>20</row>
+				<column>56</column>
+				<length>1</length>
+				<content>/</content>
+			</element>
+
+			<element>
 				<!-- Box 11a: Insured DOB / DD -->
 				<row>20</row>
 				<column>57</column>
 				<length>2</length>
 				<content><xsl:value-of select="$insuredobj/dateofbirth/day" /></content>
+			</element>
+
+			<element>
+				<!-- Box 11: Insured DOB / Seperator -->
+				<row>20</row>
+				<column>59</column>
+				<length>1</length>
+				<content>/</content>
 			</element>
 
 			<element>
@@ -738,11 +770,27 @@
 			</element>
 
 			<element>
+				<!-- Box 9b: Insured DOB / Seperator -->
+				<row>22</row>
+				<column>4</column>
+				<length>1</length>
+				<content>/</content>
+			</element>
+
+			<element>
 				<!-- Box 9b: Insured DOB / DD -->
 				<row>22</row>
 				<column>5</column>
 				<length>2</length>
 				<content><xsl:value-of select="$insuredobj/dateofbirth/day" /></content>
+			</element>
+
+			<element>
+				<!-- Box 9b: Insured DOB / Seperator -->
+				<row>22</row>
+				<column>7</column>
+				<length>1</length>
+				<content>/</content>
 			</element>
 
 			<element>
@@ -914,11 +962,27 @@
 			</element>
 
 			<element>
+				<!-- Box 14: Date of Onset / Seperator -->
+				<row>32</row>
+				<column>4</column>
+				<length>1</length>
+				<content>/</content>
+			</element>
+
+			<element>
 				<!-- Box 14: Date of Onset / DD -->
 				<row>32</row>
 				<column>5</column>
 				<length>2</length>
 				<content><xsl:value-of select="$diagobj/dateofonset/day" /></content>
+			</element>
+
+			<element>
+				<!-- Box 14: Date of Onset / Seperator -->
+				<row>32</row>
+				<column>7</column>
+				<length>1</length>
+				<content>/</content>
 			</element>
 
 			<element>
@@ -1222,11 +1286,27 @@
 		</element>
 
 		<element>
+			<!-- Box 24a: Date of Service S / Seperator -->
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>3</column>
+			<length>1</length>
+			<content>/</content>
+		</element>
+
+		<element>
 			<!-- Box 24a: Date of Service S / DD -->
 			<row><xsl:value-of select="$cptline" /></row>
 			<column>4</column>
 			<length>2</length>
 			<content><xsl:value-of select="$curproc/dateofservicestart/day" /></content>
+		</element>
+
+		<element>
+			<!-- Box 24a: Date of Service S / Seperator -->
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>6</column>
+			<length>1</length>
+			<content>/</content>
 		</element>
 
 		<element>
@@ -1246,11 +1326,27 @@
 		</element>
 
 		<element>
+			<!-- Box 24a: Date of Service E / Seperator -->
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>12</column>
+			<length>1</length>
+			<content>/</content>
+		</element>
+
+		<element>
 			<!-- Box 24a: Date of Service E / DD -->
 			<row><xsl:value-of select="$cptline" /></row>
 			<column>13</column>
 			<length>2</length>
 			<content><xsl:value-of select="$curproc/dateofserviceend/day" /></content>
+		</element>
+
+		<element>
+			<!-- Box 24a: Date of Service E / Seperator -->
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>15</column>
+			<length>1</length>
+			<content>/</content>
 		</element>
 
 		<element>
