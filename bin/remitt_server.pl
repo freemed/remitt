@@ -3,6 +3,11 @@
 #	$Id$
 #	$Author$
 #
+# File: bin/remitt_server.pl
+#
+# 	REMITT XML-RPC server. This process is run by an init.d script
+# 	to provide XML-RPC connectivity for REMITT.
+#
 
 # Force internal use of SOAP::Lite patched library and Remitt libs
 use lib qw(./lib ../lib);
@@ -11,6 +16,7 @@ use lib qw(./lib ../lib);
 use XMLRPC::Transport::HTTP;
 use Data::Dumper;
 use Remitt::Utilities;
+use Sys::Syslog;
 
 my $version = "0.1";
 my $protocolversion = 0.1;
@@ -23,6 +29,9 @@ my $path = $config->val('installation', 'path');
 
 my $debug = 1;
 
+# Open log file
+openlog ( 'remitt', 'pid', 'user' );
+
 # Enable basic authentication
 $auth = 1;
 
@@ -34,6 +43,8 @@ $auth = 1;
 
 if (!$quiet) {
 	print "REMITT (XMLRPC Server) v$version\n";
+} else {
+	syslog('notice', 'REMITT v'.$version.' XML-RPC server started');
 }
 
 $daemon = XMLRPC::Transport::HTTP::Daemon
@@ -46,6 +57,8 @@ $daemon = XMLRPC::Transport::HTTP::Daemon
 if (!$quiet) {
 	print " * Running at ", $daemon->url, "\n";
 	print " * Starting daemon ... \n";
+} else {
+	syslog('notice', ' running at '.$daemon->url);
 }
 $daemon->handle;
 
