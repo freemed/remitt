@@ -131,7 +131,7 @@ sub Init {
 		return 1;
 	} else {
 		my $d = DBI->connect('dbi:SQLite:dbname='.$config->val('installation', 'path').'/spool/auth.db', '', '');
-		my $s = $d->do('CREATE TABLE auth ( user varchari unique, pass varchar)');
+		my $s = $d->do('CREATE TABLE auth ( user varchar unique, pass varchar)');
 		if ($s) { return 1; } else { return 0; }
 	}
 } # end method Init
