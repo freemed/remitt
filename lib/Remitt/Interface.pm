@@ -87,10 +87,16 @@ sub Execute {
 
 	# Deal with CLI seperately
 	if (!defined $main::auth) {
+		my ( $x, $y, $z );
 		eval 'use Remitt::Plugin::Render::'.$render.';';
 		eval 'use Remitt::Plugin::Translation::'.$translation.';';
 		eval 'use Remitt::Plugin::Transport::'.$transport.';';
-		eval 'return Remitt::Plugin::Transport::'.$transport.'::Transport(Remitt::Plugin::Translation::'.$translation.'::Translate(Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption)));';
+		eval '$x = Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption);';
+		eval '$y = Remitt::Plugin::Translation::'.$translation.'::Translate($x);';
+		eval '$z = Remitt::Plugin::Transport::'.$transport.'::Transport($y);';
+		return $z;
+		#eval 'return Remitt::Plugin::Transport::'.$transport.'::Transport(Remitt::Plugin::Translation::'.$translation.'::Translate(Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption)));';
+		die ( "Should never get here\n" );
 	}
 
 	# Create unique stamp to identify where we are now
@@ -104,10 +110,14 @@ sub Execute {
 	} elsif ($child == 0) {
 		#----- Child branch
 		print "D-Child: running execute code\n";
+		my ( $x, $y, $results );
 		eval 'use Remitt::Plugin::Render::'.$render.';';
 		eval 'use Remitt::Plugin::Translation::'.$translation.';';
 		eval 'use Remitt::Plugin::Transport::'.$transport.';';
-		eval '$results = Remitt::Plugin::Transport::'.$transport.'::Transport(Remitt::Plugin::Translation::'.$translation.'::Translate(Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption)));';
+		eval '$x = Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption);';
+		eval '$y = Remitt::Plugin::Translation::'.$translation.'::Translate($x);';
+		eval '$results = Remitt::Plugin::Transport::'.$transport.'::Transport($y);';
+		#eval '$results = Remitt::Plugin::Transport::'.$transport.'::Transport(Remitt::Plugin::Translation::'.$translation.'::Translate(Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption)));';
 
 		# Store value in proper place in 'state' directory
 		if (defined($main::auth)) {
