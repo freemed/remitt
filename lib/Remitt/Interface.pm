@@ -147,9 +147,7 @@ sub GetFile {
         my $category = shift;
 	my $file = shift;
 	my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
-	print "authstring = $authstring\n";
 	my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
-	print "auth = $auth, sessionid = $sessionid, pass = $pass\n";
 	return Remitt::Utilities::Fault() if (!$auth);
 
 	# Get username information
