@@ -27,8 +27,8 @@ my $render = shift || die(options());
 my $roption = shift || die(options());
 my $transport = shift || die(options());
 
-my $version = "0.1";
-my $protocolversion = 0.1;
+my $version = "0.2";
+my $protocolversion = 0.2;
 my $quiet = 1;
 
 my $config = Remitt::Utilities::Configuration ( );

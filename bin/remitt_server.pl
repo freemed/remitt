@@ -18,8 +18,8 @@ use Data::Dumper;
 use Remitt::Utilities;
 use Sys::Syslog;
 
-my $version = "0.1";
-my $protocolversion = 0.1;
+my $version = "0.2";
+my $protocolversion = 0.2;
 my $quiet = 0;
 
 my $config = Remitt::Utilities::Configuration ( );
