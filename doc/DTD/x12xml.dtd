@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	$Id$
+	$Author$
+	X12XML DTD for XML encapsulated X12
+-->
+<!DOCTYPE x12xml [
+	<!ELEMENT render (x12format, x12segment+)>
+	<!ELEMENT x12format (delimiter, endofline)>
+	<!ELEMENT x12segment (comment*, element+)>
+	<!ATTLIST x12segment sid #REQUIRED>
+	<!ELEMENT element (comment*, content)>
+	<!ELEMENT content #PCDATA>
+	<!ATTLIST element content #IMPLIED>
+	<!ELEMENT comment #PCDATA>
+]>

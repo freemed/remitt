@@ -159,7 +159,12 @@ sub SystemLogin {
 	shift if UNIVERSAL::isa($_[0] => __PACKAGE__);
 	my ($username, $password) = @_;
 
-	# TODO: Do we authenticate username/password pair against access list?
+	# Do we authenticate username/password pair against access list?	
+	my $config = Remitt::Utilities::Configuration ( );
+	# Only verify if we are sure that we need to
+	if ($config->val('installation', 'authorization') ne 'none') {
+		die ("Incorrect username or password") if ($password ne $config->val('users', $username));
+	}
 
 	# Create new session
 	my ($sessionid, $key);

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	$Id$
+	$Author$
+	FixedFormXML DTD for XML encapsulated fixed forms
+-->
+<!DOCTYPE fixedformxml [
+	<!ELEMENT render (page+)>
+	<!ELEMENT page (format, element+)>
+	<!ELEMENT element (row, column, length, content, comment*)>
+	<!ELEMENT row #PCDATA>
+	<!ELEMENT column #PCDATA>
+	<!ELEMENT length #PCDATA>
+	<!ELEMENT content #PCDATA>
+	<!ELEMENT comment #PCDATA>
+]>
