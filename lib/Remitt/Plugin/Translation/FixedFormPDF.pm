@@ -17,6 +17,27 @@ use Remitt::Utilities;
 use PDF::API2;
 use Data::Dumper;
 
+sub CalculateJustifyOffset {
+	my ( $e ) = @_;
+
+	my $content = ProcessElement($e);
+	my $clength = $e->{length};
+
+	if ($clength > length($content)) {
+		my $diff = $clength - length($content);
+		if ($e->{format} and $e->{format}->{right}) {
+			# For right justify, return the difference
+			return $diff;
+		} else {
+			# Everything else, no offset
+			return 0;
+		}
+	} else {
+		# By default, there is no justification offset
+		return 0;
+	}
+} # end sub CalculateJustifyOffset
+
 sub ProcessElement {
 	my ( $e ) = @_;
 
@@ -34,11 +55,7 @@ sub ProcessElement {
 		# Return as is
 		return $content;
 	} elsif (length($content) < $clength) {
-		# Add spaces
-		while (length($content) < $clength) {
-			$content .= ' ';
-		}
-		#print "length of content = ".length($content)."\n";
+		# Do nothing
 		return $content;
 	} elss {
 		# Shorten
@@ -100,7 +117,7 @@ sub ProcessPage {
 			#print Dumper($e);
 
 			# Set positioning
-			$txt->translate(($e->{column} * $h_scaling) + $h_offset,
+			$txt->translate((($e->{column} + CalculateJustifyOffset($e)) * $h_scaling) + $h_offset,
 				(792 - ($e->{row} * $v_scaling)) - $v_offset);
 
 			# Render text
