@@ -214,15 +214,18 @@ sub StoreContents {
                 return $input;
         } else {
 		my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
+		#print "auth string = $authstring\n";
 		my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
 		return Remitt::Utilities::Fault() if (!$auth);
+		#print "auth = $auth, sessionid = $sessionid, pass = $pass\n";
 
 		# Get username information
 		my $session = Remitt::Session->new($sessionid);
 		$session->load();
-		#print Dumper($session->{session});
-		my $username = $session->{session}->{_OPTIONS}[0];
-		#print "username = $username \n";
+		#print "StoreContents: session = ".Dumper($session->{session});
+		#my $username = $session->{session}->param('username');
+		my $username = $session->{session}->{"_OPTIONS"}[0];
+		#print "username = $username\n";
 
 		my $filename = strftime('%Y%m%d.%H%M%S', localtime(time)).
 			'.' . $transport . '.' . $extension;
