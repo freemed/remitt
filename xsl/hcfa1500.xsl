@@ -378,14 +378,14 @@
 				<!-- Box 2: Patient Name / First -->
 				<row>10</row>
 				<column>19</column>
-				<length>8</length>
+				<length>9</length>
 				<content><xsl:value-of select="translate($patientobj/name/first, $lowercase, $uppercase)" /></content>
 			</element>
 
 			<element>
 				<!-- Box 2: Patient Name / Middle -->
 				<row>10</row>
-				<column>28</column>
+				<column>29</column>
 				<length>1</length>
 				<content><xsl:value-of select="translate($patientobj/name/middle, $lowercase, $uppercase)" /></content>
 			</element>
@@ -937,7 +937,7 @@
 				<!-- Box 12: Authorized Signature / Date -->
 				<row>30</row>
 				<column>38</column>
-				<length>8</length>
+				<length>10</length>
 				<content><xsl:value-of select="concat(//global/currentdate/month, ' ', //global/currentdate/day, ' ', //global/currentdate/year)" /></content>
 			</element>
 
@@ -988,7 +988,7 @@
 				<!-- Box 14: Date of Onset / YY -->
 				<row>32</row>
 				<column>8</column>
-				<length>2</length>
+				<length>4</length>
 				<content><xsl:value-of select="$diagobj/dateofonset/year" /></content>
 			</element>
 			</xsl:if>
@@ -1212,8 +1212,9 @@
 				<row>58</row>
 				<column>50</column>
 				<length>25</length>
-				<content><xsl:value-of select="translate(//practice[@id = $procfirstobj/practicekey]/name, $lowercase, $uppercase)" /></content>
-			</element>
+		                <!-- <content><xsl:value-of select="translate(//practice[@id = $procfirstobj/practicekey]/name, $lowercase, $uppercase)" /></content> -->
+				<content><xsl:value-of select="translate($facilityobj/description, $lowercase, $uppercase)" /></content>
+		        </element>
 
 			<element>
 				<!-- Box 32: Facility City State Zip -->
