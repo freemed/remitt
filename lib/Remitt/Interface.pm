@@ -104,7 +104,7 @@ sub FileList {
 	# Get username information
 	my $session = Remitt::Session->new($sessionid);
 	$session->load();
-	my $username = $session->{session}->param('username');
+	my $username = $session->{session}->{"_OPTIONS"}[0];
 
 	# Get configuration information
 	my $config = Remitt::Utilities::Configuration ( );
