@@ -284,7 +284,85 @@
 				<content><xsl:value-of select="translate($payerobj/address/state, $lowercase, $uppercase)" /></content>
 			</element>
 
-			<!-- FIXME: Is Medicare/Medicaid/Champus, etc -->
+			<xsl:if test="$payerobj/ismedicare = 1">
+			<element>
+				<!-- Is Medicare? -->
+				<row>8</row>
+				<column>1</column>
+				<length>1</length>
+				<content>X</content>
+			</element>
+			</xsl:if>
+
+			<xsl:if test="$payerobj/ismedicaid = 1">
+			<element>
+				<!-- Is Medicaid? -->
+				<row>8</row>
+				<column>8</column>
+				<length>1</length>
+				<content>X</content>
+			</element>
+			</xsl:if>
+
+			<xsl:if test="$payerobj/ischampus = 1">
+			<element>
+				<!-- Is Champus? -->
+				<row>8</row>
+				<column>15</column>
+				<length>1</length>
+				<content>X</content>
+			</element>
+			</xsl:if>
+
+			<xsl:if test="$payerobj/ischampusva = 1">
+			<element>
+				<!-- Is ChampusVA? -->
+				<row>8</row>
+				<column>24</column>
+				<length>1</length>
+				<content>X</content>
+			</element>
+			</xsl:if>
+
+			<xsl:if test="$payerobj/ismedicare = 1">
+			<element>
+				<!-- Is Medicare? -->
+				<row>8</row>
+				<column>1</column>
+				<length>1</length>
+				<content>X</content>
+			</element>
+			</xsl:if>
+
+			<xsl:if test="$payerobj/isbcbs = 1">
+			<element>
+				<!-- Is BCBS? -->
+				<row>8</row>
+				<column>31</column>
+				<length>1</length>
+				<content>X</content>
+			</element>
+			</xsl:if>
+
+			<xsl:if test="$payerobj/isfeca = 1">
+			<element>
+				<!-- Is FECA? -->
+				<row>8</row>
+				<column>39</column>
+				<length>1</length>
+				<content>X</content>
+			</element>
+			</xsl:if>
+
+			<xsl:if test="$payerobj/isotherhcfa = 1">
+			<element>
+				<!-- Is HCFA "other"? -->
+				<row>8</row>
+				<column>45</column>
+				<length>1</length>
+				<content>X</content>
+			</element>
+			</xsl:if>
 
 			<element>
 				<!-- Box 1a: Insured ID Number -->
@@ -571,8 +649,7 @@
 				<row>18</row>
 				<column>31</column>
 				<length>10</length>
-				<!-- diagnosis/relatedtohcfa -->
-				<content>FIXME</content>
+				<content><xsl:value-of select="$diagobj/relatedtohcfa" /></content>
 			</element>
 
 			<element>
