@@ -183,8 +183,8 @@
 					<!-- Process using first segment -->
 					<!-- <xsl:message>Processing fit segment of <xsl:value-of select="count($fit)" /></xsl:message> -->
 					<xsl:call-template name="render-form">
-						<xsl:with-param name="procs" select="$procs/@id" />
-						<xsl:with-param name="procobjs" select="$procs" />
+						<xsl:with-param name="procs" select="$fit/@id" />
+						<xsl:with-param name="procobjs" select="$fit" />
 						<xsl:with-param name="diags" select="set:distinct(exsl:node-set($fit/diagnosiskey))" />
 					</xsl:call-template>
 
@@ -214,6 +214,8 @@
 		<xsl:param name="procs" />
 		<xsl:param name="procobjs" />
 		<xsl:param name="diags" />
+
+		<!-- <xsl:message>[render-form] rendering <xsl:value-of select="count($procs)" /> procedures</xsl:message> -->
 
 		<!-- Since everything else is the same, get info from first. -->
 		<xsl:variable name="insured" select="//procedure[@id = $procs[1]]/insuredkey" />
