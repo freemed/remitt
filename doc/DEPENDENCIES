@@ -11,4 +11,5 @@ Debian (sarge/testing):
 	libxml-simple-perl
 	libcgi-session-perl
 	libconfig-inifiles-perl
+	libpdf-api2-perl
 
