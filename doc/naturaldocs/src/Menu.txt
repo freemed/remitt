@@ -1,0 +1,126 @@
+##### Do not change or remove these lines. #####
+Format: 1.22
+Data: 1(fGcpNot3333Huut3mPrm3HGE8tt)
+##### You can edit below this point. #####
+
+
+Title: REMITT
+SubTitle: REMITT Electronic Medical Information Translation and Transmission
+
+Footer: (c) 2004 by the FreeMED Software Foundation
+
+# These are indexes you deleted, so Natural Docs will not add them again
+# unless you remove them from this line.
+
+Don't Index: Variables, Classes, Files, Functions
+
+
+# --------------------------------------------------------------------------
+# 
+# Cut and paste the lines below to change the order in which your files
+# appear on the menu.  Don't worry about adding or removing files, Natural
+# Docs will take care of that.
+# 
+# You can further organize the menu by grouping the entries.  Add a
+# "Group: [name] {" line to start a group, and add a "}" to end it.  Groups
+# can appear within each other.
+# 
+# You can add text and web links to the menu by adding "Text: [text]" and
+# "Link: [name] ([URL])" lines, respectively.
+# 
+# The formatting and comments are auto-generated, so don't worry about
+# neatness when editing the file.  Natural Docs will clean it up the next
+# time it is run.  When working with groups, just deal with the braces and
+# forget about the indentation and comments.
+# 
+# You can use this file on other computers even if they use different
+# directories.  As long as the command line points to the same source files,
+# Natural Docs will be able to correct the locations automatically.
+# 
+# --------------------------------------------------------------------------
+
+
+Index: Everything
+File: remitt_cli.pl  (/root/FMSF/remitt/bin/remitt_cli.pl)
+File: remitt_server.pl  (/root/FMSF/remitt/bin/remitt_server.pl)
+
+Group: Lib  {
+
+   File: Apache::SOAP  (/root/FMSF/remitt/lib/Apache/SOAP.pm)
+   File: Apache::XMLRPC::Lite  (/root/FMSF/remitt/lib/Apache/XMLRPC/Lite.pm)
+   File: IO::SessionData  (/root/FMSF/remitt/lib/IO/SessionData.pm)
+   File: IO::SessionSet  (/root/FMSF/remitt/lib/IO/SessionSet.pm)
+   File: MIME::Base64  (/root/FMSF/remitt/lib/MIME/Base64.pm)
+
+   Group: Remitt  {
+
+      File: Interface  (/root/FMSF/remitt/lib/Remitt/Interface.pm)
+
+      Group: Plugin  {
+
+         Group: Translation  {
+
+            File: FixedFormPDF  (/root/FMSF/remitt/lib/Remitt/Plugin/Translation/FixedFormPDF.pm)
+            File: FixedFormXML  (/root/FMSF/remitt/lib/Remitt/Plugin/Translation/FixedFormXML.pm)
+            File: X12XML  (/root/FMSF/remitt/lib/Remitt/Plugin/Translation/X12XML.pm)
+            }  # Group: Translation
+
+         Group: Transport  {
+
+            File: MCSI  (/root/FMSF/remitt/lib/Remitt/Plugin/Transport/MCSI.pm)
+            File: PDF  (/root/FMSF/remitt/lib/Remitt/Plugin/Transport/PDF.pm)
+            File: Text  (/root/FMSF/remitt/lib/Remitt/Plugin/Transport/Text.pm)
+            }  # Group: Transport
+
+         File: XSLT  (/root/FMSF/remitt/lib/Remitt/Plugin/Render/XSLT.pm)
+         }  # Group: Plugin
+
+      File: Session  (/root/FMSF/remitt/lib/Remitt/Session.pm)
+      File: Utilities  (/root/FMSF/remitt/lib/Remitt/Utilities.pm)
+      }  # Group: Remitt
+
+   Group: SOAP  {
+
+      File: Lite  (/root/FMSF/remitt/lib/SOAP/Lite.pm)
+      File: Test  (/root/FMSF/remitt/lib/SOAP/Test.pm)
+
+      Group: Transport  {
+
+         File: FTP  (/root/FMSF/remitt/lib/SOAP/Transport/FTP.pm)
+         File: HTTP  (/root/FMSF/remitt/lib/SOAP/Transport/HTTP.pm)
+         File: IO  (/root/FMSF/remitt/lib/SOAP/Transport/IO.pm)
+         File: JABBER  (/root/FMSF/remitt/lib/SOAP/Transport/JABBER.pm)
+         File: LOCAL  (/root/FMSF/remitt/lib/SOAP/Transport/LOCAL.pm)
+         File: MAILTO  (/root/FMSF/remitt/lib/SOAP/Transport/MAILTO.pm)
+         File: MQ  (/root/FMSF/remitt/lib/SOAP/Transport/MQ.pm)
+         File: POP3  (/root/FMSF/remitt/lib/SOAP/Transport/POP3.pm)
+         File: TCP  (/root/FMSF/remitt/lib/SOAP/Transport/TCP.pm)
+         }  # Group: Transport
+
+      }  # Group: SOAP
+
+   File: UDDI::Lite  (/root/FMSF/remitt/lib/UDDI/Lite.pm)
+   File: XML::Parser::Lite  (/root/FMSF/remitt/lib/XML/Parser/Lite.pm)
+
+   Group: XMLRPC  {
+
+      File: Lite  (/root/FMSF/remitt/lib/XMLRPC/Lite.pm)
+      File: Test  (/root/FMSF/remitt/lib/XMLRPC/Test.pm)
+      File: Transport::HTTP  (/root/FMSF/remitt/lib/XMLRPC/Transport/HTTP.pm)
+      File: Transport::POP3  (/root/FMSF/remitt/lib/XMLRPC/Transport/POP3.pm)
+      File: Transport::TCP  (/root/FMSF/remitt/lib/XMLRPC/Transport/TCP.pm)
+      }  # Group: XMLRPC
+
+   }  # Group: Lib
+
+Group: Test  {
+
+   File: test/test_hcfa.pl  (/root/FMSF/remitt/test/test_hcfa.pl)
+   File: test/test_loader.pl  (/root/FMSF/remitt/test/test_loader.pl)
+   File: test/test_resolve.pl  (/root/FMSF/remitt/test/test_resolve.pl)
+   File: test/test_837p.pl  (no auto-title, /root/FMSF/remitt/test/test_837p.pl)
+   File: test/test_scan_xsl.pl  (no auto-title, /root/FMSF/remitt/test/test_scan_xsl.pl)
+   File: test/test_xmlrpc_client.pl  (no auto-title, /root/FMSF/remitt/test/test_xmlrpc_client.pl)
+   File: test/test_xsl.pl  (no auto-title, /root/FMSF/remitt/test/test_xsl.pl)
+   }  # Group: Test
+
