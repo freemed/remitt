@@ -20,7 +20,7 @@ sub PadToPosition {
 		die("Remitt::Plugin::Translation::FixedFormXML::PadToPosition() error in text rendering has occurred\n");
 	}
 	if ( ($o_row == $n_row) and ($o_col > $n_col) ) {
-		print "failed with o_row/o_col = $o_row/$o_col, n_row/n_col = $n_row/$n_col\n";
+		#print "failed with o_row/o_col = $o_row/$o_col, n_row/n_col = $n_row/$n_col\n";
 		die("Remitt::Plugin::Translation::FixedFormXML::PadToPosition() error in text rendering has occurred\n");
 	}
 
