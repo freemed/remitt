@@ -228,6 +228,8 @@
 		<xsl:variable name="facilityobj" select="//facility[@id = $facility]" />
 		<xsl:variable name="provider" select="//procedure[@id = $procs[1]]/providerkey" />
 		<xsl:variable name="providerobj" select="//provider[@id = $provider]" />
+		<xsl:variable name="practice" select="//procedure[@id = $procs[1]]/practicekey" />
+		<xsl:variable name="practiceobj" select="//practice[@id = $practice]" />
 
 		<!-- Primary diagnosis object -->
 		<xsl:variable name="diag" select="$diags[1]" />
@@ -755,6 +757,7 @@
 			</element>
 			</xsl:if>
 
+			<xsl:if test="$insuredobj/dateofbirth/month &gt; 0">
 			<element>
 				<!-- Box 9b: Insured DOB / MM -->
 				<row>22</row>
@@ -794,6 +797,7 @@
 				<length>2</length>
 				<content><xsl:value-of select="substring($insuredobj/dateofbirth/year, 3, 2)" /></content>
 			</element>
+			</xsl:if>
 
 			<xsl:if test="translate($insuredobj/sex, $lowercase, $uppercase) = 'M'">
 			<element>
@@ -947,6 +951,7 @@
 			</element>
 			</xsl:if>
 
+			<xsl:if test="$diagobj/dateofonset/month &gt; 0">
 			<element>
 				<!-- Box 14: Date of Onset / MM-->
 				<row>32</row>
@@ -986,6 +991,7 @@
 				<length>2</length>
 				<content><xsl:value-of select="$diagobj/dateofonset/year" /></content>
 			</element>
+			</xsl:if>
 
 			<!-- FIXME: Check for first occurance and insert date -->
 			<!-- FIXME: isCantWork equiv -->
@@ -1126,11 +1132,19 @@
 			</xsl:for-each>
 
 			<element>
-				<!-- Box 25: Federal Tax ID -->
+				<!-- Box 25: EIN -->
 				<row>56</row>
 				<column>1</column>
 				<length>15</length>
-				<content><xsl:value-of select="$providerobj/tin"/></content>
+				<content><xsl:value-of select="$practiceobj/ein"/></content>
+			</element>
+
+			<element>
+				<!-- Box 25: EIN - Check block -->
+				<row>56</row>
+				<column>19</column>
+				<length>1</length>
+				<content>X</content>
 			</element>
 
 			<element>
@@ -1205,7 +1219,7 @@
 				<!-- Box 32: Facility City State Zip -->
 				<row>59</row>
 				<column>23</column>
-				<length>26</length>
+				<length>27</length>
 				<content><xsl:value-of select="translate(concat($facilityobj/address/city,', ',$facilityobj/address/state, ' ', $facilityobj/address/zipcode), $lowercase, $uppercase)" /></content>
 			</element>
 
@@ -1229,10 +1243,11 @@
 				<!-- Box 33: Physician Contact -->
 				<row>60</row>
 				<column>50</column>
-				<length>16</length>
+				<length>30</length>
 				<content><xsl:value-of select="translate(concat(//practice[@id = $procfirstobj/practicekey]/address/city, ', ', //practice[@id = $procfirstobj/practicekey]/address/state, ' ', //practice[@id = $procfirstobj/practicekey]/address/zipcode), $lowercase, $uppercase)" /></content>
 			</element>
 
+			<xsl:comment>
 			<xsl:if test="boolean(string(//practice[@id = $procfirstobj/practicekey]/phone/area))">
 			<!-- skip the phone number if not present -->
 			<element>
@@ -1240,9 +1255,10 @@
 				<row>60</row>
 				<column>67</column>
 				<length>14</length>
-				<content><xsl:value-of select="concat('(', //practice[@id = $procfirstobj/practicekey]/phone/area, ')', //practice[@id = $procfirstobj/practicekey]/phone/number)" /></content>
+				<content><xsl:value-of select="concat(//practice[@id = $procfirstobj/practicekey]/phone/area, //practice[@id = $procfirstobj/practicekey]/phone/number)" /></content>
 			</element>
 			</xsl:if>
+			</xsl:comment>
 
 			<element>
 				<!-- Box 31: Signature and Date -->
