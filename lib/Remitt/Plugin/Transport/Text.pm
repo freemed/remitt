@@ -18,7 +18,7 @@ sub Transport {
 
 sub Config {
 	return +{
-		'InputFormat' => 'text'
+		'InputFormat' => [ 'text', 'x12' ]
 	};
 } # end sub Config
 

@@ -155,8 +155,19 @@ sub ResolveTranslationPlugin {
 			# Read information from plugin
 			eval 'use Remitt::Plugin::Translation::'.$plugin.';';
 			eval '$config{"Transport"} = Remitt::Plugin::Translation::'.$plugin.'::Config();';
-			if (($config{'Transport'}->{'InputFormat'} eq $input) and ($config{'Transport'}->{'OutputFormat'} eq $output)) {
-				return $plugin;
+			if ($output =~ /ARRAY\(/ ) {
+				# Loop through array of possibles
+				foreach my $o (@{$output}) {
+					my $output = $o;
+					if (($config{'Transport'}->{'InputFormat'} eq $input) and ($config{'Transport'}->{'OutputFormat'} eq $output)) {
+						return $plugin;
+					}
+				}
+			} else {
+				# No array of possible formats
+				if (($config{'Transport'}->{'InputFormat'} eq $input) and ($config{'Transport'}->{'OutputFormat'} eq $output)) {
+					return $plugin;
+				}
 			}
 		}
 	}
