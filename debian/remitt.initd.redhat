@@ -35,7 +35,7 @@ RETVAL=0
 start() {
         KIND="REMITT"
 	echo -n $"Starting $KIND services: "
-	daemon /usr/share/remitt/bin/remitt_server.pl -d
+	daemon /usr/sbin/remitt-server -d
 	RETVAL=$?
 	echo ""
 	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/remitt || RETVAL=1
@@ -45,7 +45,7 @@ start() {
 stop() {
         KIND="REMITT"
 	echo -n $"Shutting down $KIND services: "
-	killproc remitt_server.pl
+	killall -9 remitt_server.pl
 	RETVAL=$?
 	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/remitt
 	echo ""
