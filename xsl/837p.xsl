@@ -52,7 +52,7 @@
         <render>
 		<x12format>
 			<delimiter>*</delimiter>
-			<endofline>~</endofline>
+			<endofline></endofline>
 		</x12format>
 
 		<!-- Generate static segments -->
@@ -64,14 +64,14 @@
 			</element>
 			<element>
 				<comment>10 spaces</comment>
-				<content text="          " />
+				<content text="REMITT837P" />
 			</element>
 			<element>
 				<content>00</content>
 			</element>
 			<element>
 				<comment>10 spaces</comment>
-				<content text="          " />
+				<content text="SECURITY01" />
 			</element>
 			<element>
 				<content>ZZ</content>
@@ -83,7 +83,8 @@
 				<content>ZZ</content>
 			</element>
 			<element>
-				<content text="48M            "/>
+				<!-- has to be 15 characters -->
+				<content text="00000000000048M"/>
 			</element>
 			<element>
 				<content>030911</content>
@@ -101,12 +102,15 @@
 				<content>000000001</content>
 			</element>
 			<element>
+				<!-- ACK requested 0 = no, 1 = yes -->
 				<content>1</content>
 			</element>
 			<element>
-				<content>T</content>
+				<!-- T = test data, P = patient data -->
+				<content>P</content>
 			</element>
 			<element>
+				<!-- Element split character -->
 				<content>:</content>
 			</element>
 		</x12segment>
@@ -128,7 +132,7 @@
 			</element>
 			<element>
 				<comment>Current date hour + minute FIXME</comment>
-				<content>0101</content>
+				<content><xsl:value-of select="concat(//global/currenttime/hour,//global/currenttime/minute)" /></content>
 			</element>
 			<element>
 				<content>1</content>
@@ -137,7 +141,7 @@
 				<content>X</content>
 			</element>
 			<element>
-				<comment>Transmission type code (is this right?)</comment>
+				<!-- Transmission code for addendum 1 -->
 				<content>004010X098A1</content>
 			</element>
 		</x12segment>
@@ -238,27 +242,14 @@
 			<element>
 				<content><xsl:value-of select="concat(//billingcontact/phone/area, //billingcontact/phone/number)" /></content>
 			</element>
+			<xsl:if test="boolean(string(//billingcontact/phone/extension))">
 			<element>
 				<content>EX</content>
 			</element>
 			<element>
 				<content><xsl:value-of select="//billingcontact/phone/extension" /></content>
 			</element>
-			<element>
-				<content></content>
-			</element>
-			<element>
-				<content></content>
-			</element>
-			<element>
-				<content></content>
-			</element>
-			<element>
-				<content></content>
-			</element>
-			<element>
-				<content></content>
-			</element>
+			</xsl:if>
 		</x12segment>
 
 		<xsl:comment>Loop 1000B: Receiver</xsl:comment>
@@ -300,7 +291,8 @@
 			<comment>HL Pay-to provider (p77)</comment>
 			<element>
 				<!-- Set current HL counter -->
-				<content>1</content>
+				<!-- <content>1</content> -->
+				<hl>STARTING</hl>
 			</element>
 			<element>
 				<content></content>
@@ -387,12 +379,12 @@
 
 		<xsl:comment>Loop 2000B: Patient/Insured Loop</xsl:comment>
 
-		<xsl:variable name="practices" select="//practice" />
+		<xsl:variable name="practices" select="set:distinct(exsl:node-set(//procedure/practicekey))" />
 
 		<xsl:for-each select="$practices">
 			<xsl:call-template name="process-practice">
 				<xsl:with-param name="practice">
-					<xsl:value-of select="@id"/>
+					<xsl:value-of select="."/>
 				</xsl:with-param>	
 			</xsl:call-template>
 		</xsl:for-each>
@@ -437,7 +429,6 @@
 		<xsl:param name="practice" />
 
 		<!-- Generate loop header -->
-
 		<xsl:variable name="thispractice" select="//practice[@id=$practice]" />
 
 		<x12segment sid="REF">
@@ -453,6 +444,7 @@
 
 		<xsl:comment>2010AB Loop (p99)</xsl:comment>
 
+		<xsl:comment>
 		<x12segment sid="NM1">
 			<comment>NM1 (p99)</comment>
 			<element>
@@ -467,24 +459,24 @@
 				<content><xsl:value-of select="translate($thispractice/name, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
-				<content></content>
+				<content />
 			</element>
 			<element>
-				<content></content>
+				<content />
 			</element>
 			<element>
-				<content></content>
+				<content />
 			</element>
 			<element>
-				<content></content>
+				<content />
 			</element>
 			<element>
 				<!-- EIN -->
 				<content>24</content>
 			</element>
 			<element>
-				<!-- Supposed to be EIN number FIXME FIXME -->
-				<content><xsl:value-of select="$thispractice/tin" /></content>
+				<!-- Supposed to be EIN number -->
+				<content><xsl:value-of select="$thispractice/ein" /></content>
 			</element>
 		</x12segment>
 
@@ -505,6 +497,7 @@
 				<content><xsl:value-of select="$thispractice/address/zipcode" /></content>
 			</element>
 		</x12segment>
+		</xsl:comment>
 
 		-- selecting patients for <xsl:value-of select="$practice" /> --
 
@@ -561,7 +554,7 @@
 		<xsl:variable name="patientobj" select="//patient[@id=$patient]" />
 		<!-- Extract payer by insured -->
 		<xsl:variable name="payer" select="//procedure[insuredkey=$insured]/payerkey" />
-		<xsl:variable name="payerobj" select="//payer[@id=$payer[0]]" />
+		<xsl:variable name="payerobj" select="//payer[@id=$payer[1]]" />
 
 		<!-- determine HLpatient status 0 or 1 
 			if relationship = S, status = 0 -->
@@ -594,7 +587,8 @@
 			<comment>HL - Subscriber Heirarchical Level 2000B (p108)</comment>
 			<element>
 				<!-- Insured HL -->
-				<content><xsl:value-of select="$insuredhl" /></content>
+				<!-- <content><xsl:value-of select="$insuredhl" /></content> -->
+				<hl><xsl:value-of select="concat($insuredhl, 'x', $practice)" /></hl>
 			</element>
 			<element>
 				<!-- Parent HL code ... -->
@@ -627,8 +621,8 @@
 				<content><xsl:value-of select="translate($insuredobj/groupname, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
-				<!-- FIXME: SBR05 special instance -->
-				<content></content>
+				<!-- FIXME: SBR05 special instance, medicare only -->
+				<content><!-- 47 --></content>
 			</element>
 			<element>
 				<content></content>
@@ -684,18 +678,12 @@
 				<content></content>
 			</element>
 			<element>
-				<!-- Identification code qualifier -->
-				<content>M</content>
+				<!-- Identification code qualifier (MI = member ID, ZZ = mutually defined) -->
+				<content>MI</content>
 			</element>
 			<element>
 				<!-- Identification code -->
 				<content><xsl:value-of select="$insuredobj/id" /></content>
-			</element>
-			<element>
-				<content></content>
-			</element>
-			<element>
-				<content></content>
 			</element>
 		</x12segment>
 
@@ -706,9 +694,6 @@
 					<xsl:when test="$insuredobj/relationship = 'S'"><xsl:value-of select="translate($patientobj/address/streetaddress, $lowercase, $uppercase)" /></xsl:when>
 					<xsl:otherwise><xsl:value-of select="translate($insuredobj/address/streetaddress, $lowercase, $uppercase)" /></xsl:otherwise>
 				</xsl:choose></content>
-			</element>
-			<element>
-				<content></content>
 			</element>
 		</x12segment>
 
@@ -722,15 +707,6 @@
 			</element>
 			<element>
 				<content><xsl:value-of select="$insuredobj/address/zipcode" /></content>
-			</element>
-			<element>
-				<content></content>
-			</element>
-			<element>
-				<content></content>
-			</element>
-			<element>
-				<content></content>
 			</element>
 		</x12segment>
 
@@ -751,6 +727,41 @@
 		</x12segment>
 		</xsl:if>
 
+		<!-- 2010BB: Payer Name (p???) required -->
+		<x12segment sid="NM1">
+			<element>
+				<!-- Payer -->
+				<content>PR</content>
+			</element>
+			<element>
+				<!-- 2 = non-person entity -->
+				<content>2</content>
+			</element>
+			<element>
+				<content><xsl:value-of select="translate($payerobj/name, $lowercase, $uppercase)" /></content>
+			</element>
+			<element>
+				<content/>
+			</element>
+			<element>
+				<content/>
+			</element>
+			<element>
+				<content/>
+			</element>
+			<element>
+				<content/>
+			</element>
+			<element>
+				<!-- ID Code Qualifier ( PI = payor id, XV = HCFA PIN ) -->
+				<content>PI</content>
+			</element>
+			<element>
+				<!-- FIXME: Identification Code -->
+				<content>FIXME</content>
+			</element>
+		</x12segment>
+
 		<xsl:comment>2000C HL Heirarchical level (p152)</xsl:comment>
 
 		<!-- If insured = patient, skip this loop -->
@@ -758,11 +769,12 @@
 		<x12segment sid="HL">
 			<element>
 				<!-- Currently assigned ID number -->
-				<content><xsl:value-of select="$patienthl" /></content>
+				<!-- <content><xsl:value-of select="$patienthl" /></content> -->
+				<hl><xsl:value-of select="concat($patienthl, 'x', $practice)" /></hl>
 			</element>
 			<element>
 				<!-- Parent ID. In this case, the insuredhl -->
-				<content><xsl:value-of select="$insuredhl" /></content>
+				<content><xsl:value-of select="concat($insuredhl, 'x', $practice)" /></content>
 			</element>
 			<element>
 				<!-- HL Code (23 = dependent) -->
@@ -879,9 +891,6 @@
 			<element>
 				<content><xsl:value-of select="translate($patientobj/address/streetaddress, $lowercase, $uppercase)" /></content>
 			</element>
-			<element>
-				<content></content>
-			</element>
 		</x12segment>
 
 		<x12segment sid="N4">
@@ -895,15 +904,6 @@
 			<element>
 				<content><xsl:value-of select="$patientobj/address/zipcode" /></content>
 			</element>
-			<element>
-				<content></content>
-			</element>
-			<element>
-				<content></content>
-			</element>
-			<element>
-				<content></content>
-			</element>
 		</x12segment>
 		</xsl:if> <!-- end 2000C chunk -->
 
@@ -911,6 +911,7 @@
 		     be used when the patient is the same as the insured!!! -->
 			insured = <xsl:value-of select="$insured" />
 			--
+		<xsl:comment>
 		<xsl:if test="$insuredobj/relationship = 'S'">
 		<x12segment sid="DMG">
 			<element>
@@ -945,7 +946,9 @@
 			</element>
 		</x12segment>
 		</xsl:if>
+		</xsl:comment>
 
+		<xsl:if test="boolean(string($patientobj/socialsecuritynumber))">
 		<x12segment sid="REF">
 			<!-- REF (Loop 2010BA p126) -->
 			<!-- REF segment required to give SSN or secondary
@@ -958,13 +961,8 @@
 			<element>
 				<content><xsl:value-of select="$patientobj/socialsecuritynumber" /></content>
 			</element>
-			<element>
-				<content></content>
-			</element>
-			<element>
-				<content></content>
-			</element>
 		</x12segment>
+		</xsl:if>
 
 		<xsl:variable name="procs" select="//procedure[patientkey=$patient and practicekey=$practice and insuredkey=$insured and payerkey=$payer]" />
 		<xsl:variable name="facilities" select="set:distinct(exsl:node-set($procs/facilitykey))" />
@@ -1035,11 +1033,13 @@
 				<!-- Patient signature source code -->
 				<content>B</content>
 			</element>
+			<xsl:if test="0 &gt; 1"><!-- FIXME!!!!!!!!!! -->
 			<element>
 				<!-- Health causes code -->
 				<!-- FIXME p176 need xsl:choose for this -->
 				<content></content>
 			</element>
+			</xsl:if>
 		</x12segment>
 
 		<!-- 2300 Loop: DTP Referral Date (p184) need if referral FIXME-->
@@ -1049,8 +1049,43 @@
 		<!-- 2300 Loop: DTP Date of Accident (p194) eoc? FIXME-->
 		<!-- 2300 Loop: DTP Date of Disable Start (p201) eoc? FIXME-->
 		<!-- 2300 Loop: DTP Date of Disable End (p203) eoc? FIXME-->
+
 		<!-- 2300 Loop: DTP Date of Admit (p208) eoc? FIXME-->
+		<xsl:variable name="facx12" select="//facility[@id=$facility]/x12code" />
+		<xsl:if test="($facx12 = '21') or ($facx12 = '51')">
+		<x12segment sid="DTP">
+			<element>
+				<!-- Time ID - 435 = Admission -->
+				<content>435</content>
+			</element>
+			<element>
+				<!-- D8 = date expressed CCYYMMDD -->
+				<content>D8</content>
+			</element>
+			<element>
+				<!-- Date of admission -->
+				<content><xsl:value-of select="concat($procs[1]/dateofhospitalstart/year, $procs[1]/dateofhospitalstart/month, $procs[1]/dateofhospitalstart/day)" /></content>
+			</element>
+		</x12segment>
+
 		<!-- 2300 Loop: DTP Date of Discharge (p210) eoc? FIXME-->
+		<xsl:if test="$procs[1]/dateofhospitalend/year &gt; 1990">
+		<x12segment sid="DTP">
+			<element>
+				<!-- Time ID - 096 = Admission -->
+				<content>096</content>
+			</element>
+			<element>
+				<!-- D8 = date expressed CCYYMMDD -->
+				<content>D8</content>
+			</element>
+			<element>
+				<!-- Date of discharge -->
+				<content><xsl:value-of select="concat($procs[1]/dateofhospitalend/year, $procs[1]/dateofhospitalend/month, $procs[1]/dateofhospitalend/day)" /></content>
+			</element>
+		</x12segment>
+		</xsl:if> <!-- end if there is a discharge date -->
+		</xsl:if> <!-- end if x12 code is 21 or 51 -->
 
 		<!-- 2300 Loop: AMT Patient Amount Paid (p220) -->
 		<x12segment sid="AMT">
@@ -1086,12 +1121,6 @@
 			<element>
 				<content><xsl:value-of select="$patient" /></content>
 			</element>
-			<element>
-				<content></content>
-			</element>
-			<element>
-				<content></content>
-			</element>
 		</x12segment>
 
 		<!-- Set diagnoses is distinct set ... -->
@@ -1113,6 +1142,46 @@
 
 		<!-- 2310A Loop: NM1 Referring Provider Name (p282) -->
 
+		<!-- Get TIN from procedure 1 -->
+		<xsl:variable name="firstprov" select="//provider[@id = $procs[1]/providerkey]" />
+
+		<!-- 2310B Loop: Rendering Provider -->
+		<x12segment sid="NM1">
+			<element>
+				<!-- Rendering provider -->
+				<content>82</content>
+			</element>
+			<element>
+				<!-- Person -->
+				<content>1</content>
+			</element>
+			<element>
+				<content><xsl:value-of select="translate($firstprov/name/last, $lowercase, $uppercase)" /></content>
+			</element>
+			<element>
+				<content><xsl:value-of select="translate($firstprov/name/first, $lowercase, $uppercase)" /></content>
+			</element>
+			<element>
+				<content><xsl:value-of select="translate($firstprov/name/middle, $lowercase, $uppercase)" /></content>
+			</element>
+			<element>
+				<!-- Prefix -->
+				<content />
+			</element>
+			<element>
+				<!-- Suffix -->
+				<content />
+			</element>
+			<element>
+				<!-- ID Code qualifier ( 24 = EIN, 34 = SSN, XX = HCFA ID ) -->
+				<content>34</content>
+			</element>
+			<element>
+				<!-- ID Code -->
+				<content><xsl:value-of select="$firstprov/socialsecuritynumber" /></content>
+			</element>
+		</x12segment>
+
 		<!-- 2310D Loop: NM1 Service Facility Location (p303) -->
 		<x12segment sid="NM1">
 			<element>
@@ -1125,7 +1194,7 @@
 			</element>
 			<element>
 				<!-- Location/facility name -->
-				<content>FIXME LOCATION NAME</content>
+				<content><xsl:value-of select="translate(//facility[@id=$facility]/name, $lowercase, $uppercase)"/></content>
 			</element>
 			<element>
 				<content/>
@@ -1143,13 +1212,32 @@
 				<content>24</content>
 			</element>
 			<element>
-				<!-- FIXME: Provider TIN -->
-				<content/>
+				<!-- HACK: Provider TIN -->
+				<content><xsl:value-of select="$firstprov/tin" /></content>
+			</element>
+		</x12segment>
+
+		<!-- 2310D Loop: N3 Service Facility Location (p???) -->
+		<x12segment sid="N3">
+			<element>
+				<content><xsl:value-of select="translate(//facility[@id=$facility]/address/streetaddress, $lowercase, $uppercase)"/></content>
+			</element>
+		</x12segment>
+
+		<!-- 2310D Loop: N4 Service Facility Location (p???) -->
+		<x12segment sid="N4">
+			<element>
+				<content><xsl:value-of select="translate(//facility[@id=$facility]/address/city, $lowercase, $uppercase)"/></content>
+			</element>
+			<element>
+				<content><xsl:value-of select="translate(//facility[@id=$facility]/address/state, $lowercase, $uppercase)"/></content>
+			</element>
+			<element>
+				<content><xsl:value-of select="//facility[@id=$facility]/address/zipcode"/></content>
 			</element>
 		</x12segment>
 
 		<!-- FREEB X12.XML ITEM #29 -->
-
 
 		<!-- 2310E Loop: N3 Service Facility Address (p355) -->
 		<!-- 2310E Loop: N4 Service Facility Address (p356) -->
@@ -1190,16 +1278,18 @@
 		<!-- 2400 Loop: LX Service Line Counter (p399) -->
 		<x12segment sid="LX">
 			<element>
-				<!-- Counter -->
-				<counter name="LX" />
+				<!-- Counter, individual for line items -->
+				<xsl:element name="counter">
+					<xsl:attribute name="name">LX<xsl:value-of select="concat($procobj/patientkey, 'X', $procobj/facilitykey)" /></xsl:attribute>
+				</xsl:element>
 			</element>
 		</x12segment>
 
 		<!-- 2400 Loop: SV1 Professional Service (p446) -->
 		<x12segment sid="SV1">
 			<element>
-				<!-- Procedure code and modifier -->
-				<content><xsl:value-of select="concat('HC:', $procobj/cpt4code, ':', $procobj/cptmodifier)" /></content>
+				<!-- Procedure code [ and modifier ] -->
+				<content><xsl:value-of select="concat('HC:', $procobj/cpt4code)" /><xsl:if test="boolean(string($procobj/cptmodifier))"><xsl:value-of select="concat(':', $procobj/cptmodifier)" /></xsl:if></content>
 			</element>
 			<element>
 				<!-- Monetary amount -->
@@ -1305,6 +1395,8 @@
 			</element>
 		</x12segment>
 
+		<xsl:comment>FIXME: PRV disabled for now</xsl:comment>
+		<xsl:if test="0 &gt; 1">
 		<x12segment sid="PRV">
 			<!-- PRV (p504) -->
 			<element>
@@ -1321,6 +1413,7 @@
 				<content></content>
 			</element>
 		</x12segment>
+		</xsl:if>
 
 		<!-- Loop 2420C: Service Facility Location (p514) optional -->
 		<!-- Loop 2420F: Referring Provider (p541) FIXME -->
