@@ -20,6 +20,8 @@ package Remitt::Interface;
 use Remitt::Session;
 use Remitt::Utilities;
 use Digest::MD5;
+use POSIX;
+
 use Data::Dumper;
 
 # Method: Remitt.Interface.Execute
@@ -38,11 +40,13 @@ use Data::Dumper;
 #
 # Returns:
 #
-#	Output from transport plugin.
+#	Output from transport plugin if used from the command line interface
+#	(CLI), or a unique identifier used to get the actual output from
+#	<Remitt.Interface.GetStatus>.
 #
 # Example:
 #
-#	Remitt.Interface.Execute($xmlfile, 'XSLT', '837p', 'Text');
+#	$x = Remitt.Interface.Execute($xmlfile, 'XSLT', '837p', 'Text');
 #
 sub Execute {
 	shift if UNIVERSAL::isa($_[0] => __PACKAGE__);
@@ -62,23 +66,77 @@ sub Execute {
 	if ($transport eq "pdf") { $transport = "PDF"; }
 	if ($transport eq "mcsi") { $transport = "MCSI"; }
 
-	print "Running Execute ( length of ".length($input).", $render, $renderoption, $transport ) ... \n";
+	#print "Running Execute ( length of ".length($input).", $render, $renderoption, $transport ) ... \n";
 
 	# Sanitize (not input!)
 	$render =~ s/\W//g;
 	$renderoption =~ s/\W//g;
 	$transport =~ s/\W//g;
 
+	# Get username information
+	my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
+	my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
+	my $session = Remitt::Session->new($sessionid);
+	$session->load();
+	my $username = $session->{session}->param('username');
+
 	# Get resolve for translation plugin
 	my $translation = Remitt::Utilities::ResolveTranslationPlugin (
 		$render, $renderoption, $transport );
 	die("No translation plugin found") if ($translation eq '');
 
-	# Execute series
-	eval 'use Remitt::Plugin::Render::'.$render.';';
-	eval 'use Remitt::Plugin::Translation::'.$translation.';';
-	eval 'use Remitt::Plugin::Transport::'.$transport.';';
-	eval 'return Remitt::Plugin::Transport::'.$transport.'::Transport(Remitt::Plugin::Translation::'.$translation.'::Translate(Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption)));';
+	# Deal with CLI seperately
+	if (!defined $main::auth) {
+		eval 'use Remitt::Plugin::Render::'.$render.';';
+		eval 'use Remitt::Plugin::Translation::'.$translation.';';
+		eval 'use Remitt::Plugin::Transport::'.$transport.';';
+		eval 'return Remitt::Plugin::Transport::'.$transport.'::Transport(Remitt::Plugin::Translation::'.$translation.'::Translate(Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption)));';
+	}
+
+	# Create unique stamp to identify where we are now
+	my $unique = strftime('%Y%m%d.%H%M%S', localtime(time));	
+
+	# Here, we fork a new process, so that we can return a value in realtime.
+	my $results;
+	my $child;
+	if (!defined($child = fork())) {
+		die "Cannot fork process: $!\n";
+	} elsif ($child == 0) {
+		#----- Child branch
+		print "D-Child: running execute code\n";
+		eval 'use Remitt::Plugin::Render::'.$render.';';
+		eval 'use Remitt::Plugin::Translation::'.$translation.';';
+		eval 'use Remitt::Plugin::Transport::'.$transport.';';
+		eval '$results = Remitt::Plugin::Transport::'.$transport.'::Transport(Remitt::Plugin::Translation::'.$translation.'::Translate(Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption)));';
+
+		# Store value in proper place in 'state' directory
+		if (defined($main::auth)) {
+			print "D-Child: storing state after successful run\n";
+			Remitt::Utilities::StoreFile($username, $unique, 'state', $results);
+		}
+		
+		# Terminate child process
+		exit;
+	} else {
+		#----- Parent branch
+		#
+		# We would use waitpid($child, 0); to actually wait for the fork,
+		# which we don't want to do unless we're actually using the
+		# CLI, which needs the output immediately.
+		
+		# Deal with actual child process
+		#
+		# Proper behavior with server:
+		# return unique identifier and no waiting ...
+			
+		# Reaper code for child process
+		use POSIX ":sys_wait_h";
+		$SIG{CHLD} = 'IGNORE';
+	
+		# Return actual value
+		print "D-Parent: returning $unique to calling program\n";
+		return $unique;
+	} # end forking
 } # end sub Execute
 
 # Method: Remitt.Interface.FileList
@@ -174,6 +232,61 @@ sub GetFile {
 	close FILE;
 	return $buffer;
 } # end sub GetFile
+
+# Method: Remitt.Interface.GetStatus
+#
+# 	Get status of job identified by unique identifier, as returned by
+# 	<Remitt.Interface.Execute>. This method is not used by the command
+# 	line interface (CLI) because it does not store state files.
+#
+# Parameters:
+#
+# 	$unique - Unique id key to query about
+#
+# Returns:
+#
+#	Mixed; -1 if incomplete, or the actual contents of the unique
+#	identifier status file (usually a file name), or -2 if there
+#	is a parameter error.
+#
+sub GetStatus {
+	shift if UNIVERSAL::isa($_[0] => __PACKAGE__);
+	my $unique = shift;
+	my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
+	my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
+	return Remitt::Utilities::Fault() if (!$auth);
+
+	print "GetStatus called for $unique\n";
+
+	# Get username information
+	my $session = Remitt::Session->new($sessionid);
+	$session->load();
+	my $username = $session->{session}->param('username');
+	
+	# Get configuration information
+	my $config = Remitt::Utilities::Configuration ( );
+	
+	# Handle issues with path names
+	return -2 if $unique =~ /[^0-9\.]/;
+
+	# Get filename
+	my $filename = $config->val('installation', 'path') .
+		'/spool/' . $username . '/state/' . $unique;
+	print "GetStatus: trying to determine if $filename exists\n";
+
+	# If the file doesn't exist, return -1
+	if (!(-e $filename)) {
+		print "Shit! doesn't exist!\n";
+		return -1;
+	} else {
+		# Read "entire file" into buffer and return it
+		my $buffer;
+		open FILE, $filename or return '';
+		while (<FILE>) { $buffer .= $_; }
+		close FILE;
+		return $buffer;
+	}
+} # end sub GetStatus
 
 # Method: Remitt.Interface.ListOptions
 #
