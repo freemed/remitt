@@ -1053,7 +1053,8 @@
 				<row>36</row>
 				<column>65</column>
 				<length>8</length>
-				<content><xsl:value-of select="format-number($procfirstobj/outsidelabcharges, '####.00')" /></content>
+				<content><xsl:value-of select="format-number($procfirstobj/outsidelabcharges, '###0.00')" /></content>
+				<format right="1" />
 			</element>
 			</xsl:if>
 
@@ -1192,7 +1193,8 @@
 				<row>56</row>
 				<column>52</column>
 				<length>8</length>
-				<content><xsl:value-of select="format-number(sum(exsl:node-set($procobjs/cptcharges)), '####.00')" /></content>
+				<content><xsl:value-of select="format-number(sum(exsl:node-set($procobjs/cptcharges)), '###0.00')" /></content>
+				<format right="1" />
 			</element>
 
 			<element>
@@ -1200,7 +1202,8 @@
 				<row>56</row>
 				<column>63</column>
 				<length>7</length>
-				<content><xsl:value-of select="format-number(sum(exsl:node-set($procobjs/amountpaid)), '####.00')" /></content>
+				<content><xsl:value-of select="format-number(sum(exsl:node-set($procobjs/amountpaid)), '###0.00')" /></content>
+				<format right="1" />
 			</element>
 
 			<element>
@@ -1208,7 +1211,8 @@
 				<row>56</row>
 				<column>72</column>
 				<length>7</length>
-				<content><xsl:value-of select="format-number(sum(exsl:node-set($procobjs/cptcharges)) - sum(exsl:node-set($procobjs/amountpaid)), '####.00')" /></content>
+				<content><xsl:value-of select="format-number(sum(exsl:node-set($procobjs/cptcharges)) - sum(exsl:node-set($procobjs/amountpaid)), '###0.00')" /></content>
+				<format right="1" />
 			</element>
 
 			<element>
@@ -1436,7 +1440,8 @@
 			<row><xsl:value-of select="$cptline" /></row>
 			<column>51</column>
 			<length>7</length>
-			<content><xsl:value-of select="format-number($curproc/cptcharges, '##.00')" /></content>
+			<content><xsl:value-of select="format-number($curproc/cptcharges, '#0.00')" /></content>
+			<format right="1" />
 		</element>
 
 		<element>
