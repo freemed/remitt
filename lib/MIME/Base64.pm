@@ -1,5 +1,5 @@
 #
-# $Id: Base64.pm,v 1.1 2004/01/02 06:34:50 jeff Exp $
+# $Id$
 
 package MIME::Base64;
 
