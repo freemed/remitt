@@ -10,7 +10,15 @@ use XML::LibXSLT;
 use XML::LibXML;
 
 sub Render {
-	my ($xsl, $input) = @_;
+	my ($input, $option) = @_;
+
+	die("Option not specified!") if (!$option);
+
+	# Read xsl file
+	open FILE, "/root/FMSF/remitt/xsl/".$option.".xsl" or die("Could not open $option");
+	undef $/; # Undefine the line separator
+	my $xsl = <FILE>;
+	close FILE;
 
 	my $parser = XML::LibXML->new();
 	my $xslt = XML::LibXSLT->new();
