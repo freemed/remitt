@@ -14,7 +14,9 @@ package Remitt::Utilities;
 use Remitt::Session;
 use MIME::Base64;
 use Config::IniFiles;
+use File::Path;
 use Data::Dumper;
+use POSIX;
 
 sub Authenticate {
 	my ($hash) = @_;
@@ -174,5 +176,52 @@ sub ResolveTranslationPlugin {
 	# If nothing is found, return null
 	return '';
 } # end sub ResolveTranslationPlugin
+
+sub StoreContents {
+	my ($input, $transport, $extension) = @_;
+
+        if (!defined $main::auth) {
+                return $input;
+        } else {
+		my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
+		my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
+		return Remitt::Utilities::Fault() if (!$auth);
+
+		# Get username information
+		my $session = Remitt::Session->new($sessionid);
+		$session->load();
+		#print Dumper($session->{session});
+		my $username = $session->{session}->{_OPTIONS}[0];
+		#print "username = $username \n";
+
+		my $filename = strftime('%Y%m%d.%H%M%S', localtime(time)).
+			'.' . $transport . '.' . $extension;
+
+		Remitt::Utilities::StoreFile($username, $filename, 'output', $input);	
+		#print "returning $filename to calling application\n";
+		return $filename;
+	}
+} # end sub StoreContents
+
+sub StoreFile {
+	my $user = shift;
+	my $name = shift;
+	my $category = shift;
+	my $contents = shift;
+	my $config = Remitt::Utilities::Configuration ( );
+	#print "StoreFile ( $user, $name, $category, ".length($contents)." ) called\n";
+
+	# Form path
+	my $path = $config->val('installation', 'path').'/spool/'.$user.'/'.$category.'/';
+	umask 000;
+	mkpath($path, 1, 0755);
+	
+	# Write contents to file
+	open FILE, '>' . $path . '/' . $name or die("Could not write to $path/$file\n");
+	print FILE $contents;
+	close FILE;
+
+	return 1;
+} # end sub StoreFile
 
 1;

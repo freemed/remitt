@@ -13,7 +13,7 @@ use Data::Dumper;
 sub Transport {
 	my ( $input ) = @_;
 
-	return $input;
+	return Remitt::Utilities::StoreContents ( $input, 'plaintext', 'txt');
 } # end method Transport
 
 sub Config {

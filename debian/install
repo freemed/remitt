@@ -5,3 +5,4 @@ pdf/*.pdf       usr/share/remitt/pdf
 lib             usr/share/remitt
 doc             usr/share/remitt
 test            usr/share/remitt
+spool		var/spool/remitt

@@ -8,12 +8,14 @@
 
 package Remitt::Plugin::Transport::PDF;
 
+use Remitt::Utilities;
+use Remitt::Session;
 use Data::Dumper;
 
 sub Transport {
 	my ( $input ) = @_;
 
-	return $input;
+	return Remitt::Utilities::StoreContents ( $input, 'PDF', 'pdf');
 } # end method Transport
 
 sub Config {

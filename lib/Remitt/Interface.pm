@@ -71,6 +71,100 @@ sub Execute {
 	eval 'return Remitt::Plugin::Transport::'.$transport.'::Transport(Remitt::Plugin::Translation::'.$translation.'::Translate(Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption)));';
 } # end sub Execute
 
+# Method: Remitt.Interface.FileList
+#
+#	Get list of available files.
+#
+# Parameters:
+# 
+# 	$category - Category of file under the current user.
+#
+# Returns:
+#
+# 	Array of files found for the current user and category criteria.
+#
+# TODO: Needs to work with CLI as well
+#
+sub FileList {
+	shift if UNIVERSAL::isa($_[0] => __PACKAGE__);
+        my $category = shift;
+	my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
+	my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
+	return Remitt::Utilities::Fault() if (!$auth);
+
+	# Get username information
+	my $session = Remitt::Session->new($sessionid);
+	$session->load();
+	my $username = $session->{session}->param('username');
+
+	# Get configuration information
+	my $config = Remitt::Utilities::Configuration ( );
+	
+	# Handle issues with path names
+	return [ ] if $category =~ /[\\\/.\ \;\[\]\(\)]/;
+
+	my $path = $config->val('installation', 'path') .
+		'/spool/' . $user . '/' . $category . '/';
+	print "path resolved to $path\n";
+
+	# Recurse through files
+	my @files;
+	opendir DH, $path or return [ ];
+	foreach my $file ( readdir DH ) {
+		next if $file =~ /^\./;
+		next if $file =~ /Makefile/;
+		push @files, $file;
+	}
+	return \@files;
+} # end sub FileList
+
+# Method: Remitt.Interface.GetFile
+#
+#	Retrieve the contents of a file stored in the REMITT spool. This
+#	must be executed by a logged in user.
+#
+# Parameters:
+#
+# 	$category - Name of the category that the file is in
+#
+# 	$file - Name of the file
+#
+# Returns:
+#
+# 	Contents of the specified file, or NULL if there is an error.
+#
+sub GetFile {
+	shift if UNIVERSAL::isa($_[0] => __PACKAGE__);
+        my $category = shift;
+	my $file = shift;
+	my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
+	my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
+	return Remitt::Utilities::Fault() if (!$auth);
+
+	# Get username information
+	my $session = Remitt::Session->new($sessionid);
+	$session->load();
+	my $username = $session->{session}->param('username');
+	
+	# Get configuration information
+	my $config = Remitt::Utilities::Configuration ( );
+	
+	# Handle issues with path names
+	return [ ] if $category =~ /[\\\/.\ \;\[\]\(\)]/;
+	return [ ] if $file =~ /[\;\[\]\(\)]/;
+
+	my $filename = $config->val('installation', 'path') .
+		'/spool/' . $user . '/' . $category . '/' . $file;
+	print "filename resolved to $filename\n";
+
+	# Retrieve file and return (will autotype to base64)
+	my $buffer;
+	open FILE, $filename or return '';
+	while (<FILE>) { $buffer .= $_; }
+	close FILE;
+	return $buffer;
+} # end sub GetFile
+
 # Method: Remitt.Interface.ListOptions
 #
 #	Get list of options for a particular plugin.
