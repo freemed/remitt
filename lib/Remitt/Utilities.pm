@@ -58,7 +58,7 @@ sub Configuration {
 	my $file;
 	my $my_config_file;
 	my @config_files = (
-		'/etc/remitt.conf',
+		'/etc/remitt/remitt.conf',
 		'/usr/share/remitt/remitt.conf',
 		'/usr/lib/remitt/remitt.conf',
 		'./remitt.conf',
