@@ -1,6 +1,7 @@
 bin/*.pl        usr/share/remitt/bin
 *.conf          etc/remitt
 xsl/*.xsl       usr/share/remitt/xsl
+pdf/*.pdf       usr/share/remitt/pdf
 lib             usr/share/remitt
 doc             usr/share/remitt
 test            usr/share/remitt
