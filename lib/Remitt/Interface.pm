@@ -104,7 +104,7 @@ sub FileList {
 	return [ ] if $category =~ /[\\\/.\ \;\[\]\(\)]/;
 
 	my $path = $config->val('installation', 'path') .
-		'/spool/' . $user . '/' . $category . '/';
+		'/spool/' . $username . '/' . $category . '/';
 	print "path resolved to $path\n";
 
 	# Recurse through files
