@@ -14,7 +14,7 @@ use Data::Dumper;
 my $version = "0.1";
 my $protocolversion = 0.1;
 my $quiet = 0;
-my $port = 12345;
+my $port = 7688;
 my $path = '/root/FMSF/remitt';
 
 # Place where we keep the global configuration

@@ -12,7 +12,7 @@ my $action = shift || 255;
 my $user   = 'demo';
 my $pass   = 'demo';
 my $host   = '127.0.0.1';
-my $port   = '12345';
+my $port   = '7688';
 my $debug  = 0;
 
 print "REMITT Regression Test XML-RPC Client\n";
