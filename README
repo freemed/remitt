@@ -12,4 +12,12 @@ then transmitting them. It was designed to be used for medical billing
 and claim submission using XML files. It uses XSLT and XML, and is
 written in Perl.
 
+To generate documentation using the NaturalDocs format (available at
+http://www.naturaldocs.org/), go to the root of the REMITT distribution
+and run
+
+	./doc/naturaldocs/src/generate.sh
+
+with NaturalDocs installed in /usr/share/naturaldocs.
+
 - Jeff (jeff@ourexchange.net)

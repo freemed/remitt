@@ -42,7 +42,7 @@ use Data::Dumper;
 #
 # Example:
 #
-#	Remitt.Interface.Execute($xmlfile, 'XSLT', '837p', 'X12Text');
+#	Remitt.Interface.Execute($xmlfile, 'XSLT', '837p', 'Text');
 #
 sub Execute {
 	shift if UNIVERSAL::isa($_[0] => __PACKAGE__);

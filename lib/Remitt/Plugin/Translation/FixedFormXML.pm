@@ -36,7 +36,7 @@ sub PadToPosition {
 
 	# Otherwise, loop until we get there
 	my $c_row = $o_row, $c_col = $o_col;
-	while ($c_row+0 < $n_row+0) { $output .= "\n"; $c_row++; $c_col = 1; }
+	while ($c_row+0 < $n_row+0) { $output .= "\x0d\x0a"; $c_row++; $c_col = 1; }
 	while ($c_col+0 < $n_col+0) { $output .= ' '; $c_col++;  }
 
 	# Return the padding
