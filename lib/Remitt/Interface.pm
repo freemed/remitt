@@ -51,10 +51,19 @@ sub Execute {
 	my $input = shift || die("Input not given");
 	my $render = shift || die("Render not given");
 	my $renderoption = shift;
+
 	# FIXME: Check to see if we have to have an option for error-checking
 	my $transport = shift || die("Transport not given");
 
-	# Sanititze (not input!)
+	# Fix old FreeB mappings
+	if ($renderoption eq "hcfa") { $renderoption = "hcfa1500"; }
+	if ($renderoption eq "x12") { $renderoption = "837p"; }
+	if ($transport eq "txt") { $transport = "Text"; }
+	if ($transport eq "mcsi") { $transport = "MCSI"; }
+
+	print "Running Execute ( length of ".length($input).", $render, $renderoption, $transport ) ... \n";
+
+	# Sanitize (not input!)
 	$render =~ s/\W//g;
 	$renderoption =~ s/\W//g;
 	$transport =~ s/\W//g;
@@ -105,7 +114,7 @@ sub FileList {
 
 	my $path = $config->val('installation', 'path') .
 		'/spool/' . $username . '/' . $category . '/';
-	print "path resolved to $path\n";
+	#print "path resolved to $path\n";
 
 	# Recurse through files
 	my @files;
@@ -155,7 +164,7 @@ sub GetFile {
 
 	my $filename = $config->val('installation', 'path') .
 		'/spool/' . $user . '/' . $category . '/' . $file;
-	print "filename resolved to $filename\n";
+	#print "filename resolved to $filename\n";
 
 	# Retrieve file and return (will autotype to base64)
 	my $buffer;
@@ -252,6 +261,8 @@ sub ListPlugins {
 sub SystemLogin {
 	shift if UNIVERSAL::isa($_[0] => __PACKAGE__);
 	my ($username, $password) = @_;
+
+	#print "Executing Login ($username, $password) ... \n";
 
 	# Do we authenticate username/password pair against access list?	
 	my $config = Remitt::Utilities::Configuration ( );
