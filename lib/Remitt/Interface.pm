@@ -11,6 +11,55 @@ use Remitt::Utilities;
 use Digest::MD5;
 use Data::Dumper;
 
+# Method: Remitt.Interface.Execute
+#
+#	Execute Render/Translation/Transport series.
+#
+# Parameters:
+#
+#	$input - Input document
+#
+#	$render - Name of rendering plugin
+#
+#	$renderoption - Name of rendering plugin option
+#
+#	$transport - Name of transport plugin
+#
+# Returns:
+#
+#	Output from transport plugin.
+#
+# Example:
+#
+#	Remitt.Interface.Execute($xmlfile, 'XSLT', '837p', 'X12Text');
+#
+sub Execute {
+	shift if UNIVERSAL::isa($_[0] => __PACKAGE__);
+	Remitt::Utilities::ForceAuthentication();
+
+	my $input = shift || die("Input not given");
+	my $render = shift || die("Render not given");
+	my $renderoption = shift;
+	# FIXME: Check to see if we have to have an option for error-checking
+	my $transport = shift || die("Transport not given");
+
+	# Sanititze (not input!)
+	$render =~ s/\W//g;
+	$renderoption =~ s/\W//g;
+	$transport =~ s/\W//g;
+
+	# Get resolve for translation plugin
+	my $translation = Remitt::Utilities::ResolveTranslationPlugin (
+		$render, $renderoption, $transport );
+	die("No translation plugin found") if ($translation eq '');
+
+	# Execute series
+	eval 'use Remitt::Plugin::Render::'.$render.';';
+	eval 'use Remitt::Plugin::Translation::'.$translation.';';
+	eval 'use Remitt::Plugin::Transport::'.$transport.';';
+	eval 'return Remitt::Plugin::Transport::'.$transport.'::Transport(Remitt::Plugin::Translation::'.$translation.'::Translate(Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption)));';
+} # end sub Execute
+
 # Method: Remitt.Interface.ListOptions
 #
 #	Get list of options for a particular plugin.
