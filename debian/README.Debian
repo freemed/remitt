@@ -1,0 +1,20 @@
+REMITT for Debian
+----------------
+
+You might like to test the scripts in the directory
+
+        /usr/share/remitt/test
+
+if you are having issues working with REMITT.
+
+Packages for Debian stable/testing are available if you add the following
+line:
+
+	deb http://apt.freemedsoftware.com/debian woody fsf
+
+to your /etc/apt/sources.list file.  There are also Debian packages
+for FreeMED provided by the FreeMED Software Foundation.  It is planed
+to move FreeMED to the official Debian mirror but this transition
+step is work in process.
+
+ -- Jeff Buchbinder <jeff@freemedsoftware.com>, Sat, 12 Jun 2004 10:00:00 -0500

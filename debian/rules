@@ -1,0 +1,79 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# GNU copyright 1997 to 1999 by Joey Hess.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	touch configure-stamp
+
+
+build: build-stamp 
+# debian/po/templates.pot
+build-stamp: configure-stamp 
+	dh_testdir
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp configure-stamp
+
+	-$(MAKE) clean
+
+	dh_clean  --exclude ./etc/remitt/remitt.conf.orig
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k  --exclude ./etc/remitt/remitt.conf.orig
+	dh_installdirs
+
+	# This is replaced by debian/install
+	# $(MAKE) install DESTDIR=$(CURDIR)/debian/remitt
+
+
+# Build architecture-independent files here.
+binary-indep: build install
+# We have nothing to do by default.
+
+# Build architecture-dependent files here.
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+#	dh_installchangelogs CHANGES
+	dh_installdocs
+	dh_installexamples --exclude=.svn
+	dh_install --exclude=.svn
+	dh_installdebconf	
+	dh_installlogrotate
+#	dh_installemacsen
+#	dh_installpam
+#	dh_installmime
+	dh_installinit
+#	dh_installcron
+#	dh_installinfo
+	dh_installman
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_perl
+#	dh_python
+#	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+# To update po files as recommended in po-debconf(7)
+#debian/po/templates.pot: $(templates)
+#	@debconf-updatepo
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure
