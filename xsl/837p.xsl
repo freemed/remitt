@@ -5,6 +5,7 @@
 
 	Description: X12 NSF 837 Professional
 	OutputFormat: x12xml
+	Media: Electronic
 
 -->
 <xsl:stylesheet version="1.0" 
