@@ -20,7 +20,7 @@ sub PadToPosition {
 		die("Remitt::Plugin::Translation::FixedFormXML::PadToPosition() error in text rendering has occurred\n");
 	}
 	if ( ($o_row == $n_row) and ($o_col > $n_col) ) {
-		#print "failed with o_row/o_col = $o_row/$o_col, n_row/n_col = $n_row/$n_col\n";
+		print "failed with o_row/o_col = $o_row/$o_col, n_row/n_col = $n_row/$n_col\n";
 		die("Remitt::Plugin::Translation::FixedFormXML::PadToPosition() error in text rendering has occurred\n");
 	}
 
@@ -43,7 +43,8 @@ sub ProcessElement {
 	my ( $e ) = @_;
 
 	my $content = $e->{content};
-	my $length  = $e->{length};
+	my $clength  = $e->{length};
+	#print "processelement content=$content, length=$clength\n";
 
 	# Handle null array instances
 	if ($content =~ /HASH\(/) {
@@ -51,18 +52,19 @@ sub ProcessElement {
 		else { $content = ''; }
 	}
 
-	if (length($content) eq $length) {
+	if (length($content) == $clength) {
 		# Return as is
 		return $content;
-	} elsif (length($content) lt $length) {
+	} elsif (length($content) < $clength) {
 		# Add spaces
-		while (length($content) lt $length) {
+		while (length($content) < $clength) {
 			$content .= ' ';
 		}
+		#print "length of content = ".length($content)."\n";
 		return $content;
 	} elss {
 		# Shorten
-		return substr($content, 0, $length);
+		return substr($content, 0, $clength);
 	}
 } # end sub ProcessElement
 
@@ -91,6 +93,7 @@ sub ProcessPage {
 			#print Dumper($e);
 
 			# Determine if we have to pad to new position
+			#print "cur_r = $currow, cur_c = $curcol, new_r = ".$e->{row}.", new_c = ".$e->{column}."\n";
 			$output .= Remitt::Plugin::Translation::FixedFormXML::PadToPosition(
 				$currow, $curcol, $e->{row}, $e->{column}
 			);
@@ -101,6 +104,7 @@ sub ProcessPage {
 			# Render the element
 			my $render = Remitt::Plugin::Translation::FixedFormXML::ProcessElement($e);
 			$curcol += length($render);
+			#print "length of render = ".length($render).", render = '".$render."', curcol = $curcol\n";
 			$output .= $render;
 		}
 	} # end second loop through elements
@@ -116,7 +120,11 @@ sub ProcessPage {
 sub Translate {
 	my ( $input ) = @_;
 
-	my $xs = new XML::Simple();
+	my $xs = new XML::Simple(
+		# see lib/Remitt/Plugin/Translation/XSLT.pm for more info
+		NormalizeSpace => 0,
+		ForceArray => [ 'element' ]
+		);
 	my $i = $xs->XMLin($input);
 	$output = '';
 
