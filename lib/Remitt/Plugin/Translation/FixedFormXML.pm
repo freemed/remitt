@@ -63,7 +63,13 @@ sub ProcessElement {
 	} elsif (length($content) < $clength) {
 		# Add spaces
 		while (length($content) < $clength) {
-			$content .= ' ';
+			# Handle optional right justification
+			# example: <content right="1">Something</content>
+			if ($content->{right}) {
+				$content = ' ' . $content;
+			} else {
+				$content .= ' ';
+			}
 		}
 		#print "length of content = ".length($content)."\n";
 		return $content;
