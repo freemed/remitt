@@ -85,6 +85,7 @@ sub Execute {
 	# Get resolve for translation plugin
 	my $translation = Remitt::Utilities::ResolveTranslationPlugin (
 		$render, $renderoption, $transport );
+	syslog('info', 'Remitt.Utilities.ResolveTranslation ( '.$render.', '.$renderoption.', '.$transport.' ) = '.$translation);
 	die("No translation plugin found") if ($translation eq '');
 
 	# Deal with CLI seperately
@@ -102,7 +103,7 @@ sub Execute {
 	}
 
 	# Create unique stamp to identify where we are now
-	my $unique = strftime('%Y%m%d.%H%M%S', localtime(time));	
+	my $unique = strftime('%Y%m%d.%H%M%S', localtime(time)).'Z';
 
 	# Here, we fork a new process, so that we can return a value in realtime.
 	my $results;
@@ -285,7 +286,7 @@ sub GetStatus {
 	my $config = Remitt::Utilities::Configuration ( );
 	
 	# Handle issues with path names
-	return -2 if $unique =~ /[^0-9\.]/;
+	return -2 if $unique =~ /[^0-9A-Z\.]/;
 
 	# Get filename
 	my $filename = $config->val('installation', 'path') .
