@@ -45,11 +45,6 @@
 
 	<xsl:template match="/remitt">
         <fixedform>
-		<x12format>
-			<delimiter>*</delimiter>
-			<endofline>~</endofline>
-		</x12format>
-
 		<xsl:variable name="practices" select="//practice" />
 
 		<xsl:for-each select="$practices">
@@ -206,6 +201,7 @@
 		<!-- Primary diagnosis object -->
 		<xsl:variable name="diag" select="//procedure[@id = $procs[1]]/diagnosiskey" />
 		<xsl:variable name="diagobj" select="//diagnosis[@id = $diag]" />
+		<xsl:variable name="procfirstobj" select="//procedure[@id = $procs[1]]" />
 
 		<page>
 			<format>
@@ -694,15 +690,133 @@
 			</element>
 			</xsl:if>
 
-			<xsl:if test="$insuredobj/isemployed = 1">
+			<xsl:if test="$insuredobj/isemployed = 1 or $insuredobj/isstudent = 1">
 			<element>
 				<!-- Box XX: Employer Name of Insured -->
 				<row>22</row>
 				<column>50</column>
 				<length>30</length>
-				<content><xsl:value-of select="$insuredobj/employername" /></content>
+				<content><xsl:choose>
+					<xsl:when test="not($insuredobj/isemployed = 1) and $insuredobj/isstudent = 1"><xsl:value-of select="$insuredobj/schoolname" /></xsl:when>
+					<xsl:otherwise><xsl:value-of select="$insuredobj/employername" /></xsl:otherwise>
+				</xsl:choose></content>
 			</element>
 			</xsl:if>
+
+			<xsl:if test="$diagobj/isrelatedtootheraccident = 1">
+			<element>
+				<!-- Box 10c: Related to other accident -->
+				<row>24</row>
+				<column>35</column>
+				<length>1</length>
+				<content>X</content>
+			</element>
+			</xsl:if>
+
+			<xsl:if test="not($diagobj/isrelatedtootheraccident = 1)">
+			<element>
+				<!-- Box 10c: Not related to other accident -->
+				<row>24</row>
+				<column>41</column>
+				<length>1</length>
+				<content>X</content>
+			</element>
+			</xsl:if>	
+
+			<element>
+				<!-- Box 11c: Insurance Plan / Company -->
+				<row>24</row>
+				<column>50</column>
+				<length>25</length>
+				<content><xsl:value-of select="translate($payerobj/name, $lowercase, $uppercase)" /></content>
+			</element>
+
+			<element>
+				<!-- Box 9d: Second Payer Plan / Company -->
+				<!-- FIXME: Handle this -->
+				<row>26</row>
+				<column>1</column>
+				<length>25</length>
+				<content></content>
+			</element>
+
+			<element>
+				<!-- Box 10d: Local Use 10d -->
+				<row>26</row>
+				<column>30</column>
+				<length>15</length>
+				<content><xsl:value-of select="$procfirstobj/hcfalocaluse10d" /></content>
+			</element>
+
+			<element>
+				<!-- Box 11d: Secondary Insurance / Y -->
+				<!-- FIXME: Handle this -->
+				<row>26</row>
+				<column>52</column>
+				<length>1</length>
+				<content></content>
+			</element>
+
+			<element>
+				<!-- Box 11d: Secondary Insurance / N -->
+				<!-- FIXME: Handle this -->
+				<row>26</row>
+				<column>57</column>
+				<length>1</length>
+				<content></content>
+			</element>
+
+			<element>
+				<!-- Box 12: Authorized Signature -->
+				<row>30</row>
+				<column>7</column>
+				<length>20</length>
+				<content>SIGNATURE ON FILE</content>
+			</element>
+
+			<element>
+				<!-- Box 12: Authorized Signature / Date -->
+				<row>30</row>
+				<column>38</column>
+				<length>8</length>
+				<content><xsl:value-of select="concat(//global/currentdate/month, ' ', //global/currentdate/day, ' ', //global/currentdate/year)" /></content>
+			</element>
+
+			<xsl:if test="$insuredobj/isassigning = 1">
+			<element>
+				<!-- Box XX: Authorized Signature -->
+				<row>30</row>
+				<column>55</column>
+				<length>17</length>
+				<content>SIGNATURE ON FILE</content>
+			</element>
+			</xsl:if>
+
+			<element>
+				<!-- Box 14: Date of Onset / MM-->
+				<row>32</row>
+				<column>2</column>
+				<length>2</length>
+				<content><xsl:value-of select="$diagobj/dateofonset/month" /></content>
+			</element>
+
+			<element>
+				<!-- Box 14: Date of Onset / DD -->
+				<row>32</row>
+				<column>5</column>
+				<length>2</length>
+				<content><xsl:value-of select="$diagobj/dateofonset/day" /></content>
+			</element>
+
+			<element>
+				<!-- Box 14: Date of Onset / YY -->
+				<row>32</row>
+				<column>8</column>
+				<length>2</length>
+				<content><xsl:value-of select="$diagobj/dateofonset/year" /></content>
+			</element>
+
+			<!-- FIXME: Check for first occurance and insert date -->
 
 		</page>
 	</xsl:template>
