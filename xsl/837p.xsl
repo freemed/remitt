@@ -38,7 +38,7 @@
 	<xsl:variable name="patientall"    select="//patient"        />
 		<!-- Calculate HL offsets -->
 	<xsl:variable name="insuredoffset" select="count(//insured)+1" />
-	<xsl:variable name="patientoffset" select="count(//patient)+$insuredoffset+1" />
+	<xsl:variable name="patientoffset" select="count(//patient)+$insuredoffset" />
 
 	<!--
 		Master template for document root
@@ -1260,6 +1260,69 @@
 			</element>
 		</x12segment>
 		</xsl:if>
+
+		<!-- Loop 2420A: Rendering Provider per Procedure (p501) -->
+		<xsl:variable name="provobj" select="//provider[@id=$procobj/providerkey]" />
+		<x12segment sid="NM1">
+			<element>
+				<!-- Entity Identifier: rending provider -->
+				<content>82</content>
+			</element>
+			<element>
+				<!-- Entity Type Qualifier -->
+				<content>1</content>
+			</element>
+			<element>
+				<!-- Last name -->
+				<content><xsl:value-of select="translate($provobj/name/last, $lowercase, $uppercase)" /></content>
+			</element>
+			<element>
+				<!-- First name -->
+				<content><xsl:value-of select="translate($provobj/name/first, $lowercase, $uppercase)" /></content>
+			</element>
+			<element>
+				<!-- Middle name -->
+				<content><xsl:value-of select="translate($provobj/name/middle, $lowercase, $uppercase)" /></content>
+			</element>
+			<element>
+				<!-- Name Prefix -->
+				<content />
+			</element>
+			<element>
+				<!-- Name Suffix -->
+				<content />
+			</element>
+			<element>
+				<!-- Identification Code Qualifier -->
+				<!-- 24 = EIN, 34 = SSN, XX = HCFA Pin -->
+				<!-- FIXME: 34 cannot be used with Medicare -->
+				<content>34</content>
+			</element>
+			<element>
+				<!-- Identification code -->
+				<content><xsl:value-of select="$provobj/socialsecuritynumber" /></content>
+			</element>
+		</x12segment>
+
+		<x12segment sid="PRV">
+			<!-- PRV (p504) -->
+			<element>
+				<!-- Provider Code (PE = performing) -->
+				<content>PE</content>
+			</element>
+			<element>
+				<!-- Reference Identification Qualifier -->
+				<!-- Mutually defined taxonomy list -->
+				<content>ZZ</content>
+			</element>
+			<element>
+				<!-- FIXME! We don't store this code in the spec yet! -->
+				<content></content>
+			</element>
+		</x12segment>
+
+		<!-- Loop 2420C: Service Facility Location (p514) optional -->
+		<!-- Loop 2420F: Referring Provider (p541) FIXME -->
 	</xsl:template>
 
 	<xsl:template name="lookup-diagnoses">
