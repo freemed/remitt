@@ -9,6 +9,7 @@ package Remitt::Plugin::Render::XSLT;
 use Remitt::Utilities;
 use XML::LibXSLT;
 use XML::LibXML;
+use Data::Dumper;
 
 sub Render {
 	my ($input, $option) = @_;
@@ -38,25 +39,56 @@ sub Render {
 } # end sub Render
 
 sub Config {
+	# Read from all plugins
+	my %c;
+
+	my $config = Remitt::Utilities::Configuration ( );
+	my $path = $config->val('installation', 'path');
+
+	opendir DH, $path.'/xsl/' or die ('Could not open XSL path');
+	foreach my $xsl (readdir DH) {
+		if ($xsl =~ /\.xsl$/) {
+			$xsl =~ s/\.xsl$//;
+			$c{$xsl} = GetConfigFromXSL($xsl);
+		}
+	}
+
 	# Return configuration to be stored in global
 	return +{
-		'Options' => {
-			'837p' => {
-				'Description' => 'X12 NSF 837 Professional',
-				'Media' => 'Electronic',
-				'OutputFormat' => 'x12xml'
-			},
-			'hcfa1500' => {
-				'Description' => 'HCFA-1500',
-				'Media' => 'Paper',
-				'OutputFormat' => 'fixedformxml'
-			}
-		},
+		'Options' => \%c,
 		'InputFormat' => 'remittxml',
 		# 'variable' causes lookup based on options
 		'OutputFormat' => 'variable'
 	};
 } # end sub Config
+
+sub GetConfigFromXSL {
+	my $xsl = shift;
+
+	my $config = Remitt::Utilities::Configuration ( );
+	my $path = $config->val('installation', 'path');
+
+	# Read xsl file
+	open FILE, $path.'/xsl/'.$xsl.'.xsl' or die("Could not open $option");
+	my $line = 0;
+	my %c;
+	while (<FILE>) {
+		$line ++;
+		my $buf = $_;
+		if ($buf =~ /([^:\-\<\!\$]*)?: (.*)?/ and $line < 10) {
+			my $name = $1;
+			my $value = $2;
+			$name =~ s/^\s//; $name =~ s/\s$//;
+			$value =~ s/^\s//; $value =~ s/\s$//;
+			if ( ! ( $name =~ / / ) )  {
+				$c{$name} = $value;
+			}
+		}
+	}
+	close FILE;
+
+	return \%c;
+} # end sub GetConfigFromXSL
 
 sub test {
 	my $xsl = <<XSL;
