@@ -10,7 +10,7 @@
 #
 
 # Force internal use of SOAP::Lite patched library and Remitt libs
-use lib qw(./lib ../lib);
+use lib qw(./lib ../lib /usr/share/remitt/lib);
 
 # Actual includes
 use XMLRPC::Transport::HTTP;
