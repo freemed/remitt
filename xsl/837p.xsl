@@ -38,8 +38,8 @@
 	<xsl:variable name="insuredall"    select="//insured"        />
 	<xsl:variable name="patientall"    select="//patient"        />
 		<!-- Calculate HL offsets -->
-	<xsl:variable name="insuredoffset" select="count(//insured)+1" />
-	<xsl:variable name="patientoffset" select="count(//patient)+$insuredoffset" />
+	<xsl:variable name="insuredoffset" select="1" />
+	<xsl:variable name="patientoffset" select="count($insuredall)+$insuredoffset" />
 
 	<!--
 		Master template for document root
@@ -594,7 +594,7 @@
 			<comment>HL - Subscriber Heirarchical Level 2000B (p108)</comment>
 			<element>
 				<!-- Insured HL -->
-				<xsl:value-of select="$insuredhl" /> LOCATION
+				<content><xsl:value-of select="$insuredhl" /></content>
 			</element>
 			<element>
 				<!-- Parent HL code ... -->
