@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 #	$Id$
-#	$Author: jeff $
+#	$Author$
 #
 # Package: Remitt::Plugin::Authentication::SQLite
 #
