@@ -1427,7 +1427,7 @@
 			<content><xsl:value-of select="($curproc/cptunits)+0" /></content>
 		</element>
 
-		<xsl:if test="$curproc/cptepsdt = 1" />
+		<xsl:if test="$curproc/cptepsdt = 1">
 		<element>
 			<!-- Box 24h: EPSDT -->
 			<row><xsl:value-of select="$cptline" /></row>
