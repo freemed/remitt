@@ -6,6 +6,7 @@
 
 package Remitt::Plugin::Render::XSLT;
 
+use Remitt::Utilities;
 use XML::LibXSLT;
 use XML::LibXML;
 
@@ -44,6 +45,11 @@ sub Config {
 				'Description' => 'X12 NSF 837 Professional',
 				'Media' => 'Electronic',
 				'OutputFormat' => 'x12xml'
+			},
+			'hcfa1500' => {
+				'Description' => 'HCFA-1500',
+				'Media' => 'Paper',
+				'OutputFormat' => 'fixedformxml'
 			}
 		},
 		'InputFormat' => 'remittxml',
