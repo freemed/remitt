@@ -997,12 +997,13 @@
 			<!-- FIXME: isCantWork equiv -->
 
 			<xsl:if test="($patientobj/referringprovider + 0) &gt; 0">
+			<xsl:variable name="refprov" select="//provider[@id = $patientobj/referringprovider]" />
 			<element>
 				<!-- Box 17: Referring Physician / Name -->
 				<row>34</row>
 				<col>1</col>
 				<length>25</length>
-				<content><xsl:value-of select="translate(//provider[@id = $patientobj/referringprovider]/name, $lowercase, $uppercase)" /></content>
+				<content><xsl:value-of select="translate(concat($refprov/name/first, ' ', $refprov/name/last), $lowercase, $uppercase)" /></content>
 			</element>
 
 			<element>
@@ -1010,7 +1011,7 @@
 				<row>34</row>
 				<column>28</column>
 				<length>15</length>
-				<content><xsl:value-of select="//provider[@id = $patientobj/referringprovider]/ipn" /></content>
+				<content><xsl:value-of select="$refprov/tin" /></content>
 			</element>
 			</xsl:if>
 
