@@ -12,7 +12,7 @@ package Remitt::Plugin::Translation::X12XML;
 require XML::Simple;
 use Data::Dumper;
 
-my $hlcounter;
+my $counter;
 
 sub ProcessSegment {
 	my ( $p, $delim, $eol, $count ) = @_;
@@ -23,21 +23,27 @@ sub ProcessSegment {
 
 	# First, sort everything by row, then column. Hash should do it.
 	foreach my $e (@{$p->{element}}) {
+		# This can be defined in addition to another element in
+		# the parent element tag.
+		if (defined ($e->{resetcounter})) {
+			# Reset specified counter to 0
+			$Remitt::Translation::X12XML::counter->{$e->{counter}->{name}} = 0;
+		}
+
+		# Main stuff to check
 		if (defined ($e->{segmentcount})) {
 			# Give segment count minus header
 			$segment .= $delim . ( $count - 2);
-		} elsif (defined ($e->{hlcounter})) {
+		} elsif (defined ($e->{counter})) {
 			# Handle an HL counter, with increment
-			$Remitt::Translation::X12XML::hlcounter ++;
-			$segment .= $delim . $Remitt::Translation::X12XML::hlcounter;
-		#} elsif (defined ($e->{hlcounterparent})) {
-		#	$segment .= $delim . ($Remitt::Translation::X12XML::hlcounter - 1);
+			$Remitt::Translation::X12XML::counter->{$e->{counter}->{name}} ++;
+			$segment .= $delim . $Remitt::Translation::X12XML::counter->{$e->{counter}->{name}};
 		} else {
 			my $content = $e->{content};
-			if ($content->{text}) { $content = $content->{text}; }
 			# Handle null array instances
 			if ($content =~ /HASH\(/) {
-				$content = '';
+				if ($content->{text}) { $content = $content->{text}; }
+				else { $content = ''; }
 			}
 			#print "e->content = ".Dumper($content)."\n";
 			$segment .= $delim . $content; 
