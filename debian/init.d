@@ -26,8 +26,9 @@ set -e
 case "$1" in
   start)
 	echo -n "Starting $DESC: "
-	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
-		--make-pidfile --background --exec $DAEMON -- $DAEMON_OPTS
+	( cd /usr/share/remitt; ./bin/remitt_server.pl 2>&1 > /dev/null ) &
+	#start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
+	#--make-pidfile --background --exec $DAEMON -- $DAEMON_OPTS
 	echo "$NAME."
 	;;
   stop)
