@@ -13,6 +13,8 @@ require XML::Simple;
 use Data::Dumper;
 
 my $counter;
+my $hl; 
+my $hlcount;
 
 sub ProcessSegment {
 	my ( $p, $delim, $eol, $count ) = @_;
@@ -32,12 +34,27 @@ sub ProcessSegment {
 
 		# Main stuff to check
 		if (defined ($e->{segmentcount})) {
-			# Give segment count minus header
-			$segment .= $delim . ( $count - 2);
+			# Give segment count minus header, footer, etc
+			$segment .= $delim . ( $count - 2 );
 		} elsif (defined ($e->{counter})) {
 			# Handle an HL counter, with increment
 			$Remitt::Translation::X12XML::counter->{$e->{counter}->{name}} ++;
 			$segment .= $delim . $Remitt::Translation::X12XML::counter->{$e->{counter}->{name}};
+		} elsif (defined ($e->{hl})) {
+			# This has to be called with a distinct ID ...
+			# use generate-id() to pass things to this
+		
+			# Depending on whether we already have seen it ...
+			if (exists($hl{$e->{hl}})) {
+				# Return the index
+				$content = $hl{$e->{hl}};
+			} else {
+				# Create the index, then return the value
+				$hlcount ++;
+				$hl{$e->{hl}} = $hlcount;
+				$content = $hlcount;
+			}
+			$segment .= $delim . $content;
 		} else {
 			my $content = $e->{content};
 			# Handle null array instances
@@ -60,8 +77,8 @@ sub ProcessSegment {
 sub Translate {
 	my ( $input ) = @_;
 
-	# Reset hlcounter, if it exists
-	$Remitt::Translation::X12XML::hlcounter = 0;
+	# Reset hlcount, if it exists
+	$hlcount = 0;
 
 	my $xs = new XML::Simple(
 			# NormalizeSpace - 
@@ -80,10 +97,18 @@ sub Translate {
 
 	#print Dumper($i);
 
+	# Decide on end of line ( handle NULL eols )
+	my $eol;
+	if ($i->{x12format}->{endofline} =~ /HASH\(/) {
+		$eol = '';
+	} else {
+		$eol = $i->{x12format}->{endofline};
+	}
+
 	# Loop through segments
 	foreach my $s (@{$i->{x12segment}}) {
 		$count += 1;
-		$output .= Remitt::Plugin::Translation::X12XML::ProcessSegment($s, $i->{x12format}->{delimiter}, $i->{x12format}->{endofline}, $count);
+		$output .= Remitt::Plugin::Translation::X12XML::ProcessSegment($s, $i->{x12format}->{delimiter}, $eol, $count);
 	}
 
 	return $output;	
