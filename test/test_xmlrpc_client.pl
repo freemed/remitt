@@ -73,11 +73,11 @@ if ($action & 4) {
 
 if ($action & 8) {
 	undef $/;
-	open FILE, "remitt.test.xml" or die("Could not open remitt test file\n");
+	open FILE, "remitt.smallset.xml" or die("Could not open remitt test file\n");
 	my $input = <FILE>;
 	close FILE;
 	print " * Running Execute(XSLT, 837p, X12Text) test ... ";
-	my $call = $xmlrpc->call('Remitt.Interface.Execute', $input, 'XSLT', '837p', 'X12Text');
+	my $call = $xmlrpc->call('Remitt.Interface.Execute', $input, 'XSLT', '837p', 'Text');
 	my $result = $call->result;
 	print "done\n";
 	print Dumper($result);
@@ -88,7 +88,7 @@ if ($action & 8) {
 
 if ($action & 16) {
 	undef $/;
-	open FILE, "remitt.test.xml" or die("Could not open remitt test file\n");
+	open FILE, "remitt.smallset.xml" or die("Could not open remitt test file\n");
 	my $input = <FILE>;
 	close FILE;
 	print " * Running Execute(XSLT, hcfa1500, FixedFormText) test ... ";
