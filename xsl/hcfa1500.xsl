@@ -155,7 +155,7 @@
 		<xsl:param name="insured" />
 
 		<!-- Get initial procedure set -->
-		<xsl:variable name="procs" select="set:distinct(exsl:node-set(//procedure[practicekey=$practice and providerkey=$provider and payerkey=$payer and facilitykey=$facility and patientkey=$patient and insuredkey = $insured]/@id))" />
+		<xsl:variable name="procs" select="set:distinct(exsl:node-set(//procedure[practicekey=$practice and providerkey=$provider and payerkey=$payer and facilitykey=$facility and patientkey=$patient and insuredkey = $insured]))" />
 		<xsl:call-template name="process-procedure-set">
 			<xsl:with-param name="procs" select="$procs" />
 		</xsl:call-template>
@@ -169,13 +169,14 @@
 			<!-- If there are too many diagnoses ... -->
 			<xsl:choose>
 				<xsl:when test="count(set:distinct(exsl:node-set($procs/diagnosiskey))) &gt; 4 or count($procs) &gt; 6">
-					FIXME FIXME
-					--
-					FIXME FIXME
+					<xsl:message>FIXME: not processing procedures with too many diags or procs on one sheet</xsl:message>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:call-template name="render-form">
-						<xsl:with-param name="procs" select="$procs" />
+						<xsl:with-param name="procs" select="$procs/@id" />
+						<xsl:with-param name="procobjs" select="$procs" />
+						<xsl:with-param name="diags" select="set:distinct(exsl:node-set($procs/diagnosiskey))" />
+
 					</xsl:call-template>
 				</xsl:otherwise>
 			</xsl:choose>
@@ -189,6 +190,8 @@
 	-->
 	<xsl:template name="render-form">
 		<xsl:param name="procs" />
+		<xsl:param name="procobjs" />
+		<xsl:param name="diags" />
 
 		<!-- Since everything else is the same, get info from first. -->
 		<xsl:variable name="insured" select="//procedure[@id = $procs[1]]/insuredkey" />
@@ -197,15 +200,19 @@
 		<xsl:variable name="patientobj" select="//patient[@id = $patient]" />
 		<xsl:variable name="payer" select="//procedure[@id = $procs[1]]/payerkey" />
 		<xsl:variable name="payerobj" select="//payer[@id = $payer]" />
+		<xsl:variable name="facility" select="//procedure[@id = $procs[1]]/facilitykey" />
+		<xsl:variable name="facilityobj" select="//facility[@id = $facility]" />
+		<xsl:variable name="provider" select="//procedure[@id = $procs[1]]/providerkey" />
+		<xsl:variable name="providerobj" select="//provider[@id = $provider]" />
 
 		<!-- Primary diagnosis object -->
-		<xsl:variable name="diag" select="//procedure[@id = $procs[1]]/diagnosiskey" />
+		<xsl:variable name="diag" select="$diags[1]" />
 		<xsl:variable name="diagobj" select="//diagnosis[@id = $diag]" />
 		<xsl:variable name="procfirstobj" select="//procedure[@id = $procs[1]]" />
 
 		<page>
 			<format>
-				<pagelength>60</pagelength>
+				<pagelength>66</pagelength>
 			</format>
 	
 			<element>
@@ -817,20 +824,423 @@
 			</element>
 
 			<!-- FIXME: Check for first occurance and insert date -->
+			<!-- FIXME: isCantWork equiv -->
+
+			<xsl:if test="($patientobj/referringprovider + 0) &lt; 1">
+			<element>
+				<!-- Box 17: Referring Physician / Name -->
+				<row>34</row>
+				<col>1</col>
+				<length>25</length>
+				<content><xsl:value-of select="translate(//provider[@id = $patientobj/referringprovider]/name, $lowercase, $uppercase)" /></content>
+			</element>
+
+			<element>
+				<!-- Box 17a: Referring Physician / ID -->
+				<row>34</row>
+				<column>28</column>
+				<length>15</length>
+				<content><xsl:value-of select="//provider[@id = $patientobj/referringprovider]/ipn" /></content>
+			</element>
+			</xsl:if>
+
+			<!-- FIXME: Hospitalization dates
+				if ($procfirstobj/ishospitalized = 1)
+				$procfirstobj/dateofhospital{start,end}
+			-->	
+
+			<element>
+				<!-- Box 19: Local Use -->
+				<row>36</row>
+				<column>1</column>
+				<length>50</length>
+				<content><xsl:value-of select="$procfirstobj/hcfalocaluse19" /></content>
+			</element>
+
+			<xsl:if test="$procfirstobj/isoutsidelab = 1">
+			<element>
+				<!-- Box 20: Outside Lab / Y -->
+				<row>36</row>
+				<column>52</column>
+				<length>1</length>
+				<content>X</content>
+			</element>
+
+			<element>
+				<!-- Box 20: Outside Lab / Charges -->
+				<row>36</row>
+				<column>65</column>
+				<length>8</length>
+				<content><xsl:value-of select="format-number($procfirstobj/outsidelabcharges, '####.00')" /></content>
+			</element>
+			</xsl:if>
+
+			<xsl:if test="not($procfirstobj/isoutsidelab = 1)">
+			<element>
+				<!-- Box 20: Outside Lab / N -->
+				<row>36</row>
+				<column>57</column>
+				<length>1</length>
+				<content>X</content>
+			</element>
+			</xsl:if>
+
+			<!-- Handle ICD codes, if they exist -->
+			<element>
+				<!-- Box 21: ICD Code / #1 -->
+				<row>38</row>
+				<column>3</column>
+				<length>10</length>
+				<content><xsl:value-of select="//diagnosis[@id = $diags[1]]/icd9code" /></content>
+			</element>
+
+			<xsl:if test="count($diags) &gt; 1">
+			<element>
+				<!-- Box 21: ICD Code / #2 -->
+				<row>40</row>
+				<column>3</column>
+				<length>10</length>
+				<content><xsl:value-of select="//diagnosis[@id = $diags[2]]/icd9code" /></content>
+			</element>
+			</xsl:if>
+
+			<xsl:if test="count($diags) &gt; 2">
+			<element>
+				<!-- Box 21: ICD Code / #3 -->
+				<row>38</row>
+				<column>30</column>
+				<length>10</length>
+				<content><xsl:value-of select="//diagnosis[@id = $diags[3]]/icd9code" /></content>
+			</element>
+			</xsl:if>
+
+			<xsl:if test="count($diags) &gt; 3">
+			<element>
+				<!-- Box 21: ICD Code / #4 -->
+				<row>40</row>
+				<column>30</column>
+				<length>10</length>
+				<content><xsl:value-of select="//diagnosis[@id = $diags[4]]/icd9code" /></content>
+			</element>
+			</xsl:if>
+
+			<element>
+				<!-- Box 22: Medicare Resubmission Code -->
+				<row>38</row>
+				<column>50</column>
+				<length>10</length>
+				<content><xsl:value-of select="$procfirstobj/medicaidresubmissioncode" /></content>
+			</element>
+
+			<element>
+				<!-- Box 22b: Medicare Original Reference -->
+				<row>38</row>
+				<column>62</column>
+				<length>10</length>
+				<content><xsl:value-of select="$procfirstobj/medicaidoriginalreference" /></content>
+			</element>
+
+			<element>
+				<!-- Box 23: Prior Authorization -->
+				<row>40</row>
+				<column>50</column>
+				<length>15</length>
+				<content><xsl:value-of select="$procfirstobj/priorauth" /></content>
+			</element>
+
+			<!-- Loop through procedures -->
+
+			<xsl:for-each select="$procs">
+				<!-- <xsl:message>calling render service line with <xsl:value-of select="//procedure[@id = $procs[position()]]/cpt4code" /> ( <xsl:value-of select="." /> ) at <xsl:value-of select="position()" /></xsl:message> -->
+				<xsl:variable name="pos" select="position()" />
+				<xsl:call-template name="render-service-line">
+					<xsl:with-param name="diags" select="$diags" />
+					<xsl:with-param name="cptline" select="(($pos - 1) * 2) + 44" />
+					<xsl:with-param name="curproc" select="//procedure[@id = $procs[$pos]]" />
+					<xsl:with-param name="facilityobj" select="$facilityobj" />
+				</xsl:call-template>
+			</xsl:for-each>
+
+			<element>
+				<!-- Box 25: Federal Tax ID -->
+				<row>56</row>
+				<column>1</column>
+				<length>15</length>
+				<content><xsl:value-of select="$providerobj/tin"/></content>
+			</element>
+
+			<element>
+				<!-- Box 26: Patient Account -->
+				<row>56</row>
+				<column>23</column>
+				<length>15</length>
+				<content><xsl:value-of select="$patientobj/account"/></content>
+			</element>
+
+			<xsl:if test="$insuredobj/isassigning = 1">
+			<element>
+				<!-- Box 27: Accept Assignment / Y -->
+				<row>56</row>
+				<column>38</column>
+				<length>1</length>
+				<content>X</content>
+			</element>
+			</xsl:if>
+
+			<xsl:if test="not($insuredobj/isassigning = 1)">
+			<element>
+				<!-- Box 27: Accept Assignment / N -->
+				<row>56</row>
+				<column>43</column>
+				<length>1</length>
+				<content>X</content>
+			</element>
+			</xsl:if>
+
+			<element>
+				<!-- Box 28: Total Charge -->
+				<row>56</row>
+				<column>52</column>
+				<length>8</length>
+				<content><xsl:value-of select="format-number(sum(exsl:node-set($procobjs/cptcharges)), '####.00')" /></content>
+			</element>
+
+			<element>
+				<!-- Box 29: Amount Paid -->
+				<row>56</row>
+				<column>63</column>
+				<length>7</length>
+				<content><xsl:value-of select="format-number(sum(exsl:node-set($procobjs/amountpaid)), '####.00')" /></content>
+			</element>
+
+			<element>
+				<!-- Box 30: Balance Due -->
+				<row>56</row>
+				<column>72</column>
+				<length>7</length>
+				<content><xsl:value-of select="format-number(sum(exsl:node-set($procobjs/cptcharges)) - sum(exsl:node-set($procobjs/amountpaid)), '####.00')" /></content>
+			</element>
+
+			<element>
+				<!-- Box 32: Facility Name -->
+				<row>58</row>
+				<column>23</column>
+				<length>25</length>
+				<content><xsl:value-of select="translate($facilityobj/name, $lowercase, $uppercase)" /></content>
+			</element>
+
+			<element>
+				<!-- Box 33: Physician Contact Name -->
+				<row>58</row>
+				<column>50</column>
+				<length>25</length>
+				<content><xsl:value-of select="translate(//practice[@id = $procfirstobj/practicekey]/name, $lowercase, $uppercase)" /></content>
+			</element>
+
+			<element>
+				<!-- Box 32: Facility City State Zip -->
+				<row>59</row>
+				<column>23</column>
+				<length>25</length>
+				<content><xsl:value-of select="translate(concat($facilityobj/address/city,', ',$facilityobj/address/state, ' ', $facilityobj/address/zipcode), $lowercase, $uppercase)" /></content>
+			</element>
+
+			<element>
+				<!-- Box 33: Physician Contact Address -->
+				<row>59</row>
+				<column>50</column>
+				<length>23</length>
+				<content><xsl:value-of select="translate(//practice[@id = $procfirstobj/practicekey]/address/streetaddress, $lowercase, $uppercase)" /></content>
+			</element>
+
+			<element>
+				<!-- Box 32: Physician Name -->
+				<row>60</row>
+				<column>1</column>
+				<length>20</length>
+				<content><xsl:value-of select="translate(concat($providerobj/name/first, ' ', $providerobj/name/last), $lowercase, $uppercase)" /></content>
+			</element>
+
+			<element>
+				<!-- Box 33: Physician Contact -->
+				<row>60</row>
+				<column>50</column>
+				<length>16</length>
+				<content><xsl:value-of select="translate(concat(//practice[@id = $procfirstobj/practicekey]/address/city, ', ', //practice[@id = $procfirstobj/practicekey]/address/state, ' ', //practice[@id = $procfirstobj/practicekey]/address/zipcode), $lowercase, $uppercase)" /></content>
+			</element>
+
+			<xsl:if test="boolean(string(//practice[@id = $procfirstobj/practicekey]/phone/area))">
+			<!-- skip the phone number if not present -->
+			<element>
+				<!-- Box 33: Physician Phone -->
+				<row>60</row>
+				<column>67</column>
+				<length>14</length>
+				<content><xsl:value-of select="concat('(', //practice[@id = $procfirstobj/practicekey]/phone/area, ')', //practice[@id = $procfirstobj/practicekey]/phone/number)" /></content>
+			</element>
+			</xsl:if>
+
+			<element>
+				<!-- Box 31: Signature and Date -->
+				<row>61</row>
+				<column>19</column>
+				<length>8</length>
+				<content><xsl:value-of select="concat(//global/currentdate/month, '-', //global/currentdate/day, '-', substring(//global/currentdate/year, 3, 2))" /></content>
+			</element>
+
+			<element>
+				<!-- Box 33: PIN # -->
+				<row>61</row>
+				<column>52</column>
+				<length>12</length>
+				<content><xsl:value-of select="//practice[@id = $procfirstobj/practicekey]/id[@physician = $provider and @payer=$payer]" /></content>
+			</element>
+
+		<!-- BOOKMARK BOOKMARK BOOKMARK -->
 
 		</page>
 	</xsl:template>
 
-		<!-- BOOKMARK BOOKMARK BOOKMARK -->
+	<xsl:template name="render-service-line">
+		<xsl:param name="diags" />
+		<xsl:param name="cptline" />
+		<xsl:param name="curproc" />
+		<xsl:param name="facilityobj" />
+				
+		<element>
+			<!-- Box 24a: Date of Service S / MM -->
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>1</column>
+			<length>2</length>
+			<content><xsl:value-of select="$curproc/dateofservicestart/month" /></content>
+		</element>
+
+		<element>
+			<!-- Box 24a: Date of Service S / DD -->
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>4</column>
+			<length>2</length>
+			<content><xsl:value-of select="$curproc/dateofservicestart/day" /></content>
+		</element>
+
+		<element>
+			<!-- Box 24a: Date of Service S / YY -->
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>7</column>
+			<length>2</length>
+			<content><xsl:value-of select="substring($curproc/dateofservicestart/year, 3, 2)" /></content>
+		</element>
+
+		<element>
+			<!-- Box 24a: Date of Service E / MM -->
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>10</column>
+			<length>2</length>
+			<content><xsl:value-of select="$curproc/dateofserviceend/month" /></content>
+		</element>
+
+		<element>
+			<!-- Box 24a: Date of Service E / DD -->
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>13</column>
+			<length>2</length>
+			<content><xsl:value-of select="$curproc/dateofserviceend/day" /></content>
+		</element>
+
+		<element>
+			<!-- Box 24a: Date of Service E / YY -->
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>16</column>
+			<length>2</length>
+			<content><xsl:value-of select="substring($curproc/dateofserviceend/year, 3, 2)" /></content>
+		</element>
+
+		<element>
+			<!-- Box 24b: Place of Service -->
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>19</column>
+			<length>2</length>
+			<content><xsl:value-of select="$facilityobj/hcfacode" /></content>
+		</element>
+
+		<element>
+			<!-- Box 24c: Type of Service --> 
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>22</column>
+			<length>2</length>
+			<content><xsl:value-of select="$curproc/typeofservice" /></content>
+		</element>
+
+		<element>
+			<!-- Box 24d: Procedures --> 
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>25</column>
+			<length>7</length>
+			<content><xsl:value-of select="$curproc/cpt4code" /></content>
+		</element>
+
+		<element>
+			<!-- Box 24d: Procedure / Modifier --> 
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>33</column>
+			<length>6</length>
+			<content><xsl:value-of select="$curproc/cptmodifier" /></content>
+		</element>
+
+		<element>
+			<!-- Box 24e: Diagnosis References --> 
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>42</column>
+			<length>7</length>
+			<content><xsl:call-template name="lookup-diagnoses">
+				<xsl:with-param name="diags" select="set:distinct(exsl:node-set($curproc/diagnosiskey))" />	
+				<xsl:with-param name="set" select="$diags" />	
+			</xsl:call-template></content>
+		</element>
+
+		<element>
+			<!-- Box 24f: Charges -->
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>51</column>
+			<length>7</length>
+			<content><xsl:value-of select="format-number($curproc/cptcharges, '##.00')" /></content>
+		</element>
+
+		<element>
+			<!-- Box 24g: Units of Service -->
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>59</column>
+			<length>3</length>
+			<content><xsl:value-of select="($curproc/cptunits)+0" /></content>
+		</element>
+
+		<element>
+			<!-- Box 24h: EPSDT -->
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>62</column>
+			<length>1</length>
+			<content><xsl:value-of select="$curproc/cptepsdt" /></content>
+		</element>
+
+		<element>
+			<!-- Box 24i: Emergency -->
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>66</column>
+			<length>1</length>
+			<content><xsl:value-of select="$curproc/cptemergency" /></content>
+		</element>
+
+		<element>
+			<!-- Box 24j: COB -->
+			<row><xsl:value-of select="$cptline" /></row>
+			<column>69</column>
+			<length>1</length>
+			<content><xsl:value-of select="$curproc/cptcob" /></content>
+		</element>
+
+	</xsl:template>
 
 	<!-- UTILITY TEMPLATES *********************************** -->
-
-			<!-- Diagnosis code references
-			<content><xsl:call-template name="lookup-diagnoses">
-				<xsl:with-param name="diags" select="$procobj/diagnosiskey" />
-				<xsl:with-param name="set" select="$diags" />
-			</xsl:call-template></content>
-			-->
 
 	<xsl:template name="lookup-diagnoses">
 		<xsl:param name="diags" />
@@ -851,6 +1261,7 @@
 			not putting enough space in, I inserted a '-'
 			character, which is removed in this step. Originally
 			used *this* trick for the 837P template. -->
+		<!-- <xsl:message>fount <xsl:value-of select="translate(normalize-space(translate($resultset, '-', '')), ' ', ',')" /> for diags</xsl:message> -->
 		<xsl:value-of select="translate(normalize-space(translate($resultset, '-', '')), ' ', ',')" />
 	</xsl:template>
 
@@ -871,7 +1282,6 @@
 		else can be found at http://exslt.org/.
 	-->
 
-	<!--
 	<exsl:function name="set:distinct">
 		<xsl:param name="nodes" select="/.."/>
 		<xsl:choose>
@@ -884,7 +1294,6 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</exsl:function>
-	-->
 
 	<xsl:template name="sequence-location">
 		<xsl:param name="id"    />
