@@ -1,7 +1,7 @@
 #!/usr/bin/perl -I./lib
 #
 #	$Id$
-#	$Author: jeff $
+#	$Author$
 #
 # File: test/test_resolve.pl
 #

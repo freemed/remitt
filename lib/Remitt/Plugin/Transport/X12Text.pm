@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 #	$Id$
-#	$Author: jeff $
+#	$Author$
 #
 #	Dummy X12 plugin to return X12 text
 #
