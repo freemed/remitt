@@ -15,7 +15,11 @@ sub PadToPosition {
 	my $output = '';
 
 	# Error checking
-	if ( ($o_row gt $n_row) or ( ($o_row eq $n_row) and ($o_col+0 > $n_col+0) ) ) {
+	if ( $o_row > $n_row ) {
+		#print "failed with o_row/o_col = $o_row/$o_col, n_row/n_col = $n_row/$n_col\n";
+		die("Remitt::Plugin::Translation::FixedFormXML::PadToPosition() error in text rendering has occurred\n");
+	}
+	if ( ($o_row == $n_row) and ($o_col > $n_col) ) {
 		#print "failed with o_row/o_col = $o_row/$o_col, n_row/n_col = $n_row/$n_col\n";
 		die("Remitt::Plugin::Translation::FixedFormXML::PadToPosition() error in text rendering has occurred\n");
 	}
@@ -27,7 +31,7 @@ sub PadToPosition {
 
 	# Otherwise, loop until we get there
 	my $c_row = $o_row, $c_col = $o_col;
-	while ($c_row+0 < $n_row+0) { $output .= "\n"; $c_row++; }
+	while ($c_row+0 < $n_row+0) { $output .= "\n"; $c_row++; $c_col = 1; }
 	while ($c_col+0 < $n_col+0) { $output .= ' '; $c_col++;  }
 
 	# Return the padding
@@ -38,19 +42,27 @@ sub PadToPosition {
 sub ProcessElement {
 	my ( $e ) = @_;
 
-	if (length($e->{content}) eq $e->{length}) {
+	my $content = $e->{content};
+	my $length  = $e->{length};
+
+	# Handle null array instances
+	if ($content =~ /HASH\(/) {
+		if ($content->{text}) { $content = $content->{text}; }
+		else { $content = ''; }
+	}
+
+	if (length($content) eq $length) {
 		# Return as is
-		return $e->{content};
-	} elsif (length($e->{content}) lt $e->{length}) {
+		return $content;
+	} elsif (length($content) lt $length) {
 		# Add spaces
-		my $content = $e->{content};
-		while (length($content) lt $e->{length}) {
+		while (length($content) lt $length) {
 			$content .= ' ';
 		}
 		return $content;
 	} elss {
 		# Shorten
-		return substr($e->{content}, 0, $e->{length});
+		return substr($content, 0, $length);
 	}
 } # end sub ProcessElement
 
@@ -62,7 +74,8 @@ sub ProcessPage {
 	# First, sort everything by row, then column. Hash should do it.
 	foreach my $e (@{$p->{element}}) {
 		# row.column will increment properly
-		my $hash_key = $e->{row}.'.'.$e->{column};
+		my $hash_key = 1000000 + ($e->{row} << 8) + $e->{column};
+		print "row = ".$e->{row}." row hash = ".($e->{row} << 8)." col = ".$e->{column}." hash key = $hash_key \n";
 		$hash{$hash_key} = $e;
 		#print "Element = ".Dumper($e)."\n";
 	} # end foreach element
