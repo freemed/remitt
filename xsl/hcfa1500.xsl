@@ -672,8 +672,25 @@
 
 		<xsl:variable name="secondary" select="//procedure[@id = $procs[1]]/otherinsuredkey" />
 		<xsl:variable name="secondaryobj" select="//insured[@id = $secondary]" />
+		<xsl:variable name="secondpayer" select="//procedure[@id = $procs[1]]/secondpayerkey" />
 
 			<!-- FIXME: Box 9a Secondary Insurance / Name -->
+			<xsl:if test="boolean(string($secondpayer))">
+			<element>
+				<!-- Box 9a: Other Insured Policy/Group Number -->
+				<row>20</row>
+				<column>1</column>
+				<length>25</length>
+				<content></content>
+			</element>
+			<element>
+				<!-- Box 9d: Other Insurance Plan Name -->
+				<row>26</row>
+				<column>1</column>
+				<length>25</length>
+				<content><xsl:value-of select="translate(//payer[@id = $secondpayer]/name, $lowercase, $uppercase)" /></content>
+			</element>
+			</xsl:if>
 
 			<xsl:if test="$diagobj/isrelatedtoemployment = 1">
 			<element>
@@ -891,15 +908,6 @@
 			</element>
 
 			<element>
-				<!-- Box 9d: Second Payer Plan / Company -->
-				<!-- FIXME: Handle this -->
-				<row>26</row>
-				<column>1</column>
-				<length>25</length>
-				<content></content>
-			</element>
-
-			<element>
 				<!-- Box 10d: Local Use 10d -->
 				<row>26</row>
 				<column>30</column>
@@ -907,23 +915,26 @@
 				<content><xsl:value-of select="$procfirstobj/hcfalocaluse10d" /></content>
 			</element>
 
+			<xsl:choose>
+			<xsl:when test="boolean(string($secondpayer))">
 			<element>
 				<!-- Box 11d: Secondary Insurance / Y -->
-				<!-- FIXME: Handle this -->
 				<row>26</row>
 				<column>52</column>
 				<length>1</length>
-				<content></content>
+				<content>X</content>
 			</element>
-
+			</xsl:when>
+			<xsl:otherwise>
 			<element>
 				<!-- Box 11d: Secondary Insurance / N -->
-				<!-- FIXME: Handle this -->
 				<row>26</row>
 				<column>57</column>
 				<length>1</length>
-				<content></content>
+				<content>X</content>
 			</element>
+			</xsl:otherwise>
+			</xsl:choose>
 
 			<element>
 				<!-- Box 12: Authorized Signature -->
@@ -1011,7 +1022,7 @@
 				<row>34</row>
 				<column>28</column>
 				<length>15</length>
-				<content><xsl:value-of select="$refprov/tin" /></content>
+				<content><xsl:value-of select="$refprov/ipn" /></content>
 			</element>
 			</xsl:if>
 
@@ -1213,8 +1224,8 @@
 				<row>58</row>
 				<column>50</column>
 				<length>25</length>
-		                <!-- <content><xsl:value-of select="translate(//practice[@id = $procfirstobj/practicekey]/name, $lowercase, $uppercase)" /></content> -->
-				<content><xsl:value-of select="translate($facilityobj/description, $lowercase, $uppercase)" /></content>
+		                <content><xsl:value-of select="translate($practiceobj/name, $lowercase, $uppercase)" /></content>
+				<!-- <content><xsl:value-of select="translate($facilityobj/description, $lowercase, $uppercase)" /></content> -->
 		        </element>
 
 			<element>
@@ -1222,7 +1233,7 @@
 				<row>59</row>
 				<column>23</column>
 				<length>27</length>
-				<content><xsl:value-of select="translate(concat($facilityobj/address/city,', ',$facilityobj/address/state, ' ', $facilityobj/address/zipcode), $lowercase, $uppercase)" /></content>
+				<content><xsl:value-of select="translate($facilityobj/address/streetaddress, $lowercase, $uppercase)" /></content>
 			</element>
 
 			<element>
@@ -1230,7 +1241,7 @@
 				<row>59</row>
 				<column>50</column>
 				<length>23</length>
-				<content><xsl:value-of select="translate(//practice[@id = $procfirstobj/practicekey]/address/streetaddress, $lowercase, $uppercase)" /></content>
+				<content><xsl:value-of select="translate($practiceobj/address/streetaddress, $lowercase, $uppercase)" /></content>
 			</element>
 
 			<element>
@@ -1242,22 +1253,30 @@
 			</element>
 
 			<element>
+				<!-- Box 32: Facility City State Zip -->
+				<row>60</row>
+				<column>23</column>
+				<length>27</length>
+				<content><xsl:value-of select="translate(concat($facilityobj/address/city,', ',$facilityobj/address/state, ' ', $facilityobj/address/zipcode), $lowercase, $uppercase)" /></content>
+			</element>
+
+			<element>
 				<!-- Box 33: Physician Contact -->
 				<row>60</row>
 				<column>50</column>
 				<length>30</length>
-				<content><xsl:value-of select="translate(concat(//practice[@id = $procfirstobj/practicekey]/address/city, ', ', //practice[@id = $procfirstobj/practicekey]/address/state, ' ', //practice[@id = $procfirstobj/practicekey]/address/zipcode), $lowercase, $uppercase)" /></content>
+				<content><xsl:value-of select="translate(concat($practiceobj/address/city, ', ', $practiceobj/address/state, ' ', $practiceobj/address/zipcode), $lowercase, $uppercase)" /></content>
 			</element>
 
 			<xsl:comment>
-			<xsl:if test="boolean(string(//practice[@id = $procfirstobj/practicekey]/phone/area))">
+			<xsl:if test="boolean(string($practiceobj/phone/area))">
 			<!-- skip the phone number if not present -->
 			<element>
 				<!-- Box 33: Physician Phone -->
 				<row>60</row>
 				<column>67</column>
 				<length>14</length>
-				<content><xsl:value-of select="concat(//practice[@id = $procfirstobj/practicekey]/phone/area, //practice[@id = $procfirstobj/practicekey]/phone/number)" /></content>
+				<content><xsl:value-of select="concat($practiceobj/phone/area, $practiceobj/phone/number)" /></content>
 			</element>
 			</xsl:if>
 			</xsl:comment>
