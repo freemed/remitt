@@ -169,14 +169,36 @@
 			<!-- If there are too many diagnoses ... -->
 			<xsl:choose>
 				<xsl:when test="count(set:distinct(exsl:node-set($procs/diagnosiskey))) &gt; 4 or count($procs) &gt; 6">
-					<xsl:message>FIXME: not processing procedures with too many diags or procs on one sheet</xsl:message>
+					<!-- Get largest subset -->
+					<xsl:variable name="biggestindex">
+						<xsl:call-template name="procs-get-largest-subset">
+							<xsl:with-param name="procs" select="$procs" />
+						</xsl:call-template>
+					</xsl:variable>
+
+					<!-- Split segments -->
+					<xsl:variable name="fit" select="$procs[position() &lt;= $biggestindex]" />
+					<xsl:variable name="overflow" select="$procs[position() &gt; $biggestindex]" />
+
+					<!-- Process using first segment -->
+					<!-- <xsl:message>Processing fit segment of <xsl:value-of select="count($fit)" /></xsl:message> -->
+					<xsl:call-template name="render-form">
+						<xsl:with-param name="procs" select="$procs/@id" />
+						<xsl:with-param name="procobjs" select="$procs" />
+						<xsl:with-param name="diags" select="set:distinct(exsl:node-set($fit/diagnosiskey))" />
+					</xsl:call-template>
+
+					<!-- Recurse using overflow -->
+					<!-- <xsl:message>Processing overflow of <xsl:value-of select="count($overflow)" /></xsl:message> -->
+					<xsl:call-template name="process-procedure-set">
+						<xsl:with-param name="procs" select="$overflow" />
+					</xsl:call-template>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:call-template name="render-form">
 						<xsl:with-param name="procs" select="$procs/@id" />
 						<xsl:with-param name="procobjs" select="$procs" />
 						<xsl:with-param name="diags" select="set:distinct(exsl:node-set($procs/diagnosiskey))" />
-
 					</xsl:call-template>
 				</xsl:otherwise>
 			</xsl:choose>
@@ -1247,6 +1269,19 @@
 
 	<!-- UTILITY TEMPLATES *********************************** -->
 
+	<!--
+		lookup-diagnoses
+
+		Get a list of comma-delimited diagnoses reference numbers,
+		as used by the HCFA-1500/CMS-1500 form.
+
+		Parameters:
+			diags - Node set of diagnosis keys
+			set - Full set of diagnosis keys to index against
+
+		Returns:
+			String representation of comma seperated references.
+	-->
 	<xsl:template name="lookup-diagnoses">
 		<xsl:param name="diags" />
 		<xsl:param name="set" />
@@ -1270,12 +1305,71 @@
 		<xsl:value-of select="translate(normalize-space(translate($resultset, '-', '')), ' ', ',')" />
 	</xsl:template>
 
+	<!--
+		lookup-diagnosis
+
+		Lookup a single diagnosis reference number
+
+		Parameters:
+			diag - Diagnosis key
+			set - Full set of diagnoses to reference against
+
+		Returns:
+			Reference number for specified diagnosis key
+	-->
 	<xsl:template name="lookup-diagnosis">
 		<xsl:param name="diag" />
 		<xsl:param name="set" />
 		<xsl:for-each select="$set">
 			<xsl:if test="current()=$diag"><xsl:value-of select="position()" /></xsl:if>
 		</xsl:for-each>
+	</xsl:template>
+
+	<!--
+		sequence-location
+
+		Parameters:
+			id - ID tag to search for
+			nodes - Nodes to search for $id in
+
+		Returns:
+			Numeric location of id in sequence
+	-->
+	<xsl:template name="sequence-location">
+		<xsl:param name="id"    />
+		<xsl:param name="nodes" />
+		<xsl:for-each select="$nodes">
+			<xsl:if test="@id = $id">
+				<xsl:value-of select="position()" />
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+
+	<!--
+		procs-get-largest-subset
+
+		Parameters: 
+			$procs - Set of //procedure trees
+
+		Returns: 
+			Index of largest possible working subset
+	-->
+	<xsl:template name="procs-get-largest-subset">
+		<xsl:param name="procs" select="$procs" />
+		<xsl:variable name="pcount" select="count($procs)" />
+
+		<xsl:choose>
+			<xsl:when test="not(count(set:distinct(exsl:node-set($procs/diagnosiskey))) &gt; 4 or $pcount &gt; 6)">
+				<!-- If procs fit, send back count -->
+				<xsl:value-of select="$pcount" />
+			</xsl:when>
+			<xsl:otherwise>
+				<!-- Try with 1 ... (n-1) -->
+				<xsl:call-template name="procs-get-largest-subset">
+					<xsl:with-param name="procs" select="$procs[position() &lt; $pcount]" />
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<!-- 
@@ -1300,15 +1394,4 @@
 		</xsl:choose>
 	</exsl:function>
 
-	<xsl:template name="sequence-location">
-		<xsl:param name="id"    />
-		<xsl:param name="nodes" />
-		<xsl:for-each select="$nodes">
-			<xsl:if test="@id = $id">
-				<xsl:value-of select="position()" />
-			</xsl:if>
-		</xsl:for-each>
-	</xsl:template>
-
 </xsl:stylesheet>
-
