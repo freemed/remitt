@@ -30,7 +30,7 @@ my $path = $config->val('installation', 'path');
 my $debug = 1;
 
 # Open log file
-openlog ( 'remitt', 'pid', 'user' );
+openlog ( 'remitt', 'cons,pid', 'daemon' );
 
 # Enable basic authentication
 $auth = 1;
@@ -44,7 +44,7 @@ $auth = 1;
 if (!$quiet) {
 	print "REMITT (XMLRPC Server) v$version\n";
 } else {
-	syslog('notice', 'REMITT v'.$version.' XML-RPC server started');
+	syslog('info', 'REMITT v'.$version.' XML-RPC server started');
 }
 
 $daemon = XMLRPC::Transport::HTTP::Daemon
@@ -57,8 +57,7 @@ $daemon = XMLRPC::Transport::HTTP::Daemon
 if (!$quiet) {
 	print " * Running at ", $daemon->url, "\n";
 	print " * Starting daemon ... \n";
-} else {
-	syslog('notice', ' running at '.$daemon->url);
 }
+syslog('info', 'Daemon running at '.$daemon->url);
 $daemon->handle;
 

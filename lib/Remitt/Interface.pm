@@ -20,6 +20,7 @@ package Remitt::Interface;
 use Remitt::Session;
 use Remitt::Utilities;
 use Digest::MD5;
+use Sys::Syslog;
 use POSIX;
 
 use Data::Dumper;
@@ -66,6 +67,7 @@ sub Execute {
 	if ($transport eq "pdf") { $transport = "PDF"; }
 	if ($transport eq "mcsi") { $transport = "MCSI"; }
 
+	syslog('info', 'Remitt.Interface.Execute called with %s, %s, %s, data length = %d', $render, $renderoption, $transport, length($input));
 	#print "Running Execute ( length of ".length($input).", $render, $renderoption, $transport ) ... \n";
 
 	# Sanitize (not input!)
@@ -175,6 +177,8 @@ sub FileList {
 	$session->load();
 	my $username = $session->{session}->param('username');
 
+	syslog('info', 'Remitt.Interface.FileList called by %s for %s', $username, $category);
+
 	# Get configuration information
 	my $config = Remitt::Utilities::Configuration ( );
 	
@@ -224,6 +228,8 @@ sub GetFile {
 	$session->load();
 	my $username = $session->{session}->param('username');
 	
+	syslog('info', 'Remitt.Interface.GetFile called by %s for %s / %s', $username, $category, $file);
+
 	# Get configuration information
 	my $config = Remitt::Utilities::Configuration ( );
 	
@@ -273,6 +279,8 @@ sub GetStatus {
 	$session->load();
 	my $username = $session->{session}->param('username');
 	
+	syslog('info', 'Remitt.Interface.GetStatus called by %s for %s', $username, $unique);
+
 	# Get configuration information
 	my $config = Remitt::Utilities::Configuration ( );
 	
@@ -353,6 +361,8 @@ sub ListPlugins {
 	# Sanitize parameters
 	$type =~ s/\W//g;
 
+	#syslog('info', 'Remitt.Interface.ListPlugins called for %s', $type);
+
 	my $config = Remitt::Utilities::Configuration ( );
 	my $path = $config->val('installation', 'path');
 	my @plugins;
@@ -387,6 +397,7 @@ sub SystemLogin {
 	my ($username, $password) = @_;
 
 	#print "Executing Login ($username, $password) ... \n";
+	syslog('info', 'Remitt.Interface.SystemLogin attempt for %s', $username);
 
 	# Do we authenticate username/password pair against access list?	
 	my $config = Remitt::Utilities::Configuration ( );
@@ -399,9 +410,12 @@ sub SystemLogin {
 		# Skip, no auth here	
 	} else {
 		# Use plugin
+		syslog('info', 'Remitt.Interface.SystemLogin using %s plugin', $config->val('installation', 'authentication'));
 		eval 'use Remitt::Plugin::Authentication::'.$config->val('installation', 'authentication').';';
 		eval 'die ("Incorrect username or password") if (!Remitt::Plugin::Authentication::'.$config->val('installation', 'authentication').'($username, $password);';
 	}
+
+	syslog('info', 'Remitt.Interface.SystemLogin successful login for %s', $username);
 
 	# Create new session
 	my ($sessionid, $key);

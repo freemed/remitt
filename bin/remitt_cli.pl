@@ -40,9 +40,8 @@ openlog ( 'remitt', 'pid', 'user' );
 
 if (!$quiet) {
 	print "REMITT CLI v$version\n";
-} else {
-	syslog ('notice', 'REMITT v'.$version.' CLI started');
 }
+syslog ('info', 'REMITT v'.$version.' CLI started');
 
 undef $/;
 open FILE, $file or die("Could not open $file\n");
