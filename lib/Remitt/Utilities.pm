@@ -3,11 +3,17 @@
 #	$Id$
 #	$Author$
 #
+# Package: Remitt::Utilities
+#
+#	Contains general purpose utility functions necessary for the
+#	low-level operation of Remitt.
+#
 
 package Remitt::Utilities;
 
 use Remitt::Session;
 use MIME::Base64;
+use Config::IniFiles;
 use Data::Dumper;
 
 sub Authenticate {
@@ -41,6 +47,29 @@ sub Authenticate {
 		$session->{session}->param('username')
 	);
 } # end sub Authenticate
+
+# Function: Configuration
+#
+# Returns:
+#
+#	Configuration object.
+#
+sub Configuration {
+	my $file;
+	my $my_config_file;
+	my @config_files = (
+		'/etc/remitt.conf',
+		'/usr/share/remitt/remitt.conf',
+		'/usr/lib/remitt/remitt.conf',
+		'./remitt.conf',
+		'../remitt.conf'
+	);
+	foreach $file (@config_files) {
+		$my_config_file = $file if -r $file;
+	}
+	die("Could not load any valid configuration file.\n") if (!$my_config_file);
+	return new Config::IniFiles( -file => $my_config_file );
+} # end sub Configuration
 
 # Function: Fault
 #
@@ -88,7 +117,9 @@ sub ResolveTranslationPlugin {
 	# Get parameters
 	my ($render, $renderoption, $transport) = @_;
 
-	my $path = '/root/FMSF/remitt';
+	# Get path from the configuration
+	my $config = Remitt::Utilities::Configuration();
+	my $path = $config->val('installation', 'path');
 
 	# Sanitize parameters
 	$render =~ s/\W//g;

@@ -14,8 +14,11 @@ sub Render {
 
 	die("Option not specified!") if (!$option);
 
+	my $config = Remitt::Utilities::Configuration ( );
+	my $path = $config->val('installation', 'path');
+
 	# Read xsl file
-	open FILE, "/root/FMSF/remitt/xsl/".$option.".xsl" or die("Could not open $option");
+	open FILE, $path.'/xsl/'.$option.'.xsl' or die("Could not open $option");
 	undef $/; # Undefine the line separator
 	my $xsl = <FILE>;
 	close FILE;

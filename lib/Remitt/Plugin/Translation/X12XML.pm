@@ -51,8 +51,8 @@ sub ProcessSegment {
 		#print "Element = ".Dumper($e)."\n";
 	} # end foreach element
 
-	# Append ending characters
-	$segment .= $eol . "\n";
+	# Append ending characters (requires ^M for validation)
+	$segment .= $eol . "\x0d\x0a";
 
 	return $segment;
 } # end sub ProcessPage

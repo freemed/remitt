@@ -3,6 +3,17 @@
 #	$Id$
 #	$Author$
 #
+# Package: Remitt::Interface
+#
+#	Contains all methods exported through the XML-RPC interface
+#	for Remitt. It is possible that these methods could also be
+#	exported using SOAP (since the SOAP::Lite library is being
+#	used to provide XML-RPC functionality).
+#
+#	Functions that require authentication use the
+#	<Remitt::Utilities::ForceAuthentication> method from the
+#	<Remitt::Utilities> package. This uses basic authentication.
+#
 
 package Remitt::Interface;
 
@@ -115,7 +126,8 @@ sub ListPlugins {
 	# Sanitize parameters
 	$type =~ s/\W//g;
 
-	my $path = '/root/FMSF/remitt';
+	my $config = Remitt::Utilities::Configuration ( );
+	my $path = $config->val('installation', 'path');
 	my @plugins;
 	opendir DH, $path.'/lib/Remitt/Plugin/'.$type.'/' or die('Invalid plugin type.');
 	foreach my $plugin (readdir DH) {
