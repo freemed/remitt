@@ -269,21 +269,13 @@
 			</element>
 	
 			<element>
-				<!-- Insurance Company Street City -->
+				<!-- Insurance Company Street City, State Zipcode -->
 				<row>4</row>
 				<column>41</column>
-				<length>20</length>
-				<content><xsl:value-of select="translate($payerobj/address/city, $lowercase, $uppercase)" /></content>
+				<length>30</length>
+				<content><xsl:value-of select="translate(concat($payerobj/address/city,', ', $payerobj/address/state, ' ', $payerobj/address/zipcode), $lowercase, $uppercase)" /></content>
 			</element>
 	
-			<element>
-				<!-- Insurance Company Street State -->
-				<row>4</row>
-				<column>65</column>
-				<length>2</length>
-				<content><xsl:value-of select="translate($payerobj/address/state, $lowercase, $uppercase)" /></content>
-			</element>
-
 			<xsl:if test="$payerobj/ismedicare = 1">
 			<element>
 				<!-- Is Medicare? -->
@@ -701,6 +693,7 @@
 			</element>
 			</xsl:if>
 
+			<xsl:if test="$insuredobj/dateofbirth/month &gt; 0">
 			<element>
 				<!-- Box 11a: Insured DOB / MM -->
 				<row>20</row>
@@ -740,6 +733,7 @@
 				<length>2</length>
 				<content><xsl:value-of select="substring($insuredobj/dateofbirth/year, 3, 2)" /></content>
 			</element>
+			</xsl:if> <!-- if there is an insured DOB -->
 
 			<xsl:if test="translate($insuredobj/sex, $lowercase, $uppercase) = 'M'">
 			<element>
@@ -1211,7 +1205,7 @@
 				<!-- Box 32: Facility City State Zip -->
 				<row>59</row>
 				<column>23</column>
-				<length>25</length>
+				<length>26</length>
 				<content><xsl:value-of select="translate(concat($facilityobj/address/city,', ',$facilityobj/address/state, ' ', $facilityobj/address/zipcode), $lowercase, $uppercase)" /></content>
 			</element>
 
