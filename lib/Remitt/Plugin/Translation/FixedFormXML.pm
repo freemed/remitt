@@ -75,7 +75,7 @@ sub ProcessPage {
 	foreach my $e (@{$p->{element}}) {
 		# row.column will increment properly
 		my $hash_key = 1000000 + ($e->{row} << 8) + $e->{column};
-		print "row = ".$e->{row}." row hash = ".($e->{row} << 8)." col = ".$e->{column}." hash key = $hash_key \n";
+		#print "row = ".$e->{row}." row hash = ".($e->{row} << 8)." col = ".$e->{column}." hash key = $hash_key \n";
 		$hash{$hash_key} = $e;
 		#print "Element = ".Dumper($e)."\n";
 	} # end foreach element
@@ -107,7 +107,7 @@ sub ProcessPage {
 
 	# Pad to page length
 	while ($currow < $p->{format}->{pagelength}) {
-		$currow++; $output .= "\n";
+		$currow++; $output .= "\x0d\x0a";
 	}
 	
 	return $output;
@@ -125,7 +125,7 @@ sub Translate {
 	# Loop through pages
 	foreach my $p (@{$i->{page}}) {
 		$output .= Remitt::Plugin::Translation::FixedFormXML::ProcessPage($p);
-		#$output .= "content = ".$p->{content}."\n";
+		#$output .= "content = ".$p->{content}."\x0d\x0a";
 	}
 
 	return $output;	
