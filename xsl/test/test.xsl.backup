@@ -1,0 +1,196 @@
+<?xml version="1.0"?>
+<xsl:stylesheet version="1.0" 
+		xmlns:exsl="http://exslt.org/functions"
+		extension-element-prefixes="exsl"
+		xmlns:set="http://exslt.org/sets"
+		exclude-result-prefixes="set"
+		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+        <xsl:output method="xml" />
+
+	<!--
+		Master template for document root
+
+		This template processes the document root, and calls all
+		child templates.
+	-->
+
+	<xsl:template match="/remitt">
+        <render>
+		<xsl:for-each select="patient">
+			<xsl:call-template name="process-patient">
+				<xsl:with-param name="patient">
+					<xsl:value-of select="@id"/>
+				</xsl:with-param>	
+			</xsl:call-template>
+		</xsl:for-each>
+        </render>
+	</xsl:template>
+
+	<xsl:template name="process-patient">
+		<xsl:param name="patient" />
+		<patient>
+		<id><xsl:value-of select="$patient" /></id>
+		<xsl:for-each select="/remitt/payer">
+			<xsl:call-template name="process-payer">
+				<xsl:with-param name="patient">
+					<xsl:value-of select="$patient" />
+				</xsl:with-param>
+				<xsl:with-param name="payer">
+					<xsl:value-of select="@id" />
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:for-each>
+		</patient>
+	</xsl:template>
+
+	<xsl:template name="process-payer">
+		<xsl:param name="patient" />
+		<xsl:param name="payer" />
+		<xsl:variable name="procedurecount" select="count(/remitt/procedure[payerkey=$payer and patientkey=$patient])" />
+		<xsl:variable name="procedures" select="/remitt/procedure[payerkey=$payer and patientkey=$patient]" />
+		<!-- check to see if we actually have payers matching criteria -->
+		<xsl:if test="$procedurecount &gt; 0">
+			<xsl:call-template name="process-procedure-set">
+				<xsl:with-param name="set">
+					<xsl:value-of select="$procedures" />
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+
+	<!--
+		process-procedure-set
+
+		Performs procedure transformation for a form from a
+		set of procedures and recursively generates forms.
+
+		Parameters: 
+			set - set of procedures
+
+		Returns:
+			Set of procedures remaining, if there are any.
+
+	-->
+	<xsl:template name="process-procedure-set">
+		<xsl:param name="set" />
+		<!-- get a valid subset by diagnoses -->
+		<xsl:variable name="subset">
+			<!--
+			<xsl:call-template name="get-valid-diagnosis-set">
+				<xsl:with-param name="procedureset">
+					<xsl:value-of select="$set" />
+				</xsl:with-param>
+			</xsl:call-template>
+			-->
+			<xsl:value-of select="$set"/>
+		</xsl:variable>
+
+		<!-- call template generate form -->
+		<xsl:call-template name="generate-form">
+			<xsl:with-param name="procedures">
+				<xsl:value-of select="$subset" />
+			</xsl:with-param>
+		</xsl:call-template>
+
+		<!-- get valid remaining subset -->
+		<xsl:variable name="remaining" value="set:difference($set, $subset)" />
+
+		<!-- if we have remaining items, time to recurse -->
+		<xsl:if test="count($remaining) &gt; 0">
+			<xsl:call-template name="process-procedure-set">
+				<xsl:with-param name="set">
+					<xsl:value-of select="$remaining" />
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+
+	<!--
+		get-valid-diagnosis-set
+
+		Parameters:
+			procedureset - Set of procedures
+
+		Returns:
+			Set of procedures fitting in the proper number of
+			diagnosis slots.
+	-->
+	<xsl:template name="get-valid-diagnosis-set">
+		<xsl:param name="procedureset" />
+		<xsl:variable name="diagnosisset" select="set:distinct(set:intersection($procedureset, //diagnosiskey))" />
+		<xsl:choose>
+			<xsl:when test="count($diagnosisset) &gt; 4">
+				<!-- have to return set - last element -->
+				<element>found more than 4 diagnoses in this set</element>
+				<!-- reduce set by sending back set - last -->
+				<xsl:copy-of select="$procedureset[position() &lt;= count($procedureset)]" />
+				<!-- <xsl:copy-of select="$procedureset[position() &gt; 0]"/> -->
+			</xsl:when>
+			<xsl:otherwise>
+				<!-- return proper set -->
+				<xsl:copy-of select="$procedureset"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="generate-form">
+		<xsl:param name="procedures" />
+		<here>generated form?</here>
+	</xsl:template>
+
+	<!--
+
+		"render" format is:
+
+		render
+			page
+				format
+					pagelength
+				element
+					row
+					column
+					length
+					content
+					comment
+	-->
+
+	<!-- 
+		EXSLT functions
+
+		Please note that only function which are not included in
+		the libxslt library are included here, since that is the
+		XSLT compiler we are using. EXSLT functions for anything
+		else can be found at http://exslt.org/.
+	-->
+
+	<exsl:function name="set:distinct">
+		<xsl:param name="nodes" select="/.."/>
+		<xsl:choose>
+			<xsl:when test="not($nodes)">
+				<exsl:result select="/.." />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:variable name="distinct" select="set:distinct($nodes[position() &gt; 1])"/>
+				<exsl:result select="$distinct | $nodes[1][. != $distinct]"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</exsl:function>
+
+	<!--
+	<exsl:function name="set:pop">
+		<xsl:param name="nodes" select="/.."/>
+		<xsl:choose>
+			<xsl:when test="count($nodes) &lt;= 1">
+				<exsl:result select="/.." />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:variable name="nextset" select="set:pop($nodes[position() &lt;= count($nodes)])"/>
+				<exsl:result select="$nextset" />
+			</xsl:otherwise>
+		</xsl:choose>
+	</exsl:function>
+	-->
+
+</xsl:stylesheet>
+

@@ -1,0 +1,145 @@
+837 Professional Description
+
+ISA		Interchange Control Header
+GS		Functional Group Header
+ST	005	Transaction Set Header
+BHT	010	Beginning of Heirarchical Transmission
+REF	015	Transmission Type Identifier
+1000A	020	Submitter Name [billingservice]
+	NM1	020	Submitter Name
+	PER	045	Submitter EDI Contact Information
+1000B	025	Receiver Name [clearinghouse]
+	NM1	020	Receiver Name
+2000A	001	Billing/Pay-to Provider Heirarchical Level [billingservice]
+	HL	001	Billing/Pay-to Provider Heirarchical Level
+	PRV	003	Billing/Pay-to Provider Specialty Information
+	CUR	010	Foreign Currency Information
+	2010AA	015	Billing Provider Name [billingservice]
+		NM1	015	Billing Provider Name
+		N3	025	Billing Provider Address
+		N4	030	Billing Provider City/State/Zip
+		REF	035	Billing Provider Secondary Identification
+		REF	035	Credit/Debit Card Billing Informaiton
+		PER	040	Billing Provider Contact Information
+	2010AB	015	Pay-to Provider Name [provider]
+		NM1	015	Pay to Provider Name
+		N3	025	Pay to Provider Address
+		N4	030	Pay to Provider City/State/Zip
+		REF	035	Pay to Provider Secondary Identification
+2000B	001	Subscriber Heirarchical Level [patient/insured]
+	HL	001	Subscriber Heirarchical Level
+	SBR	005	Subscriber Information
+	PAT	007	Patient Information
+	2010BA	015	Subscriber Name [insured]
+		NM1	015	Subscriber Name
+		N3	025	Subscriber Address
+		N4	030	Subscriber City/State/Zip
+		DMG	032	Subscriber Demographic Information
+		REF	035	Subscriber Secondary Identification
+		REF	035	Property and Casualty Claim Number
+	2010BB	015	Payer Name [payer]
+		NM1	015	Payer Name
+		N3	025	Payer Address
+		N4	030	Payer City/State/Zip
+		REF	035	Payer Secondary Identification
+	2010BC	015	Responsible Party Name
+		NM1	015	Responsible Party Name
+		N3	025	Responsible Party Address
+		N4	030	Responsible Party City/State/Zip
+	2010BD	015	Credit/Debit Card Holder Name
+		NM1	015	Credit/Debit Card Holder Name
+		REF	035	Credit/Debit Card Information
+	2300	130	Claim Information [procedure]
+		CLM	130	Claim Information
+		DTP	135	Date - Initial Treatment
+		DTP	135	Date - Date Last Seen
+		DTP	135	Date - Onset of Current Illness/Symptoms
+		DTP	135	Date - Acute Manifestation
+		DTP	135	Date - Similar Illness/Symptom Onset
+		DTP	135	Date - Accident
+		DTP	135	Date - Last Menstrual Period
+		DTP	135	Date - Last X-ray
+		DTP	135	Date - Hearing and Vision Prescription
+		DTP	135	Date - Disability Begin
+		DTP	135	Date - Disability End
+		DTP	135	Date - Last Worked
+		DTP	135	Date - Authorized Return to Work
+		DTP	135	Date - Admission
+		DTP	135	Date - Discharge
+		DTP	135	Date - Assumed and Relinquished Care Date
+		PWK	155	Claim Supplimental Information
+		CN1	160	Contract Information
+		AMT	175	Credit/Debit Card Maximum Amount
+		AMT	175	Patient Amount Paid
+		AMT	175	Total Purchased Service Amount
+		REF	180	Service Authorization Exception Code
+		REF	180	Mandatory Medicare (Section 4081)
+		REF	180	Mammography Certification Number
+		REF	180	Prior Authorization or Referral Number
+		REF	180	Original Reference Number (ICN/DCN)
+		REF	180	CLIA Number
+		REF	180	Repriced Claim Number
+		REF	180	Adjusted Repriced Claim Number
+		REF	180	Investigational Device Exemption Number
+		REF	180	Claim Id Number for Clearinghouses
+		REF	180	Ambulatory Patient Group (APG)
+		REF	180	Medical Record Number
+		REF	180	Demonstration Project Identifier
+		K3	185	File Information
+		NTE	190	Claim Note
+		CR1	195	Ambulance Transport Information
+		CR2	200	Spinal Manipulation Service Information
+		CRC	220	Ambulance Certification
+		CRC	220	Patient Condition Information
+		CRC	220	Homebound Indicator
+		CRC	220	EPSDT Referral
+		HI	231	Health Care Diagnosis Code
+		HCP	241	Claim Pricing/Repricing Information
+		2305	242	Home Health Care Plan Information
+			CR7	242	Home Health Care Plan Information
+			HSD	243	Health Care Services Delivery
+		2310A	250	Referring Provider Name [provider]
+			NM1	250	Referring Provider Name
+			PRV	255	Referring Provider Specialty
+			REF	271	Referring Provider Secondary Id
+		2310B	250	Rendering Provider Name
+			NM1	250	Rendering Provider Name
+			PRV	255	Rendering Provider Specialty
+			REF	271	Rendering Provider Secondary Id
+		2310C	250	Purchased Service Provider Name [facility]
+			NM1	250	Purchased Service Provider Name
+			REF	271	Purchased Service Provider Secondary Id
+		2310D	250	Service Facility Location
+			NM1	250	Service Facility Location
+			N3	265	Service Facility Location Address
+			N4	270	Service Facility Location C/S/Z
+			REF	271	Service Facility Location Secondary Id
+		2310E	250	Supervising Provider Name
+			NM1	250	Supervising Provier Name
+			REF	271	Supervising Provider Secondary Id
+		2320	290	Other Subscriber Information
+			...	
+		2400	365	Service Line [procedure]
+			LX	365	Service Line
+			SV1	370	Professional Service
+			SV5	400	Durable Medical Equipment
+			PWK	420	DMERC CMN Indicator
+			CR1 ... CRC
+			DTP	455	Date - Service Date
+			DTP	455	Date - Certification Revision Date
+			DTP	455	Date - Begin Therapy Date
+			DTP	455	Date - Last Certification Date
+			DTP	455	Date - Date Last Seen
+			DTP	455	Date - Test
+			DTP	455	Date - Oxygen Saturation
+			DTP	455	Date - Shipped
+			DTP	455	Date - Onset of Current Symptoms
+			DTP	455	Date - Last X-ray
+			DTP	455	Date - Acute Manifestation
+			DTP	455	Date - Initial Treatment
+			DTP	455	Date - Similar Illness/Symptom
+			...
+2000C	001	Patient Heirarchical Level
+SE	555	Transaction Set Trailer
+GE		Functional Group Trailer
+IEA		Interchange Control Trailer

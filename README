@@ -1,0 +1,15 @@
+$Id$
+$Author$
+------------------------------------------------------------------------------
+
+REMITT stands for:
+REMITT Electronic Medical Information Translation and Transmission
+
+(It is a recursive acronym.)
+
+It is a system for translating documents from one format to another,
+then transmitting them. It was designed to be used for medical billing
+and claim submission using XML files. It uses XSLT and XML, and is
+written in Perl.
+
+- Jeff (jeff@ourexchange.net)

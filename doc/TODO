@@ -1,0 +1,27 @@
+$Id$
+$Author$
+
+Server
+	XML-RPC Basic Transport
+	Authentication
+	Access Methods
+Plugin
+	Render
+		XSLT
+		* Base class [done]
+		* Make individual parsers from this class?
+	Translation
+		* FixedFormXML to Fixed Form [done]
+		* X12XML to X12 [done]
+	Transport
+		* Dummy transport module (to file)
+XSL
+	* Proof of concept test XSL
+	* 837p.xsl	
+FreeMED
+	class.Remitt.php
+		* Create XML export [done]
+		* XML-RPC interface routines, like class.FreeB_v1.php
+	freeb.billing.module.php
+		* Create clone of this class for Remitt or interchangable
+			backends.
