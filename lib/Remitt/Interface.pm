@@ -59,6 +59,7 @@ sub Execute {
 	if ($renderoption eq "hcfa") { $renderoption = "hcfa1500"; }
 	if ($renderoption eq "x12") { $renderoption = "837p"; }
 	if ($transport eq "txt") { $transport = "Text"; }
+	if ($transport eq "pdf") { $transport = "PDF"; }
 	if ($transport eq "mcsi") { $transport = "MCSI"; }
 
 	print "Running Execute ( length of ".length($input).", $render, $renderoption, $transport ) ... \n";
@@ -267,8 +268,8 @@ sub SystemLogin {
 	# Do we authenticate username/password pair against access list?	
 	my $config = Remitt::Utilities::Configuration ( );
 	# Only verify if we are sure that we need to
-	if ($config->val('installation', 'authorization') ne 'none') {
-		die ("Incorrect username or password") if ($password ne $config->val('users', $username));
+	if ($config->val('installation', 'authorization') != 'none') {
+		die ("Incorrect username or password") if ($password != $config->val('users', $username));
 	}
 
 	# Create new session
