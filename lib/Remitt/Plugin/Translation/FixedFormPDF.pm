@@ -115,7 +115,7 @@ sub Translate {
 	my $xs = new XML::Simple(
 		# see lib/Remitt/Plugin/Translation/XSLT.pm for more info
 		NormalizeSpace => 0,
-		ForceArray => [ 'element' ]
+		ForceArray => [ 'element', 'page' ]
 		);
 	my $i = $xs->XMLin($input);
 
