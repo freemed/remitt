@@ -673,6 +673,7 @@
 		<xsl:variable name="secondary" select="//procedure[@id = $procs[1]]/otherinsuredkey" />
 		<xsl:variable name="secondaryobj" select="//insured[@id = $secondary]" />
 		<xsl:variable name="secondpayer" select="//procedure[@id = $procs[1]]/secondpayerkey" />
+		<xsl:variable name="secondinsured" select="//procedure[@id = $procs[1]]/secondinsuredkey" />
 
 			<!-- FIXME: Box 9a Secondary Insurance / Name -->
 			<xsl:if test="boolean(string($secondpayer))">
@@ -912,7 +913,16 @@
 				<row>26</row>
 				<column>30</column>
 				<length>15</length>
-				<content><xsl:value-of select="$procfirstobj/hcfalocaluse10d" /></content>
+				<xsl:choose>
+					<!-- Handle medicaid as second payer 10d special case -->
+					<xsl:when test="boolean(string($secondpayer)) and //payer[@id = $secondpayer]/ismedicaid = 1">
+						<xsl:message><xsl:value-of select="translate($secondinsured, $lowercase, $uppercase)" /></xsl:message>
+						<content><xsl:value-of select="translate(//insured[@id = $secondinsured]/id, $lowercase, $uppercase)" /></content>
+					</xsl:when>
+					<xsl:otherwise>
+						<content><xsl:value-of select="$procfirstobj/hcfalocaluse10d" /></content>
+					</xsl:otherwise>
+				</xsl:choose>
 			</element>
 
 			<xsl:choose>
