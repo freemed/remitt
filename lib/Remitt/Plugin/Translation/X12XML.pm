@@ -3,7 +3,9 @@
 #	$Id$
 #	$Author$
 #
-#	Simple X12 intermediary format to X12 parser
+# Package: Remitt::Plugin::Translation::X12XML
+#
+#	Simple X12 intermediary format to X12 parser.
 #
 
 package Remitt::Plugin::Translation::X12XML;

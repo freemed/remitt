@@ -18,6 +18,14 @@ use File::Path;
 use Data::Dumper;
 use POSIX;
 
+# Method: Remitt::Utilities::Authenticate
+#
+# 	Perform authentication for XML-RPC server basic authentication.
+#
+# Returns:
+#
+# 	Array containing ( boolean authenticated, string username )
+#
 sub Authenticate {
 	my ($hash) = @_;
 	my ($sessionid, $key) = split /:/, decode_base64($hash);
@@ -50,7 +58,10 @@ sub Authenticate {
 	);
 } # end sub Authenticate
 
-# Function: Configuration
+# Function: Remitt::Utilities::Configuration
+#
+#	Get the global configuration object of type <Config::IniFiles>.
+#	Currently this is not cached.
 #
 # Returns:
 #
@@ -73,7 +84,7 @@ sub Configuration {
 	return new Config::IniFiles( -file => $my_config_file );
 } # end sub Configuration
 
-# Function: Fault
+# Function: Remitt::Utilities::Fault
 #
 #	Produce "authentication failed" XML-RPC fault.
 #	
@@ -81,7 +92,7 @@ sub Fault {
 	die ("Authentication failed. User not logged in");
 } # end sub Fault
 
-# Function: ForceAuthentication
+# Function: Remitt::Utilities::ForceAuthentication
 #
 #	Force authentication check using basic authentication. Uses
 #	basic authentication username and password to check against
@@ -97,7 +108,7 @@ sub ForceAuthentication {
 	return 1;
 } # end sub ForceAuthentication
 
-# Function: ResolveTranslationPlugin
+# Function: Remitt::Utilities::ResolveTranslationPlugin
 #
 #	The "Translation" layer of plugins for Remitt is a hidden layer,
 #	which means that the user only has to specify a "Render" layer
@@ -177,6 +188,25 @@ sub ResolveTranslationPlugin {
 	return '';
 } # end sub ResolveTranslationPlugin
 
+# Method: Remitt::Utilities::StoreContents
+#
+# 	Store output from a transport plugin, and return the data. This
+# 	is mostly necessary because the command-line interface does not
+# 	want the data stored on the server, but rather returned
+# 	immediately.
+#
+# Parameters:
+#
+# 	$input - Input data from the output of the transport layer plugin.
+#
+# 	$transport - Name of the transport plugin that is being used.
+#
+# 	$extension - Filename extension to use.
+#
+# Return:
+#
+# 	Data to return to calling subroutine.
+#
 sub StoreContents {
 	my ($input, $transport, $extension) = @_;
 
@@ -203,6 +233,29 @@ sub StoreContents {
 	}
 } # end sub StoreContents
 
+# Method: Remitt::Utilities::StoreFile
+#
+# 	Store actual file in the REMITT spool for a particular user. This
+# 	is more or less an internal function, and is called by
+# 	<Remitt::Utilities::StoreContents>.
+#
+# Parameters:
+#
+# 	$user - User name of user logged into REMITT server.
+#
+# 	$name - File name.
+#
+# 	$category - Type of file.
+#
+# 	$contents - String containing file contents.
+#
+# Returns:
+#
+# 	True if successful.
+#
+# SeeAlso:
+# 	<Remitt::Utilities::StoreContents>
+#
 sub StoreFile {
 	my $user = shift;
 	my $name = shift;

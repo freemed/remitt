@@ -3,6 +3,14 @@
 #	$Id$
 #	$Author$
 #
+# Package: Remitt::Plugin::Render::XSLT
+#
+# 	Render layer plugin for XSLT transformations. There really doesn't
+# 	have to be another plugin in use in this layer, as the fundamentals
+# 	of REMITT rely on this functionality, but it is hypothetically
+# 	possible to use another XSL transformation engine or another method
+# 	of rendering a document.
+#
 
 package Remitt::Plugin::Render::XSLT;
 
@@ -11,6 +19,23 @@ use XML::LibXSLT;
 use XML::LibXML;
 use Data::Dumper;
 
+# Method: Remitt::Plugin::Render::XSLT::Render
+#
+# 	Perform XSL transform. This is part of the Render plugin layer
+# 	API.
+#
+# Parameters:
+#
+# 	$input - Text to be transformed
+#
+# 	$option - Option to be passed to the XSL transformation engine.
+# 	(This is actually the XSL stylesheet to be used, without the
+# 	path or .xsl suffix)
+#
+# Returns:
+#
+# 	Intermediate XML file.
+#
 sub Render {
 	my ($input, $option) = @_;
 
@@ -38,6 +63,24 @@ sub Render {
 	return $stylesheet->output_string($results);	
 } # end sub Render
 
+# Method: Remitt::Plugin::Render::XSLT::Config
+#
+# 	Get configuration data for this plugin. This is part of the
+# 	REMITT Plugin API. This particular function reads the information
+# 	per XSL transformation stylesheet (which is stored in a specific
+# 	format in the XSL comment header) and returns a hash containing
+# 	the information for each sheet.
+#
+# 	This should probably be optimized, as there is no caching
+# 	presently implemented for this metainformation.
+#
+# Returns:
+#
+# 	Hash of configuration data.
+#
+# SeeAlso:
+# 	<GetConfigFromXSL>
+#
 sub Config {
 	# Read from all plugins
 	my %c;
@@ -62,6 +105,22 @@ sub Config {
 	};
 } # end sub Config
 
+# Method: Remitt::Plugin::Render::XSLT::GetConfigFromXSL
+#
+# 	Internal method used to read the individual configuration from
+# 	an XSL transform stylesheet's metainformation.
+#
+# Parameters:
+#
+# 	$xsl - Name of the XSL sheet, without the path or .xsl suffix
+#
+# Returns:
+#
+# 	Hash of configuration information.
+#
+# SeeAlso:
+# 	<Config>
+#
 sub GetConfigFromXSL {
 	my $xsl = shift;
 

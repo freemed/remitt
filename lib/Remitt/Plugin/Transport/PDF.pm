@@ -3,6 +3,8 @@
 #	$Id$
 #	$Author$
 #
+# Package: Remitt::Plugin::Transport::PDF
+#
 #	Dummy filed form plugin to return fixed form PDF
 #
 

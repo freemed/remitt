@@ -3,6 +3,11 @@
 #	$Id$
 #	$Author$
 #
+# Package: Remitt::Plugin::Translation::FixedFormPDF
+#
+# 	Translation layer plugin to provide PDF export from fixed
+# 	form description.
+#
 
 package Remitt::Plugin::Translation::FixedFormPDF;
 

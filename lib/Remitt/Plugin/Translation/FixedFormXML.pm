@@ -3,6 +3,11 @@
 #	$Id$
 #	$Author$
 #
+# Package: Remitt::Plugin::Translation::FixedFormXML
+#
+# 	Translation layer plugin to provide direct text rendering from
+# 	fixed form output.
+#
 
 package Remitt::Plugin::Translation::FixedFormXML;
 
