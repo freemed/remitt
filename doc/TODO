@@ -7,11 +7,13 @@ Server
 	Access Methods [done]
 	Generic 'Execute' call [done]
 	General configuration file, implemented across package [done]
-	Plugins for authorization/authentication, instead of embedded logic.
+	Plugins for authorization/authentication, instead of embedded logic. [done]
 	Debug FreeMED session name issue ... perhaps reference PHP client? [done]
 	Fork processes for Execute in XML-RPC server so we don't have to wait
 	  for a result [done]
 Plugin
+	Authentication
+		* SQLite plugin [done]
 	Render
 		XSLT
 		* Base class [done]
@@ -30,13 +32,21 @@ Plugin
 		  execute is called
 XSL
 	* Proof of concept test XSL [done]
-	* 837p.xsl [done]
+	* 837p.xsl - Rewrite looping logic in 837p to be smarter.
 	* hcfa1500.xsl [done]
 	* ub92.xsl - Add UB92 form support.
+	* Make more <xsl:message> tags so that things are actually logged.
+	* Output buffering for anything that needs it so that we can move
+	  to semi-sane logging
 FreeMED
 	class.Remitt.php
 		* Create XML export [done]
 		* XML-RPC interface routines, like class.FreeB_v1.php [done]
 	freeb.billing.module.php
 		* Create clone of this class for Remitt or interchangable
-			backends. [done]
+		  backends. [done]
+		* Create options to view logs.
+		* Create some sort of sorting or pagination for large numbers
+		  of output files, or give the option to "archive" old files
+		  to a directory or something ... this sounds like REMITT
+		  needs more XML-RPC functions to handle this.
