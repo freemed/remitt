@@ -62,15 +62,17 @@ sub ProcessElement {
 		return $content;
 	} elsif (length($content) < $clength) {
 		# Add spaces
+		#if ($e->{format} and $e->{format}->{right}) { print "element: ".Dumper($e)."\n"; }
 		while (length($content) < $clength) {
 			# Handle optional right justification
-			# example: <content right="1">Something</content>
-			if ($content->{right}) {
+			# example: <format right="1" />
+			if ($e->{format} and $e->{format}->{right}) {
 				$content = ' ' . $content;
 			} else {
 				$content .= ' ';
 			}
 		}
+		#if ($e->{format} and $e->{format}->{right}) { print "content after pad: \"".$content."\"\n"; }
 		#print "length of content = ".length($content)."\n";
 		return $content;
 	} elss {
