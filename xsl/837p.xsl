@@ -4,7 +4,7 @@
 	$Author$
 
 	Description: X12 NSF 837 Professional
-	OutputFormat: X12XML
+	OutputFormat: x12xml
 
 -->
 <xsl:stylesheet version="1.0" 
