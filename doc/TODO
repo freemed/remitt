@@ -2,19 +2,21 @@ $Id$
 $Author$
 
 Server
-	XML-RPC Basic Transport
-	Authentication
+	XML-RPC Basic Transport [done]
+	Authentication [done]
 	Access Methods
+	General configuration file, implemented across package
 Plugin
 	Render
 		XSLT
 		* Base class [done]
-		* Make individual parsers from this class?
+		* Gather options from actual XSL files
 	Translation
 		* FixedFormXML to Fixed Form [done]
 		* X12XML to X12 [done]
+		* Resolve translation plugins [done]
 	Transport
-		* Dummy transport module (to file)
+		* Dummy transport module (to file) [done]
 XSL
 	* Proof of concept test XSL
 	* 837p.xsl	
