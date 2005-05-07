@@ -19,6 +19,7 @@ package Remitt::Interface;
 
 use Remitt::Session;
 use Remitt::Utilities;
+use Remitt::DataStore;
 use Digest::MD5;
 use Sys::Syslog;
 use POSIX;
@@ -102,8 +103,9 @@ sub Execute {
 		die ( "Should never get here\n" );
 	}
 
-	# Create unique stamp to identify where we are now
-	my $unique = strftime('%Y%m%d.%H%M%S', localtime(time)).'Z';
+	# Use the data store to create a unique id
+	#print "Calling Remitt::DataStore::Create ( $username, $renderoption, $transport, XML )\n";
+	my $unique = Remitt::DataStore::Create( $username, $renderoption, $transport, $input );
 
 	# Here, we fork a new process, so that we can return a value in realtime.
 	my $results;
@@ -125,7 +127,7 @@ sub Execute {
 		# Store value in proper place in 'state' directory
 		if (defined($main::auth)) {
 			print "D-Child: storing state after successful run\n";
-			Remitt::Utilities::StoreFile($username, $unique, 'state', $results);
+			Remitt::DataStore::SetStatus($username, $unique, 1, $results);
 		}
 		
 		# Terminate child process
@@ -148,7 +150,9 @@ sub Execute {
 	
 		# Return actual value
 		print "D-Parent: returning $unique to calling program\n";
-		return $unique;
+
+		# Prefix this with a non-numeric character to prevent autotyping
+		return 'Z'.$unique;
 	} # end forking
 } # end sub Execute
 
@@ -273,7 +277,7 @@ sub GetStatus {
 	my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
 	return Remitt::Utilities::Fault() if (!$auth);
 
-	print "GetStatus called for $unique\n";
+	syslog('info', "Remitt.Interface.GetStatus called for $unique");
 
 	# Get username information
 	my $session = Remitt::Session->new($sessionid);
@@ -288,22 +292,23 @@ sub GetStatus {
 	# Handle issues with path names
 	return -2 if $unique =~ /[^0-9A-Z\.]/;
 
-	# Get filename
-	my $filename = $config->val('installation', 'path') .
-		'/spool/' . $username . '/state/' . $unique;
-	print "GetStatus: trying to determine if $filename exists\n";
+	# Make sure leading 'Z' is stripped, if it's still there
+	$unique =~ s/^Z//;
+
+	# Get information from data store
+	#print "Calling getstatus\n";
+	my $status = Remitt::DataStore::GetStatus( $username, $unique );
+	#print "returned ".Dumper($status)."\n";
 
 	# If the file doesn't exist, return -1
-	if (!(-e $filename)) {
-		print "Shit! doesn't exist!\n";
+	if (!$status) {
+		syslog('info', "Remitt.Interface.GetStatus| Output doesn't exist yet (status was 0)");
 		return -1;
 	} else {
-		# Read "entire file" into buffer and return it
-		my $buffer;
-		open FILE, $filename or return '';
-		while (<FILE>) { $buffer .= $_; }
-		close FILE;
-		return $buffer;
+		# Send back filename from data store
+		syslog('info', "Remitt.Interface.GetStatus| Returning filename from datastore ( $username, $unique )");
+		#print Dumper(Remitt::DataStore::GetFilename( $username, $unique ) );
+		return Remitt::DataStore::GetFilename( $username, $unique );
 	}
 } # end sub GetStatus
 
