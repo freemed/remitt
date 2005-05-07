@@ -12,4 +12,6 @@ Debian (sarge/testing):
 	libcgi-session-perl
 	libconfig-inifiles-perl
 	libpdf-api2-perl
-
+	libdbd-sqlite3-perl
+	libcompress-zlib-perl
+	libwww-mechanize-perl
