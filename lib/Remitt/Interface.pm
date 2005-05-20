@@ -19,7 +19,7 @@ package Remitt::Interface;
 
 use Remitt::Session;
 use Remitt::Utilities;
-use Remitt::DataStore;
+use Remitt::DataStore::Output;
 use Digest::MD5;
 use Sys::Syslog;
 use POSIX;
@@ -104,8 +104,9 @@ sub Execute {
 	}
 
 	# Use the data store to create a unique id
-	#print "Calling Remitt::DataStore::Create ( $username, $renderoption, $transport, XML )\n";
-	my $unique = Remitt::DataStore::Create( $username, $renderoption, $transport, $input );
+	#print "Calling Remitt::DataStore::Create ( $renderoption, $transport, XML )\n";
+	my $ds = Remitt::DataStore::Output->new($username);
+	my $unique = $ds->Create( $renderoption, $transport, $input );
 
 	# Here, we fork a new process, so that we can return a value in realtime.
 	my $results;
@@ -127,7 +128,7 @@ sub Execute {
 		# Store value in proper place in 'state' directory
 		if (defined($main::auth)) {
 			print "D-Child: storing state after successful run\n";
-			Remitt::DataStore::SetStatus($username, $unique, 1, $results);
+			$ds->SetStatus($unique, 1, $results);
 		}
 		
 		# Terminate child process
@@ -297,7 +298,8 @@ sub GetStatus {
 
 	# Get information from data store
 	#print "Calling getstatus\n";
-	my $status = Remitt::DataStore::GetStatus( $username, $unique );
+	my $ds = Remitt::DataStore::Output->new($username);
+	my $status = $ds->GetStatus( $unique );
 	#print "returned ".Dumper($status)."\n";
 
 	# If the file doesn't exist, return -1
@@ -307,8 +309,8 @@ sub GetStatus {
 	} else {
 		# Send back filename from data store
 		syslog('info', "Remitt.Interface.GetStatus| Returning filename from datastore ( $username, $unique )");
-		#print Dumper(Remitt::DataStore::GetFilename( $username, $unique ) );
-		return Remitt::DataStore::GetFilename( $username, $unique );
+		#print Dumper($ds->GetFilename( $unique ) );
+		return $ds->GetFilename( $unique );
 	}
 } # end sub GetStatus
 

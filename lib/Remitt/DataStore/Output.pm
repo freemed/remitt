@@ -3,12 +3,12 @@
 #	$Id$
 #	$Author$
 #
-# Package: Remitt::DataStore
+# Package: Remitt::DataStore::Output
 #
 #	Manage REMITT output using SQLite
 #
 
-package Remitt::DataStore;
+package Remitt::DataStore::Output;
 
 use Remitt::Utilities;
 use Data::Dumper;
@@ -22,13 +22,28 @@ use Data::Dumper;
 
 require DBD::SQLite;
 
+# Method: new
+#
+# 	Constructor
+#
+# Parameters:
+#
+# 	$username - Username for REMITT account
+#
+sub new {
+	my $class = shift;
+	my ( $username ) = @_;
+	my $self = {};
+	$self->{username} = $username;
+	bless $self, $class;
+	return $self;
+} # end constructor
+
 # Method: Create
 #
 # 	Adds a transaction to the data store
 #
 # Parameters:
-#
-# 	$username - Username for current account
 #
 # 	$format - Format used in Render plugin
 #
@@ -41,10 +56,10 @@ require DBD::SQLite;
 # 	Boolean, depending on success.
 #
 sub Create {
-	my ( $username, $format, $transport, $data ) = @_;
+	my ( $self, $format, $transport, $data ) = @_;
 
 	# Make sure database is initialized
-	my $_x = Remitt::DataStore::Init($username);
+	my $_x = $self->Init();
 
 	# Start deflation
 	#my $compressed_data = Compress::Zlib::memGzip($data);
@@ -54,7 +69,7 @@ sub Create {
 	#print Dumper($compressed_data);
 
 	# Open appropriate file
-	my $d = Remitt::DataStore::_Handle ( $username );
+	my $d = $self->_Handle();
 	my $s = $d->prepare('INSERT INTO data '.
 		'( generated, status, used_format, used_transport, original_data ) '.
 		'VALUES ( date(\'now\'), ?, ?, ?, ? )');
@@ -80,8 +95,6 @@ sub Create {
 #
 # Parameters:
 #
-# 	$username - Username for current account
-#
 # 	$id - Unique OID describing field
 #
 # Returns:
@@ -89,11 +102,11 @@ sub Create {
 # 	Status of file specified by OID. (0 = not finished, 1 = finished)
 # 	
 sub GetFilename {
-	my ($username, $id) = @_;
+	my ($self, $id) = @_;
 
 	# Make sure database is initialized
-	my $_x = Remitt::DataStore::Init($username);
-	my $d = Remitt::DataStore::_Handle($username);
+	my $_x = $self->Init();
+	my $d = $self->_Handle();
 	my $s = $d->prepare('SELECT filename FROM data WHERE OID=?');
 	my $r = $s->execute($id);
 	if ($r) {
@@ -108,8 +121,6 @@ sub GetFilename {
 #
 # Parameters:
 #
-# 	$username - Username for current account
-#
 # 	$id - Unique OID describing field
 #
 # Returns:
@@ -117,11 +128,11 @@ sub GetFilename {
 # 	Status of file specified by OID. (0 = not finished, 1 = finished)
 # 	
 sub GetStatus {
-	my ($username, $id) = @_;
+	my ($self, $id) = @_;
 
 	# Make sure database is initialized
-	my $_x = Remitt::DataStore::Init($username);
-	my $d = Remitt::DataStore::_Handle($username);
+	my $_x = $self->Init();
+	my $d = $self->_Handle();
 	my $s = $d->prepare('SELECT status FROM data WHERE OID=?');
 	my $r = $s->execute($id);
 	if ($r) {
@@ -136,27 +147,23 @@ sub GetStatus {
 #
 # 	Initialize the database, if this has not been done so already.
 #
-# Parameters:
-#
-# 	$username - Username information
-#
 # Returns:
 #
 # 	Boolean, depending on success.
 #
 sub Init {
-	my ( $username ) = @_;
+	my ( $self ) = @_;
 
 	# Open appropriate file
 	my $config = Remitt::Utilities::Configuration ( );
-	my $p = $config->val('installation', 'path').'/spool/'.$username;
-	my $f = $p.'/data.db';
+	my $p = $config->val('installation', 'path').'/spool/'.$self->{username};
+	my $f = $p.'/data_output.db';
 	#print "(file = $f)\n";
 	if ( -e $f ) {
 		# Skip
 		return 1;
 	} else {
-		syslog('info', "Remitt.DataStore.Init| creating $f for $username");
+		syslog('info', "Remitt.DataStore.Output.Init| creating $f for $self->{username}");
 		umask 000;
 		mkpath($p, 1, 0755);
 		my $d = DBI->connect('dbi:SQLite:dbname='.$f, '', '');
@@ -173,11 +180,23 @@ sub Init {
 	}
 } # end method Init
 
-# Method: SetStatus
+# Method: Search
 #
 # Parameters:
 #
-# 	$username - Username for current account
+# 	$criteria - Hash of criteria information
+#
+# Returns:
+#
+# 	Array of results
+#
+sub Search {
+
+} # end method Search
+
+# Method: SetStatus
+#
+# Parameters:
 #
 # 	$id - Unique OID describing field
 #
@@ -186,11 +205,11 @@ sub Init {
 # 	$filename - New filename to set
 #
 sub SetStatus {
-	my ($username, $id, $status, $filename) = @_;
+	my ( $self, $id, $status, $filename) = @_;
 
 	# Make sure database is initialized
-	my $_x = Remitt::DataStore::Init($username);
-	my $d = Remitt::DataStore::_Handle($username);
+	my $_x = $self->Init();
+	my $d = $self->_Handle();
 	my $s = $d->prepare('UPDATE data SET status=?, filename=?, generated_end=date(\'now\') WHERE OID=?');
 	my $r = $s->execute($status, $filename, $id);
 } # end method SetStatus
@@ -199,31 +218,28 @@ sub SetStatus {
 # 
 # 	Return appropriate database handle
 # 	
-# Parameters:
-#
-# 	$username - Current user account
-#
 # Returns:
 #
 # 	DBI handle
 #
 sub _Handle {
-	my $username = shift;
+	my ( $self ) = shift;
 	# Open appropriate file
 	my $config = Remitt::Utilities::Configuration ( );
-	my $f = $config->val('installation', 'path').'/spool/'.$username.'/data.db';
+	my $f = $config->val('installation', 'path').'/spool/'.$self->{username}.'/data_output.db';
 	return DBI->connect('dbi:SQLite:dbname='.$f, '', '');
 } # end sub _Handle
 
 sub test {
+	$obj = new Remitt::DataStore::Output->new ( 'test' );
 	#print " * Creating temporary output state ... "; 
-	#my $x = Remitt::DataStore::Create('test', 'testformat', 'testtransport', '<?xml version="1.0"?><test/>');
+	#my $x = $obj->Create('testformat', 'testtransport', '<?xml version="1.0"?><test/>');
 	#if ($x) { print "passed ($x)\n"; } else { print "failed\n"; }
 	print " * Checking status of 11 ... "; 
-	my $x2 = Remitt::DataStore::GetStatus('test', '11');
+	my $x2 = $obj->GetStatus('11');
 	if ($x2) { print "passed ($x2)\n"; } else { print "failed ($x2)\n"; }
 	print " * Checking filename of 11 ... "; 
-	my $x3 = Remitt::DataStore::GetFilename('test', '11');
+	my $x3 = $obj->GetFilename('11');
 	if ($x3) { print "passed ($x3)\n"; } else { print "failed ($x3)\n"; }
 } # end sub test
 
