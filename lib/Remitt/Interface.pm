@@ -165,6 +165,10 @@ sub Execute {
 # 
 # 	$category - Category of file under the current user.
 #
+# 	$criteria - Criteria to narrow by (year, etc)
+#
+# 	$value - Value to narrow by
+#
 # Returns:
 #
 # 	Array of files found for the current user and category criteria.
@@ -173,17 +177,17 @@ sub Execute {
 #
 sub FileList {
 	shift if UNIVERSAL::isa($_[0] => __PACKAGE__);
-        my $category = shift;
+	my ( $category, $criteria, $value ) = @_;
 	my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
 	my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
 	return Remitt::Utilities::Fault() if (!$auth);
 
 	# Get username information
 	my $session = Remitt::Session->new($sessionid);
-	$session->load();
+		$session->load();
 	my $username = $session->{session}->param('username');
 
-	syslog('info', 'Remitt.Interface.FileList called by %s for %s', $username, $category);
+	syslog('info', 'Remitt.Interface.FileList called by %s for %s', $username, Dumper($category));
 
 	# Get configuration information
 	my $config = Remitt::Utilities::Configuration ( );
@@ -191,19 +195,13 @@ sub FileList {
 	# Handle issues with path names
 	return [ ] if $category =~ /[\\\/.\ \;\[\]\(\)]/;
 
-	my $path = $config->val('installation', 'path') .
-		'/spool/' . $username . '/' . $category . '/';
-	#print "path resolved to $path\n";
-
-	# Recurse through files
-	my @files;
-	opendir DH, $path or return [ ];
-	foreach my $file ( readdir DH ) {
-		next if $file =~ /^\./;
-		next if $file =~ /Makefile/;
-		push @files, $file;
+	# Handle output
+	if ($category eq 'output') {
+		my $ds = Remitt::DataStore::Output->new($username);
+		#print "for output, searching $criteria = $value\n";
+		my $reports = $ds->Search($criteria, $value);
+		return $reports;
 	}
-	return \@files;
 } # end sub FileList
 
 # Method: Remitt.Interface.GetFile
@@ -313,6 +311,32 @@ sub GetStatus {
 		return $ds->GetFilename( $unique );
 	}
 } # end sub GetStatus
+
+# Method: Remitt.Interface.GetOutputYears
+#
+#	Get list of available years of output
+#
+# Returns:
+#
+# 	Array of years.
+#
+sub GetOutputYears {
+	shift if UNIVERSAL::isa($_[0] => __PACKAGE__);
+	my ( $category, $_criteria ) = shift; my %criteria = %{$_criteria};
+	my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
+	my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
+	return Remitt::Utilities::Fault() if (!$auth);
+
+	# Get username information
+	my $session = Remitt::Session->new($sessionid);
+		$session->load();
+	my $username = $session->{session}->param('username');
+
+	syslog('info', 'Remitt.Interface.GetOutputYears called by %s', $username);
+
+	my $ds = Remitt::DataStore::Output->new($username);
+	return $ds->DistinctYears( );
+} # end Remitt.Interface.GetOutputYears
 
 # Method: Remitt.Interface.ListOptions
 #
@@ -479,7 +503,7 @@ sub SystemLogout {
 #
 sub ProtocolVersion {
 	shift if UNIVERSAL::isa($_[0] => __PACKAGE__);
-	return 1.0;
+	return "1.1";
 } # end sub ProtocolVersion
 
 1;
