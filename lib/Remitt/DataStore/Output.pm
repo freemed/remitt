@@ -137,7 +137,7 @@ sub GetFilename {
 	my $r = $s->execute($id);
 	if ($r) {
 		my $h = $s->fetchrow_arrayref;
-		print Dumper($h);
+		#print Dumper($h);
 		return $h->[0];
 	} else {
 		return 0;
@@ -164,7 +164,7 @@ sub GetStatus {
 	my $r = $s->execute($id);
 	if ($r) {
 		my $h = $s->fetchrow_arrayref;
-		print "GetStatus: "; print Dumper($h);
+		#print "GetStatus: "; print Dumper($h);
 		return $h->[0];
 	} else {
 		return 0;
@@ -197,6 +197,7 @@ sub Init {
 		my $d = DBI->connect('dbi:SQLite:dbname='.$f, '', '');
 		my $s = $d->do('CREATE TABLE output ( '.
 			'filename VARCHAR UNIQUE, '.
+			'filesize INTEGER, '.
 			'generated DATE, '.
 			'generated_end DATE, '.
 			'status INTEGER, '.
@@ -232,18 +233,19 @@ sub Search {
 
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $q ='SELECT filename, DATETIME(generated) AS generated_on, used_format, used_transport FROM output WHERE '.$clause.' ORDER BY generated';
+	my $q ='SELECT filename, DATETIME(generated) AS generated_on, used_format, used_transport, filesize FROM output WHERE '.$clause.' ORDER BY generated';
 	my $s = $d->prepare($q);
 	my $r = $s->execute;
 	if ($r) {
 		my $results;
 		while (my $data = $s->fetchrow_arrayref) {
 			#print "found $data->[0] count of $data->[1]\n";
-			print Dumper($data);
+			#print Dumper($data);
 			$results->{$data->[0]} = {
 				'generated' => $data->[1],
 				'format' => $data->[2],
-				'transport' => $data->[3]
+				'transport' => $data->[3],
+				'filesize' => $data->[4]
 			};
 		}
 		return $results;
@@ -265,11 +267,17 @@ sub Search {
 sub SetStatus {
 	my ( $self, $id, $status, $filename) = @_;
 
+	# Get file size
+	my $config = Remitt::Utilities::Configuration ( );
+	my $p = $config->val('installation', 'path').'/spool/'.$self->{username}.'/output/'.$filename;
+	my $file_size = ( -s $p );
+	#print "file size for $p is $file_size\n";
+
 	# Make sure database is initialized
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $s = $d->prepare('UPDATE output SET status=?, filename=?, generated_end=DATETIME(\'now\') WHERE OID=?');
-	my $r = $s->execute($status, $filename, $id);
+	my $s = $d->prepare('UPDATE output SET status=?, filename=?, filesize=?, generated_end=DATETIME(\'now\') WHERE OID=?');
+	my $r = $s->execute($status, $filename, $file_size, $id);
 } # end method SetStatus
 
 # Method: _Handle
