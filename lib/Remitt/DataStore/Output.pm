@@ -70,9 +70,9 @@ sub Create {
 
 	# Open appropriate file
 	my $d = $self->_Handle();
-	my $s = $d->prepare('INSERT INTO data '.
+	my $s = $d->prepare('INSERT INTO output '.
 		'( generated, status, used_format, used_transport, original_data ) '.
-		'VALUES ( date(\'now\'), ?, ?, ?, ? )');
+		'VALUES ( DATETIME(\'now\'), ?, ?, ?, ? )');
 	my $r = $s->execute(
 		'0',			# status is 0, since it isn't done
 		$format,		# format used in rendering
@@ -81,7 +81,7 @@ sub Create {
 	);
 
 	# Get id to give back
-	my $s2 = $d->prepare('SELECT OID,JULIANDAY(generated) FROM data ORDER BY JULIANDAY(generated) DESC');
+	my $s2 = $d->prepare('SELECT OID,JULIANDAY(generated) FROM output ORDER BY JULIANDAY(generated) DESC');
 	my $r2 = $s2->execute;
 	if ($r2) {
 		my $data = $s2->fetchrow_arrayref;
@@ -90,6 +90,32 @@ sub Create {
 		return 0;
 	}
 } # end method Create
+
+# Method: DistinctYears
+#
+# 	Determine all distinct years of output.
+#
+# Returns:
+#
+# 	Array of distinct years in output generation stamps.
+#
+sub DistinctYears {
+	my ( $self ) = @_;
+	my $_x = $self->Init();
+	my $d = $self->_Handle();
+	my $s = $d->prepare('SELECT STRFTIME(\'%Y\', generated) AS year, COUNT(*) AS counted FROM output GROUP BY year ORDER BY year');
+	my $r = $s->execute;
+	if ($r) {
+		my $results;
+		while (my $data = $s->fetchrow_arrayref) {
+			#print "found $data->[0] count of $data->[1]\n";
+			$results->{$data->[0]} = $data->[1];
+		}
+		return $results;
+	} else {
+		return {};
+	}
+} # end method DistinctYears
 
 # Method: GetFilename
 #
@@ -107,10 +133,11 @@ sub GetFilename {
 	# Make sure database is initialized
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $s = $d->prepare('SELECT filename FROM data WHERE OID=?');
+	my $s = $d->prepare('SELECT filename FROM output WHERE OID=?');
 	my $r = $s->execute($id);
 	if ($r) {
 		my $h = $s->fetchrow_arrayref;
+		print Dumper($h);
 		return $h->[0];
 	} else {
 		return 0;
@@ -133,10 +160,11 @@ sub GetStatus {
 	# Make sure database is initialized
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $s = $d->prepare('SELECT status FROM data WHERE OID=?');
+	my $s = $d->prepare('SELECT status FROM output WHERE OID=?');
 	my $r = $s->execute($id);
 	if ($r) {
 		my $h = $s->fetchrow_arrayref;
+		print "GetStatus: "; print Dumper($h);
 		return $h->[0];
 	} else {
 		return 0;
@@ -157,7 +185,7 @@ sub Init {
 	# Open appropriate file
 	my $config = Remitt::Utilities::Configuration ( );
 	my $p = $config->val('installation', 'path').'/spool/'.$self->{username};
-	my $f = $p.'/data_output.db';
+	my $f = $p.'/data.db';
 	#print "(file = $f)\n";
 	if ( -e $f ) {
 		# Skip
@@ -167,7 +195,7 @@ sub Init {
 		umask 000;
 		mkpath($p, 1, 0755);
 		my $d = DBI->connect('dbi:SQLite:dbname='.$f, '', '');
-		my $s = $d->do('CREATE TABLE data ( '.
+		my $s = $d->do('CREATE TABLE output ( '.
 			'filename VARCHAR UNIQUE, '.
 			'generated DATE, '.
 			'generated_end DATE, '.
@@ -184,14 +212,44 @@ sub Init {
 #
 # Parameters:
 #
-# 	$criteria - Hash of criteria information
+# 	$criteria - Type to search by
+#
+# 	$value - Value to search on
 #
 # Returns:
 #
 # 	Array of results
 #
 sub Search {
+	my ( $self, $criteria, $value ) = @_;
+	my $clause;
+	if ($criteria eq 'year') {
+		$clause = 'STRFTIME(\'%Y\', generated) = \''.$value.'\'';
+	} else {
+		# Return nothing if unknown
+		return [];
+	}
 
+	my $_x = $self->Init();
+	my $d = $self->_Handle();
+	my $q ='SELECT filename, DATETIME(generated) AS generated_on, used_format, used_transport FROM output WHERE '.$clause.' ORDER BY generated';
+	my $s = $d->prepare($q);
+	my $r = $s->execute;
+	if ($r) {
+		my $results;
+		while (my $data = $s->fetchrow_arrayref) {
+			#print "found $data->[0] count of $data->[1]\n";
+			print Dumper($data);
+			$results->{$data->[0]} = {
+				'generated' => $data->[1],
+				'format' => $data->[2],
+				'transport' => $data->[3]
+			};
+		}
+		return $results;
+	} else {
+		return [];
+	}
 } # end method Search
 
 # Method: SetStatus
@@ -210,7 +268,7 @@ sub SetStatus {
 	# Make sure database is initialized
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $s = $d->prepare('UPDATE data SET status=?, filename=?, generated_end=date(\'now\') WHERE OID=?');
+	my $s = $d->prepare('UPDATE output SET status=?, filename=?, generated_end=DATETIME(\'now\') WHERE OID=?');
 	my $r = $s->execute($status, $filename, $id);
 } # end method SetStatus
 
@@ -226,7 +284,7 @@ sub _Handle {
 	my ( $self ) = shift;
 	# Open appropriate file
 	my $config = Remitt::Utilities::Configuration ( );
-	my $f = $config->val('installation', 'path').'/spool/'.$self->{username}.'/data_output.db';
+	my $f = $config->val('installation', 'path').'/spool/'.$self->{username}.'/data.db';
 	return DBI->connect('dbi:SQLite:dbname='.$f, '', '');
 } # end sub _Handle
 
