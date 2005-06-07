@@ -312,6 +312,33 @@ sub GetStatus {
 	}
 } # end sub GetStatus
 
+# Method: Remitt.Interface.GetOutputMonths
+#
+#	Get list of available months of output for a particular year.
+#
+# Returns:
+#
+# 	Array of month stamps (YYYY-MM).
+#
+sub GetOutputMonths {
+	shift if UNIVERSAL::isa($_[0] => __PACKAGE__);
+	my $year = shift;
+
+	my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
+	my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
+	return Remitt::Utilities::Fault() if (!$auth);
+
+	# Get username information
+	my $session = Remitt::Session->new($sessionid);
+	$session->load();
+	my $username = $session->{session}->param('username');
+
+	syslog('info', 'Remitt.Interface.GetOutputMonths called by %s with %d', $username, $year);
+
+	my $ds = Remitt::DataStore::Output->new($username);
+	return $ds->DistinctMonths( $year );
+} # end Remitt.Interface.GetOutputMonths
+
 # Method: Remitt.Interface.GetOutputYears
 #
 #	Get list of available years of output
@@ -322,14 +349,13 @@ sub GetStatus {
 #
 sub GetOutputYears {
 	shift if UNIVERSAL::isa($_[0] => __PACKAGE__);
-	my ( $category, $_criteria ) = shift; my %criteria = %{$_criteria};
 	my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
 	my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
 	return Remitt::Utilities::Fault() if (!$auth);
 
 	# Get username information
 	my $session = Remitt::Session->new($sessionid);
-		$session->load();
+	$session->load();
 	my $username = $session->{session}->param('username');
 
 	syslog('info', 'Remitt.Interface.GetOutputYears called by %s', $username);

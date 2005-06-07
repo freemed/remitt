@@ -91,6 +91,36 @@ sub Create {
 	}
 } # end method Create
 
+# Method: DistinctMonths
+#
+# 	Determine all distinct months of output in a given year.
+#
+# Parameters:
+#
+# 	$year - Year to scan for output months.
+#
+# Returns:
+#
+# 	Array of distinct years in output generation stamps.
+#
+sub DistinctMonths {
+	my ( $self, $year ) = @_;
+	my $_x = $self->Init();
+	my $d = $self->_Handle();
+	my $s = $d->prepare('SELECT STRFTIME(\'%Y-%m\', generated) AS month, STRFTIME(\'%Y\', generated) AS year, COUNT(*) AS counted FROM output GROUP BY month WHERE year=? ORDER BY month');
+	my $r = $s->execute($year);
+	if ($r) {
+		my $results;
+		while (my $data = $s->fetchrow_arrayref) {
+			#print "found $data->[0] count of $data->[1]\n";
+			$results->{$data->[0]} = $data->[1];
+		}
+		return $results;
+	} else {
+		return 0;
+	}
+} # end method DistinctMonths
+
 # Method: DistinctYears
 #
 # 	Determine all distinct years of output.
@@ -113,7 +143,7 @@ sub DistinctYears {
 		}
 		return $results;
 	} else {
-		return {};
+		return 0;
 	}
 } # end method DistinctYears
 
@@ -226,6 +256,8 @@ sub Search {
 	my $clause;
 	if ($criteria eq 'year') {
 		$clause = 'STRFTIME(\'%Y\', generated) = \''.$value.'\'';
+	} elsif ($criteria eq 'month') {
+		$clause = 'STRFTIME(\'%Y-%m\', generated) = \''.$value.'\'';
 	} else {
 		# Return nothing if unknown
 		return [];
