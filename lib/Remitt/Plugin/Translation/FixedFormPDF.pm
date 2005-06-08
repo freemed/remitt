@@ -98,7 +98,8 @@ sub ProcessPage {
 	# Create text page object
 	my $page = $pdf->openpage($pagecount);
 	my $txt = $page->text;
-	$txt->font($pdf->corefont($font_name, 1), $font_size);
+	my $corefont = $pdf->corefont($font_name, 1);
+	$txt->font($corefont, $font_size);
 
 	# First, sort everything by row, then column. Hash should do it.
 	foreach my $e (@{$p->{element}}) {
@@ -115,6 +116,22 @@ sub ProcessPage {
 	foreach my $k (@h) {
 		foreach my $e (values %{$k}) {
 			#print Dumper($e);
+			
+			# If we have any attributes, set them
+			if ($e->{attributes} =~ /HASH\(/) {
+				my %attr;
+				
+				# Translate to the appropriate hash
+				if ($e->{attributes}->{bold}) { $attr{-bold} = 2; }
+				if ($e->{attributes}->{italic}) { $attr{-slant} = 0.85; }
+
+				# Create "synthetic font" from the core font
+				my $sf = $pdf->synfont($corefont, %attr);
+				$txt->font($sf, $font_size);
+			} else {
+				# Set text to normal
+				$txt->font($corefont, $font_size);
+			}
 
 			# Set positioning
 			$txt->translate((($e->{column} + CalculateJustifyOffset($e)) * $h_scaling) + $h_offset,
