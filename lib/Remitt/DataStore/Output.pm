@@ -97,23 +97,30 @@ sub Create {
 #
 # Parameters:
 #
-# 	$year - Year to scan for output months.
+# 	$year - (optional) Year to scan for output months.
 #
 # Returns:
 #
 # 	Array of distinct years in output generation stamps.
 #
 sub DistinctMonths {
-	my ( $self, $year ) = @_;
+	my $self = shift;
+	my ( $year ) = @_;
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $s = $d->prepare('SELECT STRFTIME(\'%Y-%m\', generated) AS month, STRFTIME(\'%Y\', generated) AS year, COUNT(*) AS counted FROM output GROUP BY month WHERE year=? ORDER BY month');
-	my $r = $s->execute($year);
+	$year =~ s/[^0-9]//g;
+	my $s;
+	if ($y) {
+		$s = $d->prepare('SELECT STRFTIME(\'%Y-%m\', generated) AS month, STRFTIME(\'%Y\', generated) AS year, COUNT(OID) AS my_count FROM output WHERE year=\''.$year.'\' GROUP BY month ORDER BY month DESC');
+	} else {
+		$s = $d->prepare('SELECT STRFTIME(\'%Y-%m\', generated) AS month, STRFTIME(\'%Y\', generated) AS year, COUNT(OID) AS my_count FROM output GROUP BY month ORDER BY month DESC');
+	}
+	my $r = $s->execute; #($year);
 	if ($r) {
 		my $results;
-		while (my $data = $s->fetchrow_arrayref) {
-			#print "found $data->[0] count of $data->[1]\n";
-			$results->{$data->[0]} = $data->[1];
+		while (my $data = $s->fetchrow_hashref) {
+			print Dumper($data);
+			$results->{$data->{'month'}} = $data->{'my_count'};
 		}
 		return $results;
 	} else {
@@ -265,7 +272,7 @@ sub Search {
 
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $q ='SELECT filename, DATETIME(generated) AS generated_on, used_format, used_transport, filesize FROM output WHERE '.$clause.' ORDER BY generated';
+	my $q ='SELECT filename, DATETIME(generated) AS generated_on, used_format, used_transport, filesize, ABS(JULIANDAY(generated_end)*86400 - JULIANDAY(generated)*86400) AS execute_time FROM output WHERE '.$clause.' ORDER BY generated';
 	my $s = $d->prepare($q);
 	my $r = $s->execute;
 	if ($r) {
@@ -277,7 +284,8 @@ sub Search {
 				'generated' => $data->[1],
 				'format' => $data->[2],
 				'transport' => $data->[3],
-				'filesize' => $data->[4]
+				'filesize' => $data->[4],
+				'time' => $data->[5]
 			};
 		}
 		return $results;
