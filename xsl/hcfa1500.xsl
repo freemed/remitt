@@ -4,6 +4,7 @@
 	$Author$
 
 	Description: HCFA-1500/CMS-1500
+	InputFormat: payerxml
 	OutputFormat: fixedformxml
 	Media: Paper
 

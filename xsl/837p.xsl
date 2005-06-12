@@ -4,6 +4,7 @@
 	$Author$
 
 	Description: X12 NSF 837 Professional
+	InputFormat: payerxml
 	OutputFormat: x12xml
 	Media: Electronic
 
