@@ -74,6 +74,10 @@ sub Render {
 # 	This should probably be optimized, as there is no caching
 # 	presently implemented for this metainformation.
 #
+# Parameters:
+#
+# 	$option - (optional) Specify the input XML format required.
+#
 # Returns:
 #
 # 	Hash of configuration data.
@@ -85,6 +89,8 @@ sub Config {
 	# Read from all plugins
 	my %c;
 
+	my $option = shift;
+
 	my $config = Remitt::Utilities::Configuration ( );
 	my $path = $config->val('installation', 'path');
 
@@ -92,7 +98,12 @@ sub Config {
 	foreach my $xsl (readdir DH) {
 		if ($xsl =~ /\.xsl$/) {
 			$xsl =~ s/\.xsl$//;
-			$c{$xsl} = GetConfigFromXSL($xsl);
+			if ($option) {
+				my $temp = GetConfigFromXSL($xsl);
+				$c{$xsl} = $temp if ($temp->{InputFormat} eq $option);
+			} else {
+				$c{$xsl} = GetConfigFromXSL($xsl);
+			}
 		}
 	}
 

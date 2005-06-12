@@ -374,6 +374,10 @@ sub GetOutputYears {
 #
 #	$plugin - Plugin name
 #
+#	$option - (optional) Option to pass to Config method. This is used to
+#	qualify the list of options, used primarily to qualify the XSLT
+#	stylesheets based on the format of XML they use.
+#
 # Returns:
 #
 #	Struct of arrays containing options and information, or empty
@@ -386,14 +390,20 @@ sub ListOptions {
 	# Get pararmeters
 	my $type = shift;
 	my $plugin = shift;
+	my $option = shift;
 
 	# Sanitize parameters
 	$type =~ s/\W//g;
 	$plugin =~ s/\W//g;
+	$option =~ s/\W//g if $option;
 
 	my $config = { };	
 	eval 'use Remitt::Plugin::'.$type.'::'.$plugin.';';
-	eval '$config = Remitt::Plugin::'.$type.'::'.$plugin.'::Config();';
+	if ($option) {
+		eval '$config = Remitt::Plugin::'.$type.'::'.$plugin.'::Config("'.$option.'");';
+	} else {
+		eval '$config = Remitt::Plugin::'.$type.'::'.$plugin.'::Config();';
+	}
 	return $config->{'Options'};
 } # end sub ListOptions
 
