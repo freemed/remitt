@@ -77,11 +77,7 @@ sub Execute {
 	$transport =~ s/\W//g;
 
 	# Get username information
-	my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
-	my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
-	my $session = Remitt::Session->new($sessionid);
-	$session->load();
-	my $username = $session->{session}->param('username');
+	my $username = Remitt::Utilities::GetUsername();
 
 	# Get resolve for translation plugin
 	my $translation = Remitt::Utilities::ResolveTranslationPlugin (

@@ -27,6 +27,7 @@ sub Transport {
 	# 	that isn't going to fly with HIPAA regulations, methinks.
 	#
 	my $c = Remitt::Utilities::Configuration ();
+	my $user = Remitt::Utilities::GetUsername();
 	my $username = $c->val('freeclaims', $user.'-username');
 	my $password = $c->val('freeclaims', $user.'-password');
 

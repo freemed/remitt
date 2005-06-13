@@ -37,7 +37,8 @@ sub _curl_open {
 
 	my $config = Remitt::Utilities::Configuration ( );
 
-	# FIXME: Need to get user name and put in '$user' variable
+	# Get user name and put in '$user' variable
+	my $username = Remitt::Utilities::GetUsername();
 
 	my $parameters;
 	foreach $key (keys %param) {

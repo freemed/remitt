@@ -93,6 +93,22 @@ sub Fault {
 	die ("Authentication failed. User not logged in");
 } # end sub Fault
 
+# Function: Remitt::Utilities::GetUsername
+#
+# 	Derive username of current user from HTTP headers.
+#
+# Returns:
+#
+# 	String containing username.
+#
+sub GetUsername {
+	my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
+	my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
+	my $session = Remitt::Session->new($sessionid);
+	$session->load();
+	return $session->{session}->param('username');
+} end sub GetUsername        
+
 # Function: Remitt::Utilities::ForceAuthentication
 #
 #	Force authentication check using basic authentication. Uses
