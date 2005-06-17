@@ -15,9 +15,9 @@ use Remitt::Session;
 use Data::Dumper;
 
 sub Transport {
-	my ( $input ) = @_;
+	my ( $input, $username ) = @_;
 
-	return Remitt::Utilities::StoreContents ( $input, 'PDF', 'pdf');
+	return Remitt::Utilities::StoreContents ( $input, 'PDF', 'pdf', $username );
 } # end method Transport
 
 sub Config {

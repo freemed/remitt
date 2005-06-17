@@ -47,6 +47,9 @@ if (!$quiet) {
 	syslog('info', 'REMITT v'.$version.' XML-RPC server started');
 }
 
+# Start processor thread
+my $processor = new Thread \&Remitt::Utilities::ProcessorThread;
+
 $daemon = XMLRPC::Transport::HTTP::Daemon
 	-> new ( 
 		LocalPort => $port,

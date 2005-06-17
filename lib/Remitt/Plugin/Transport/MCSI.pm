@@ -62,7 +62,7 @@ sub _curl_open {
 } # end method _curl_open
 
 sub Transport {
-	my ( $input ) = @_;
+	my ( $input, $username ) = @_;
 
 	# Here's the cluster-fsck ...
 	#
@@ -107,7 +107,7 @@ sub Transport {
 		syslog('notice', 'MCSI transport| Claim file received');
 	}
 
-	return Remitt::Utilities::StoreContents ( $input, 'plaintext', 'txt');
+	return Remitt::Utilities::StoreContents ( $input, 'plaintext', 'txt', $username );
 } # end method Transport
 
 # Method: Config

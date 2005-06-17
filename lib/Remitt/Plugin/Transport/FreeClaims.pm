@@ -17,7 +17,7 @@ use WWW::Mechanize;
 use Data::Dumper;
 
 sub Transport {
-	my ( $input ) = @_;
+	my ( $input, $username ) = @_;
 
 	# Here's the cluster-fsck ...
 	#
@@ -28,8 +28,8 @@ sub Transport {
 	#
 	my $c = Remitt::Utilities::Configuration ();
 	my $user = Remitt::Utilities::GetUsername();
-	my $username = $c->val('freeclaims', $user.'-username');
-	my $password = $c->val('freeclaims', $user.'-password');
+	my $f_username = $c->val('freeclaims', $user.'-username');
+	my $f_password = $c->val('freeclaims', $user.'-password');
 
 	# Have to write input to temporary bill file ...
 	# name should be stored in "$tempbillfile"
@@ -52,8 +52,8 @@ sub Transport {
 	$m->submit_form(
 		form_name => 'loginForm',
 		fields => {
-			username => $username,
-			userpassword => $password
+			username => $f_username,
+			userpassword => $f_password
 		}
 	);
 	print "[done]\n";
@@ -73,7 +73,7 @@ sub Transport {
 	);
 	print "[done]\n";
 
-	return Remitt::Utilities::StoreContents ( $input, 'plaintext', 'txt');
+	return Remitt::Utilities::StoreContents ( $input, 'plaintext', 'txt', $username);
 } # end method Transport
 
 # Method: Config

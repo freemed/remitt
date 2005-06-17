@@ -22,7 +22,7 @@ use Remitt::Utilities;
 use Remitt::DataStore::Output;
 use Digest::MD5;
 use Sys::Syslog;
-use POSIX;
+#use POSIX;
 
 use Data::Dumper;
 
@@ -106,51 +106,24 @@ sub Execute {
 
 	# Here, we fork a new process, so that we can return a value in realtime.
 	my $results;
-	my $child;
-	if (!defined($child = fork())) {
-		die "Cannot fork process: $!\n";
-	} elsif ($child == 0) {
-		#----- Child branch
-		print "D-Child: running execute code\n";
-		my ( $x, $y, $results );
-		eval 'use Remitt::Plugin::Render::'.$render.';';
-		eval 'use Remitt::Plugin::Translation::'.$translation.';';
-		eval 'use Remitt::Plugin::Transport::'.$transport.';';
-		eval '$x = Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption);';
-		eval '$y = Remitt::Plugin::Translation::'.$translation.'::Translate($x);';
-		eval '$results = Remitt::Plugin::Transport::'.$transport.'::Transport($y);';
-		#eval '$results = Remitt::Plugin::Transport::'.$transport.'::Transport(Remitt::Plugin::Translation::'.$translation.'::Translate(Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption)));';
 
-		# Store value in proper place in 'state' directory
-		if (defined($main::auth)) {
-			print "D-Child: storing state after successful run\n";
-			$ds->SetStatus($unique, 1, $results);
-		}
+	#print "Pushing into process queue from Execute\n";	
+	my $p = Remitt::DataStore::Processor->new;
+	$p->Create($username, $input, $render, $renderoption, $translation, $transport, $unique);
+
+	#print "after thread execute\n";
+
+	#----- Parent thread
 		
-		# Terminate child process
-		exit;
-	} else {
-		#----- Parent branch
-		#
-		# We would use waitpid($child, 0); to actually wait for the fork,
-		# which we don't want to do unless we're actually using the
-		# CLI, which needs the output immediately.
-		
-		# Deal with actual child process
-		#
-		# Proper behavior with server:
-		# return unique identifier and no waiting ...
-			
-		# Reaper code for child process
-		use POSIX ":sys_wait_h";
-		$SIG{CHLD} = 'IGNORE';
+	# Reaper code for child process
+	#use POSIX ":sys_wait_h";
+	#$SIG{CHLD} = 'IGNORE';
 	
-		# Return actual value
-		print "D-Parent: returning $unique to calling program\n";
+	# Return actual value
+	syslog('info', 'Remitt.Interface.Execute| returning "Z'.$unique.'" to calling program');
 
-		# Prefix this with a non-numeric character to prevent autotyping
-		return 'Z'.$unique;
-	} # end forking
+	# Prefix this with a non-numeric character to prevent autotyping
+	return 'Z'.$unique;
 } # end sub Execute
 
 # Method: Remitt.Interface.FileList
@@ -239,7 +212,7 @@ sub GetFile {
 
 	my $filename = $config->val('installation', 'path') .
 		'/spool/' . $username . '/' . $category . '/' . $file;
-	print "filename resolved to $filename\n";
+	#print "filename resolved to $filename\n";
 
 	# Retrieve file and return (will autotype to base64)
 	my $buffer;
@@ -279,7 +252,7 @@ sub GetStatus {
 	$session->load();
 	my $username = $session->{session}->param('username');
 	
-	syslog('info', 'Remitt.Interface.GetStatus called by %s for %s', $username, $unique);
+	syslog('info', 'Remitt.Interface.GetStatus| called by %s for %s', $username, $unique);
 
 	# Get configuration information
 	my $config = Remitt::Utilities::Configuration ( );
@@ -461,7 +434,7 @@ sub SystemLogin {
 	my ($username, $password) = @_;
 
 	#print "Executing Login ($username, $password) ... \n";
-	syslog('info', 'Remitt.Interface.SystemLogin attempt for %s', $username);
+	syslog('info', 'Remitt.Interface.SystemLogin| attempt for %s', $username);
 
 	# Do we authenticate username/password pair against access list?	
 	my $config = Remitt::Utilities::Configuration ( );
@@ -474,12 +447,12 @@ sub SystemLogin {
 		# Skip, no auth here	
 	} else {
 		# Use plugin
-		syslog('info', 'Remitt.Interface.SystemLogin using %s plugin', $config->val('installation', 'authentication'));
+		syslog('info', 'Remitt.Interface.SystemLogin| using %s plugin', $config->val('installation', 'authentication'));
 		eval 'use Remitt::Plugin::Authentication::'.$config->val('installation', 'authentication').';';
 		eval 'die ("Incorrect username or password") if (!Remitt::Plugin::Authentication::'.$config->val('installation', 'authentication').'($username, $password);';
 	}
 
-	syslog('info', 'Remitt.Interface.SystemLogin successful login for %s', $username);
+	syslog('info', 'Remitt.Interface.SystemLogin| successful login for %s', $username);
 
 	# Create new session
 	my ($sessionid, $key);

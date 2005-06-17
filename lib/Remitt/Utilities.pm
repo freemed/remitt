@@ -12,10 +12,15 @@
 package Remitt::Utilities;
 
 use Remitt::Session;
+use Remitt::DataStore::Output;
+use Remitt::DataStore::Processor;
+use Compress::Zlib;
 use MIME::Base64;
 use Config::IniFiles;
 use File::Path;
+use Sys::Syslog;
 use Data::Dumper;
+use Thread;
 use POSIX;
 
 # Method: Remitt::Utilities::Authenticate
@@ -125,6 +130,97 @@ sub ForceAuthentication {
 	return 1;
 } # end sub ForceAuthentication
 
+# Function: Remitt::Utilities::ExecuteThread
+#
+# 	Thread function which carries out the actual execution of an
+# 	Execute request. This is usually called by
+# 	<Remitt::Utilities::ProcessorThread>.
+#
+# Parameters:
+#
+# 	$username - REMITT username
+#
+# 	$input - Input XML
+#
+# 	$render - Render plugin
+#
+# 	$renderoption - Render plugin option
+#
+# 	$translation - Translation plugin
+#
+# 	$transport - Transport plugin
+# 	
+# 	$unique - Unique id
+#
+sub ExecuteThread {
+	my ( $username, $input, $render, $renderoption, $translation, $transport, $unique ) = @_;
+
+	syslog('info', 'Remitt.Utilities.ExecuteThread| started execute thread for '.$username.' ('.$unique.')');
+
+	my $ds = Remitt::DataStore::Output->new($username);
+
+	#----- Child branch
+	#print "D-Child: running execute code\n";
+	my ( $x, $y, $results );
+	eval 'use Remitt::Plugin::Render::'.$render.';';
+	eval 'use Remitt::Plugin::Translation::'.$translation.';';
+	eval 'use Remitt::Plugin::Transport::'.$transport.';';
+	eval '$x = Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption);';
+	eval '$y = Remitt::Plugin::Translation::'.$translation.'::Translate($x);';
+	eval '$results = Remitt::Plugin::Transport::'.$transport.'::Transport($y, $username);';
+	#eval '$results = Remitt::Plugin::Transport::'.$transport.'::Transport(Remitt::Plugin::Translation::'.$translation.'::Translate(Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption)), $username);';
+	# Store value in proper place in 'state' directory
+	syslog('info', 'Remitt.Utilities.ExecuteThread| child thread: storing state after successful run');
+	$ds->SetStatus($unique, 1, $results);
+		
+	# Terminate child thread
+	#print "ExecuteThread end\n";
+} # end method ExecuteThread
+
+# Function: Remitt::Utilities::ProcessorThread
+#
+#	Main processor thread. This function runs in the background,
+#	and checks the processor queue for jobs, which it then spawns
+#	execute threads for.
+#
+# Parameters:
+#
+# 	$poll - (optional) Number of seconds during idle between polling
+# 	for new data in the queue. Defaults to 5 seconds.
+#
+sub ProcessorThread {
+	# Set polling interval
+	my $poll = shift || 5;
+
+	syslog('info', 'Remitt.Utilities.ProcessorThread| started processor thread with polling interval of '.$poll.'s');
+
+	my $p = Remitt::DataStore::Processor->new;
+
+	# Loop endlessly
+	while (1) {
+		# Check for new entries
+		my @items = $p->GetQueue();
+		if ($items[0] ne undef) {
+			foreach my $item (@items) {
+				# Remove from the queue and start threads to
+				# handle. Need to optimize at some point.
+				$p->RemoveFromQueue($item->{rowid});
+				my $thread = new Thread \&ExecuteThread,
+					$item->{username},
+					Compress::Zlib::memGunzip(decode_base64($item->{data})),
+					$item->{render},
+					$item->{renderoption},
+					$item->{translation},
+					$item->{transport},
+					$item->{unique_id};
+			} # end foreach item loop
+		} else {
+			# If there is nothing, Wait $poll seconds between polls
+			sleep $poll;
+		} # end if defined
+	} # "end" of endless while loop
+} # end method ProcessorThread
+
 # Function: Remitt::Utilities::ResolveTranslationPlugin
 #
 #	The "Translation" layer of plugins for Remitt is a hidden layer,
@@ -225,23 +321,11 @@ sub ResolveTranslationPlugin {
 # 	Data to return to calling subroutine.
 #
 sub StoreContents {
-	my ($input, $transport, $extension) = @_;
+	my ($input, $transport, $extension, $username) = @_;
 
-        if (!defined $main::auth) {
+        if ($username eq undef) {
                 return $input;
         } else {
-		my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
-		#print "auth string = $authstring\n";
-		my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
-		return Remitt::Utilities::Fault() if (!$auth);
-		#print "auth = $auth, sessionid = $sessionid, pass = $pass\n";
-
-		# Get username information
-		my $session = Remitt::Session->new($sessionid);
-		$session->load();
-		#print "StoreContents: session = ".Dumper($session->{session});
-		my $username = $session->{session}->param('username');
-
 		my $filename = strftime('%Y%m%d.%H%M%S', localtime(time)).
 			'.' . $transport . '.' . $extension;
 

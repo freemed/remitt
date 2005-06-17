@@ -13,9 +13,9 @@ package Remitt::Plugin::Transport::Text;
 use Data::Dumper;
 
 sub Transport {
-	my ( $input ) = @_;
+	my ( $input, $username ) = @_;
 
-	return Remitt::Utilities::StoreContents ( $input, 'plaintext', 'txt');
+	return Remitt::Utilities::StoreContents ( $input, 'plaintext', 'txt', $username );
 } # end method Transport
 
 sub Config {
