@@ -107,7 +107,7 @@ sub GetUsername {
 	my $session = Remitt::Session->new($sessionid);
 	$session->load();
 	return $session->{session}->param('username');
-} end sub GetUsername        
+} # end sub GetUsername        
 
 # Function: Remitt::Utilities::ForceAuthentication
 #
