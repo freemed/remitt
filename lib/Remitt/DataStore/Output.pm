@@ -18,7 +18,6 @@ use DBI;
 use POSIX;
 use Sys::Syslog;
 use File::Path;
-use Data::Dumper;
 
 require DBD::SQLite;
 
@@ -119,7 +118,7 @@ sub DistinctMonths {
 	if ($r) {
 		my $results;
 		while (my $data = $s->fetchrow_hashref) {
-			print Dumper($data);
+			#print Dumper($data);
 			$results->{$data->{'month'}} = $data->{'my_count'};
 		}
 		return $results;

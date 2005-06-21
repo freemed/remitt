@@ -68,7 +68,10 @@ sub Execute {
 	if ($transport eq "pdf") { $transport = "PDF"; }
 	if ($transport eq "mcsi") { $transport = "MCSI"; }
 
-	syslog('info', 'Remitt.Interface.Execute called with %s, %s, %s, data length = %d', $render, $renderoption, $transport, length($input));
+	# Get username information
+	my $username = Remitt::Utilities::GetUsername();
+
+	$main::log->Log($username, 2, 'Remitt.Interface.Execute', sprintf('called with %s, %s, %s, data length = %d', $render, $renderoption, $transport, length($input)));
 	#print "Running Execute ( length of ".length($input).", $render, $renderoption, $transport ) ... \n";
 
 	# Sanitize (not input!)
@@ -76,13 +79,10 @@ sub Execute {
 	$renderoption =~ s/\W//g;
 	$transport =~ s/\W//g;
 
-	# Get username information
-	my $username = Remitt::Utilities::GetUsername();
-
 	# Get resolve for translation plugin
 	my $translation = Remitt::Utilities::ResolveTranslationPlugin (
 		$render, $renderoption, $transport );
-	syslog('info', 'Remitt.Utilities.ResolveTranslation ( '.$render.', '.$renderoption.', '.$transport.' ) = '.$translation);
+	$main::log->Log($username, 3, 'Remitt.Utilities.ResolveTranslation', '( '.$render.', '.$renderoption.', '.$transport.' ) = '.$translation);
 	die("No translation plugin found") if ($translation eq '');
 
 	# Deal with CLI seperately
@@ -120,7 +120,7 @@ sub Execute {
 	#$SIG{CHLD} = 'IGNORE';
 	
 	# Return actual value
-	syslog('info', 'Remitt.Interface.Execute| returning "Z'.$unique.'" to calling program');
+	$main::log->Log($username, 3, 'Remitt.Interface.Execute', 'Returning "Z'.$unique.'" to calling program');
 
 	# Prefix this with a non-numeric character to prevent autotyping
 	return 'Z'.$unique;
@@ -156,7 +156,7 @@ sub FileList {
 		$session->load();
 	my $username = $session->{session}->param('username');
 
-	syslog('info', 'Remitt.Interface.FileList called by %s for %s', $username, Dumper($category));
+	$main::log->Log($username, 2, 'Remitt.Interface.FileList', sprintf('Called by %s for %s', $username, $category));
 
 	# Get configuration information
 	my $config = Remitt::Utilities::Configuration ( );
@@ -201,7 +201,7 @@ sub GetFile {
 	$session->load();
 	my $username = $session->{session}->param('username');
 	
-	syslog('info', 'Remitt.Interface.GetFile called by %s for %s / %s', $username, $category, $file);
+	$main::log->Log($username, 2, 'Remitt.Interface.GetFile', sprintf('Called by %s for %s / %s', $username, $category, $file));
 
 	# Get configuration information
 	my $config = Remitt::Utilities::Configuration ( );
@@ -240,19 +240,15 @@ sub GetFile {
 #
 sub GetStatus {
 	shift if UNIVERSAL::isa($_[0] => __PACKAGE__);
-	my $unique = shift;
-	my (undef, $authstring) = split / /, $ENV{'HTTP_authorization'};
-	my ($auth, $sessionid, $pass) = Remitt::Utilities::Authenticate($authstring);
-	return Remitt::Utilities::Fault() if (!$auth);
+	Remitt::Utilities::ForceAuthentication();
 
-	syslog('info', "Remitt.Interface.GetStatus called for $unique");
+	# Get parameters
+	my $unique = shift;
 
 	# Get username information
-	my $session = Remitt::Session->new($sessionid);
-	$session->load();
-	my $username = $session->{session}->param('username');
+	my $username = Remitt::Utilities::GetUsername();
 	
-	syslog('info', 'Remitt.Interface.GetStatus| called by %s for %s', $username, $unique);
+	$main::log->Log($username, 2, 'Remitt.Interface.GetStatus', sprintf('Called for %s', $unique));
 
 	# Get configuration information
 	my $config = Remitt::Utilities::Configuration ( );
@@ -271,11 +267,11 @@ sub GetStatus {
 
 	# If the file doesn't exist, return -1
 	if (!$status) {
-		syslog('info', "Remitt.Interface.GetStatus| Output doesn't exist yet (status was 0)");
+		$main::log->Log($username, 3, 'Remitt.Interface.GetStatus', 'Output doesn\'t exist yet (status was 0)');
 		return -1;
 	} else {
 		# Send back filename from data store
-		syslog('info', "Remitt.Interface.GetStatus| Returning filename from datastore ( $username, $unique )");
+		$main::log->Log($username, 3, 'Remitt.Interface.GetStatus', sprintf('Returning filename from datastore ( %s )', $unique));
 		#print Dumper($ds->GetFilename( $unique ) );
 		return $ds->GetFilename( $unique );
 	}
@@ -302,7 +298,7 @@ sub GetOutputMonths {
 	$session->load();
 	my $username = $session->{session}->param('username');
 
-	syslog('info', 'Remitt.Interface.GetOutputMonths called by %s with %d', $username, $year);
+	$main::log->Log($username, 3, 'Remitt.Interface.GetOutputMonths', 'Called with '.$year);
 
 	my $ds = Remitt::DataStore::Output->new($username);
 	return $ds->DistinctMonths( $year );
@@ -327,7 +323,7 @@ sub GetOutputYears {
 	$session->load();
 	my $username = $session->{session}->param('username');
 
-	syslog('info', 'Remitt.Interface.GetOutputYears called by %s', $username);
+	$main::log->Log($username, 3, 'Remitt.Interface.GetOutputYears', 'Called');
 
 	my $ds = Remitt::DataStore::Output->new($username);
 	return $ds->DistinctYears( );
@@ -398,7 +394,8 @@ sub ListPlugins {
 	# Sanitize parameters
 	$type =~ s/\W//g;
 
-	#syslog('info', 'Remitt.Interface.ListPlugins called for %s', $type);
+	my $username = Remitt::Utilities::GetUsername();
+	$main::log->Log($username, 2, 'Remitt.Interface.ListPlugins', 'Called for '.$type);
 
 	my $config = Remitt::Utilities::Configuration ( );
 	my $path = $config->val('installation', 'path');
@@ -434,7 +431,7 @@ sub SystemLogin {
 	my ($username, $password) = @_;
 
 	#print "Executing Login ($username, $password) ... \n";
-	syslog('info', 'Remitt.Interface.SystemLogin| attempt for %s', $username);
+	$main::log->Log($username, 2, 'Remitt.Interface.SystemLogin', 'Login attempt');
 
 	# Do we authenticate username/password pair against access list?	
 	my $config = Remitt::Utilities::Configuration ( );
@@ -447,12 +444,12 @@ sub SystemLogin {
 		# Skip, no auth here	
 	} else {
 		# Use plugin
-		syslog('info', 'Remitt.Interface.SystemLogin| using %s plugin', $config->val('installation', 'authentication'));
+		$main::log->Log($username, 5, 'Remitt.Interface.SystemLogin', sprintf('Using %s plugin', $config->val('installation', 'authentication')));
 		eval 'use Remitt::Plugin::Authentication::'.$config->val('installation', 'authentication').';';
 		eval 'die ("Incorrect username or password") if (!Remitt::Plugin::Authentication::'.$config->val('installation', 'authentication').'($username, $password);';
 	}
 
-	syslog('info', 'Remitt.Interface.SystemLogin| successful login for %s', $username);
+	$main::log->Log($username, 2, 'Remitt.Interface.SystemLogin', 'Login successful');
 
 	# Create new session
 	my ($sessionid, $key);

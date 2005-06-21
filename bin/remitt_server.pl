@@ -16,9 +16,10 @@ use lib qw(./lib ../lib /usr/share/remitt/lib);
 use XMLRPC::Transport::HTTP;
 use Data::Dumper;
 use Remitt::Utilities;
+use Remitt::DataStore::Log;
 use Sys::Syslog;
 
-my $version = "0.2";
+my $version = "0.3";
 my $protocolversion = 0.2;
 my $quiet = 0;
 
@@ -41,10 +42,13 @@ $auth = 1;
 #	'Transport'
 #];
 
+$log = Remitt::DataStore::Log->new;
+
 if (!$quiet) {
 	print "REMITT (XMLRPC Server) v$version\n";
 } else {
 	syslog('info', 'REMITT v'.$version.' XML-RPC server started');
+	$log->Log('SYSTEM', 2, 'XML-RPC Server', 'REMITT v'.$version.' XML-RPC server started');
 }
 
 # Start processor thread
@@ -61,6 +65,6 @@ if (!$quiet) {
 	print " * Running at ", $daemon->url, "\n";
 	print " * Starting daemon ... \n";
 }
-syslog('info', 'Daemon running at '.$daemon->url);
+$log->Log('SYSTEM', 2, 'XML-RPC Server', 'Daemon running at '.$daemon->url);
 $daemon->handle;
 
