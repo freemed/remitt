@@ -74,20 +74,11 @@ sub Authenticate {
 #	Configuration object.
 #
 sub Configuration {
-	my $file;
-	my $my_config_file;
-	my @config_files = (
-		'/etc/remitt/remitt.conf',
-		'/usr/share/remitt/remitt.conf',
-		'/usr/lib/remitt/remitt.conf',
-		'./remitt.conf',
-		'../remitt.conf'
-	);
-	foreach $file (@config_files) {
-		$my_config_file = $file if -r $file;
-	}
-	die("Could not load any valid configuration file.\n") if (!$my_config_file);
-	return new Config::IniFiles( -file => $my_config_file );
+	my $c;
+	my @p = ( '/etc/remitt', '/usr/share/remitt', '/usr/lib/remitt', '.', '..' );
+	foreach my $f (@p) { if ( -r $f.'/remitt.conf' and -s $f.'/remitt.conf' ) { $c = $f.'/remitt.conf'; } }
+	if (!$c) { die("REMITT could not find a remitt.conf file.\n"); }
+	return new Config::IniFiles( -file => $c );
 } # end sub Configuration
 
 # Function: Remitt::Utilities::Fault
