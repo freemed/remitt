@@ -1,3 +1,11 @@
+$Id$
+$Author$
+
+Clarification: The majority of REMITT is licensed under the GNU Public License. The
+Render and Translation portions of the code, which express ideas which are covered
+under a defensive patent filed to cover the core transformation technology which
+REMITT uses.
+
                           MOZILLA PUBLIC LICENSE
                                 Version 1.1
 
@@ -444,24 +452,24 @@ EXHIBIT A -Mozilla Public License.
      License for the specific language governing rights and limitations
      under the License.
 
-     The Original Code is ______________________________________.
+     The Original Code is REMITT.
 
-     The Initial Developer of the Original Code is ________________________.
-     Portions created by ______________________ are Copyright (C) ______
-     _______________________. All Rights Reserved.
+     The Initial Developer of the Original Code is Jeff Buchbinder.
+     Portions created by Jeff Buchbinder are Copyright (C) 2004-2005 by
+     the FreeMED Software Foundation. All Rights Reserved.
 
-     Contributor(s): ______________________________________.
+     Contributor(s): Jeff Buchbinder <freemed@gmail.com>
 
      Alternatively, the contents of this file may be used under the terms
-     of the _____ license (the  "[___] License"), in which case the
-     provisions of [______] License are applicable instead of those
+     of the GNU public license (the  "GPL License"), in which case the
+     provisions of the GPL License are applicable instead of those
      above.  If you wish to allow use of your version of this file only
-     under the terms of the [____] License and not to allow others to use
+     under the terms of the GPL License and not to allow others to use
      your version of this file under the MPL, indicate your decision by
      deleting  the provisions above and replace  them with the notice and
-     other provisions required by the [___] License.  If you do not delete
+     other provisions required by the GPL License.  If you do not delete
      the provisions above, a recipient may use your version of this file
-     under either the MPL or the [___] License."
+     under either the MPL or the GPL License."
 
      [NOTE: The text of this Exhibit A may differ slightly from the text of
      the notices in the Source Code files of the Original Code. You should
