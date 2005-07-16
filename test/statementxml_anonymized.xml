@@ -1,0 +1,3531 @@
+<?xml version="1.0"?>
+<remitt doctype="statementxml">
+
+	<!-- global information -->
+
+<global>
+<generator>
+<program>FreeMED</program>
+<version>0.8.0</version>
+</generator>
+<currentdate>
+<year>2005</year>
+<month>06</month>
+<day>25</day>
+</currentdate>
+<currenttime>
+<hour>10</hour>
+<minute>18</minute>
+</currenttime>
+</global>
+
+	<!-- procedure 1 -->
+
+<procedure id="1">
+<cpt4code>99201</cpt4code>
+<cpt5code>99201</cpt5code>
+<cptdescription>New patient</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>80</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,14</diagnosiskey>
+<patientkey>20</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>08</month>
+<day>31</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>08</month>
+<day>31</day>
+</dateofserviceend>
+<aging>298</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 83 -->
+
+<procedure id="83">
+<cpt4code>99201</cpt4code>
+<cpt5code>99201</cpt5code>
+<cptdescription>New patient</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>104</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,41</diagnosiskey>
+<patientkey>142</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>0</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>09</month>
+<day>21</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>09</month>
+<day>21</day>
+</dateofserviceend>
+<aging>277</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 99 -->
+
+<procedure id="99">
+<cpt4code>99212</cpt4code>
+<cpt5code>99212</cpt5code>
+<cptdescription>Standard visit</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>104</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,41</diagnosiskey>
+<patientkey>158</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>09</month>
+<day>27</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>09</month>
+<day>27</day>
+</dateofserviceend>
+<aging>271</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 100 -->
+
+<procedure id="100">
+<cpt4code>20550</cpt4code>
+<cpt5code>20550</cpt5code>
+<cptdescription>Injection steroid</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>125</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,41</diagnosiskey>
+<patientkey>158</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>2</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>09</month>
+<day>27</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>09</month>
+<day>27</day>
+</dateofserviceend>
+<aging>271</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 101 -->
+
+<procedure id="101">
+<cpt4code>J3301</cpt4code>
+<cpt5code>J3301</cpt5code>
+<cptdescription>Kenalog, 10 mg</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>9</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>4</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,41</diagnosiskey>
+<patientkey>158</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>22</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>09</month>
+<day>27</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>09</month>
+<day>27</day>
+</dateofserviceend>
+<aging>271</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 115 -->
+
+<procedure id="115">
+<cpt4code>99201</cpt4code>
+<cpt5code>99201</cpt5code>
+<cptdescription>New patient</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>104</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>24,95</diagnosiskey>
+<diagnosiskey>24,90</diagnosiskey>
+<patientkey>185</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>09</month>
+<day>30</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>09</month>
+<day>30</day>
+</dateofserviceend>
+<aging>268</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 129 -->
+
+<procedure id="129">
+<cpt4code>99201</cpt4code>
+<cpt5code>99201</cpt5code>
+<cptdescription>New patient</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>104</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>27,3</diagnosiskey>
+<diagnosiskey>27,9</diagnosiskey>
+<diagnosiskey>27,41</diagnosiskey>
+<patientkey>148</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>09</month>
+<day>23</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>09</month>
+<day>23</day>
+</dateofserviceend>
+<aging>275</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 157 -->
+
+<procedure id="157">
+<cpt4code>99212</cpt4code>
+<cpt5code>99212</cpt5code>
+<cptdescription>Standard visit</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>80</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,8</diagnosiskey>
+<diagnosiskey>,7</diagnosiskey>
+<patientkey>227</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>10</month>
+<day>11</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>10</month>
+<day>11</day>
+</dateofserviceend>
+<aging>257</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 163 -->
+
+<procedure id="163">
+<cpt4code>99212</cpt4code>
+<cpt5code>99212</cpt5code>
+<cptdescription>Standard visit</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>104</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,99</diagnosiskey>
+<diagnosiskey>,100</diagnosiskey>
+<patientkey>230</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>10</month>
+<day>11</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>10</month>
+<day>11</day>
+</dateofserviceend>
+<aging>257</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 217 -->
+
+<procedure id="217">
+<cpt4code>99212</cpt4code>
+<cpt5code>99212</cpt5code>
+<cptdescription>Standard visit</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>80</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>35,99</diagnosiskey>
+<diagnosiskey>35,100</diagnosiskey>
+<patientkey>230</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>0</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>10</month>
+<day>25</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>10</month>
+<day>25</day>
+</dateofserviceend>
+<aging>243</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 218 -->
+
+<procedure id="218">
+<cpt4code>99212</cpt4code>
+<cpt5code>99212</cpt5code>
+<cptdescription>Standard visit</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>80</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>35,99</diagnosiskey>
+<diagnosiskey>35,100</diagnosiskey>
+<patientkey>230</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>10</month>
+<day>14</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>10</month>
+<day>14</day>
+</dateofserviceend>
+<aging>254</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 219 -->
+
+<procedure id="219">
+<cpt4code>99212</cpt4code>
+<cpt5code>99212</cpt5code>
+<cptdescription>Standard visit</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>80</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>35,99</diagnosiskey>
+<diagnosiskey>35,100</diagnosiskey>
+<patientkey>230</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>10</month>
+<day>18</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>10</month>
+<day>18</day>
+</dateofserviceend>
+<aging>250</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 332 -->
+
+<procedure id="332">
+<cpt4code>99201</cpt4code>
+<cpt5code>99201</cpt5code>
+<cptdescription>New patient</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>104</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>72,30</diagnosiskey>
+<diagnosiskey>72,10</diagnosiskey>
+<diagnosiskey>72,120</diagnosiskey>
+<patientkey>365</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>11</month>
+<day>30</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>11</month>
+<day>30</day>
+</dateofserviceend>
+<aging>206.958333333</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 340 -->
+
+<procedure id="340">
+<cpt4code>99201</cpt4code>
+<cpt5code>99201</cpt5code>
+<cptdescription>New patient</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>104</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,30</diagnosiskey>
+<diagnosiskey>,10</diagnosiskey>
+<patientkey>240</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>-4</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>10</month>
+<day>13</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>10</month>
+<day>13</day>
+</dateofserviceend>
+<aging>255</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 422 -->
+
+<procedure id="422">
+<cpt4code>99201</cpt4code>
+<cpt5code>99201</cpt5code>
+<cptdescription>New patient</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>104</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,30</diagnosiskey>
+<patientkey>418</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>12</month>
+<day>16</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>12</month>
+<day>16</day>
+</dateofserviceend>
+<aging>190.958333333</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 435 -->
+
+<procedure id="435">
+<cpt4code>11750</cpt4code>
+<cpt5code>11750</cpt5code>
+<cptdescription>Avulse nail</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>85</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>87,16</diagnosiskey>
+<patientkey>434</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice></typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>12</month>
+<day>27</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>12</month>
+<day>27</day>
+</dateofserviceend>
+<aging>179.958333333</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 445 -->
+
+<procedure id="445">
+<cpt4code>99212</cpt4code>
+<cpt5code>99212</cpt5code>
+<cptdescription>Standard visit</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>110</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>39,102</diagnosiskey>
+<patientkey>243</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>12</month>
+<day>28</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>12</month>
+<day>28</day>
+</dateofserviceend>
+<aging>178.958333333</aging>
+<ishospitalized>1</ishospitalized>
+<dateofhospitalstart>
+<year>2004</year>
+<month>10</month>
+<day>14</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>2004</year>
+<month>10</month>
+<day>14</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 483 -->
+
+<procedure id="483">
+<cpt4code>99212</cpt4code>
+<cpt5code>99212</cpt5code>
+<cptdescription>Standard visit</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>80</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,32</diagnosiskey>
+<diagnosiskey>,56</diagnosiskey>
+<patientkey>96</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2005</year>
+<month>01</month>
+<day>28</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2005</year>
+<month>01</month>
+<day>28</day>
+</dateofserviceend>
+<aging>147.958333333</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 484 -->
+
+<procedure id="484">
+<cpt4code>99201</cpt4code>
+<cpt5code>99201</cpt5code>
+<cptdescription>New patient</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>80</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,30</diagnosiskey>
+<diagnosiskey>,7</diagnosiskey>
+<patientkey>461</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>12</month>
+<day>28</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>12</month>
+<day>28</day>
+</dateofserviceend>
+<aging>178.958333333</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 525 -->
+
+<procedure id="525">
+<cpt4code>99201</cpt4code>
+<cpt5code>99201</cpt5code>
+<cptdescription>New patient</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>104</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,30</diagnosiskey>
+<diagnosiskey>,10</diagnosiskey>
+<diagnosiskey>,70</diagnosiskey>
+<patientkey>487</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2005</year>
+<month>01</month>
+<day>20</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2005</year>
+<month>01</month>
+<day>20</day>
+</dateofserviceend>
+<aging>155.958333333</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 538 -->
+
+<procedure id="538">
+<cpt4code>99212</cpt4code>
+<cpt5code>99212</cpt5code>
+<cptdescription>Standard visit</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>110</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,30</diagnosiskey>
+<diagnosiskey>,7</diagnosiskey>
+<patientkey>461</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2005</year>
+<month>01</month>
+<day>27</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2005</year>
+<month>01</month>
+<day>27</day>
+</dateofserviceend>
+<aging>148.958333333</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 542 -->
+
+<procedure id="542">
+<cpt4code>99201</cpt4code>
+<cpt5code>99201</cpt5code>
+<cptdescription>New patient</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>104</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,144</diagnosiskey>
+<diagnosiskey>,143</diagnosiskey>
+<patientkey>491</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2005</year>
+<month>01</month>
+<day>27</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2005</year>
+<month>01</month>
+<day>27</day>
+</dateofserviceend>
+<aging>148.958333333</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 545 -->
+
+<procedure id="545">
+<cpt4code>99201</cpt4code>
+<cpt5code>99201</cpt5code>
+<cptdescription>New patient</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>104</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,3</diagnosiskey>
+<diagnosiskey>,10</diagnosiskey>
+<diagnosiskey>,7</diagnosiskey>
+<patientkey>496</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2005</year>
+<month>01</month>
+<day>31</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2005</year>
+<month>01</month>
+<day>31</day>
+</dateofserviceend>
+<aging>144.958333333</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 546 -->
+
+<procedure id="546">
+<cpt4code>87220</cpt4code>
+<cpt5code>87220</cpt5code>
+<cptdescription>KOH Prep Skin</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>10</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,3</diagnosiskey>
+<diagnosiskey>,7</diagnosiskey>
+<patientkey>496</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>5</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2005</year>
+<month>01</month>
+<day>31</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2005</year>
+<month>01</month>
+<day>31</day>
+</dateofserviceend>
+<aging>144.958333333</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 548 -->
+
+<procedure id="548">
+<cpt4code>99212</cpt4code>
+<cpt5code>99212</cpt5code>
+<cptdescription>Standard visit</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>110</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>5,145</diagnosiskey>
+<patientkey>27</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2005</year>
+<month>02</month>
+<day>01</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2005</year>
+<month>02</month>
+<day>01</day>
+</dateofserviceend>
+<aging>143.958333333</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 549 -->
+
+<procedure id="549">
+<cpt4code>99201</cpt4code>
+<cpt5code>99201</cpt5code>
+<cptdescription>New patient</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>104</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,6</diagnosiskey>
+<diagnosiskey>,10</diagnosiskey>
+<diagnosiskey>,11</diagnosiskey>
+<diagnosiskey>,109</diagnosiskey>
+<patientkey>499</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>80</amountpaid>
+<providerkey>8</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>8</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2005</year>
+<month>02</month>
+<day>01</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2005</year>
+<month>02</month>
+<day>01</day>
+</dateofserviceend>
+<aging>143.958333333</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 551 -->
+
+<procedure id="551">
+<cpt4code>99213</cpt4code>
+<cpt5code>99213</cpt5code>
+<cptdescription>Ext visit</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>104</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,11</diagnosiskey>
+<patientkey>151</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2004</year>
+<month>09</month>
+<day>23</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2004</year>
+<month>09</month>
+<day>23</day>
+</dateofserviceend>
+<aging>275</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 558 -->
+
+<procedure id="558">
+<cpt4code>99212</cpt4code>
+<cpt5code>99212</cpt5code>
+<cptdescription>Standard visit</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>110</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,16</diagnosiskey>
+<patientkey>506</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>-30</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2005</year>
+<month>02</month>
+<day>03</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2005</year>
+<month>02</month>
+<day>03</day>
+</dateofserviceend>
+<aging>141.958333333</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- procedure 568 -->
+
+<procedure id="568">
+<cpt4code>99212</cpt4code>
+<cpt5code>99212</cpt5code>
+<cptdescription>Standard visit</cptdescription>
+<cptcob>0</cptcob>
+<cptcharges>110</cptcharges>
+<cptcount>1</cptcount>
+<cptemergency>0</cptemergency>
+<cptepsdt>0</cptepsdt>
+<cptmodifier></cptmodifier>
+<cptunits>1</cptunits>
+<weightgrams>0</weightgrams>
+<diagnosiskey>,6</diagnosiskey>
+<diagnosiskey>,10</diagnosiskey>
+<diagnosiskey>,11</diagnosiskey>
+<diagnosiskey>,109</diagnosiskey>
+<patientkey>499</patientkey>
+<insuredkey></insuredkey>
+<payerkey></payerkey>
+<secondinsuredkey></secondinsuredkey>
+<secondpayerkey></secondpayerkey>
+<otherinsuredkey></otherinsuredkey>
+<medicaidresubmissioncode></medicaidresubmissioncode>
+<medicaidoriginalreference></medicaidoriginalreference>
+<hcfalocaluse19></hcfalocaluse19>
+<hcfalocaluse10d></hcfalocaluse10d>
+<amountpaid>0</amountpaid>
+<providerkey>1</providerkey>
+<facilitykey>1</facilitykey>
+<practicekey>1</practicekey>
+<typeofservice>1</typeofservice>
+<priorauth></priorauth>
+<isoutsidelab>0</isoutsidelab>
+<outsidelabcharges>0</outsidelabcharges>
+<dateofservicestart>
+<year>2005</year>
+<month>06</month>
+<day>07</day>
+</dateofservicestart>
+<dateofserviceend>
+<year>2005</year>
+<month>06</month>
+<day>07</day>
+</dateofserviceend>
+<aging>18</aging>
+<ishospitalized>0</ishospitalized>
+<dateofhospitalstart>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalstart>
+<dateofhospitalend>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofhospitalend>
+</procedure>
+
+
+	<!-- patient 20 -->
+
+<patient id="20">
+<name>
+	<last>Madera</last>
+	<first>Garry</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>887 Asylum Avenue</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06105</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>6277250</number>
+	<extension></extension>
+</phone>
+<sex>m</sex>
+<socialsecuritynumber>031351218</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1964</year>
+<month>11</month>
+<day>02</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>1</issingle>
+<ismarried>0</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>0</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider></referringprovider>
+<account>058745</account>
+</patient>
+
+
+	<!-- patient 142 -->
+
+<patient id="142">
+<name>
+	<last>Laureano</last>
+	<first>Tamika</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>30 Hillside Road</streetaddress>
+	<city>East Hartford</city>
+	<state>CT</state>
+	<zipcode>06108</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>7271147</number>
+	<extension></extension>
+</phone>
+<sex>f</sex>
+<socialsecuritynumber>695474080</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1976</year>
+<month>06</month>
+<day>01</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>0</issingle>
+<ismarried>1</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>0</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider></referringprovider>
+<account>050945</account>
+</patient>
+
+
+	<!-- patient 158 -->
+
+<patient id="158">
+<name>
+	<last>Oleson</last>
+	<first>Margot</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>73 New Park Avenue</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06106</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>6226995</number>
+	<extension></extension>
+</phone>
+<sex>f</sex>
+<socialsecuritynumber>439436307</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1949</year>
+<month>12</month>
+<day>16</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>1</issingle>
+<ismarried>0</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>0</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider></referringprovider>
+<account>055291</account>
+</patient>
+
+
+	<!-- patient 185 -->
+
+<patient id="185">
+<name>
+	<last>Salcedo</last>
+	<first>Tonya</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>135 Adams Street</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06112</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>8716784</number>
+	<extension></extension>
+</phone>
+<sex>f</sex>
+<socialsecuritynumber>466104613</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1956</year>
+<month>03</month>
+<day>04</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>1</issingle>
+<ismarried>0</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>0</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider></referringprovider>
+<account>033171</account>
+</patient>
+
+
+	<!-- patient 148 -->
+
+<patient id="148">
+<name>
+	<last>Trull</last>
+	<first>Wilton</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>172 Allen Street</streetaddress>
+	<city>New Britain</city>
+	<state>CT</state>
+	<zipcode>06053</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>1610664</number>
+	<extension></extension>
+</phone>
+<sex>m</sex>
+<socialsecuritynumber>765105539</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1960</year>
+<month>08</month>
+<day>17</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>0</issingle>
+<ismarried>1</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>0</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider>0</referringprovider>
+<account>054866</account>
+</patient>
+
+
+	<!-- patient 227 -->
+
+<patient id="227">
+<name>
+	<last>Bandy</last>
+	<first>Claudio</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>69 John Street</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06106</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>5605001</number>
+	<extension></extension>
+</phone>
+<sex>m</sex>
+<socialsecuritynumber>952064798</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1974</year>
+<month>02</month>
+<day>03</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>0</issingle>
+<ismarried>1</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>0</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider></referringprovider>
+<account>055664</account>
+</patient>
+
+
+	<!-- patient 230 -->
+
+<patient id="230">
+<name>
+	<last>Usher</last>
+	<first>Erasmo</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>5032 Anzio Street</streetaddress>
+	<city>Orlando</city>
+	<state>FL</state>
+	<zipcode>32819</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>407</area>
+	<number>6542343</number>
+	<extension></extension>
+</phone>
+<sex>m</sex>
+<socialsecuritynumber>168196893</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1957</year>
+<month>10</month>
+<day>10</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>1</issingle>
+<ismarried>0</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>0</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider>0</referringprovider>
+<account>059487</account>
+</patient>
+
+
+	<!-- patient 365 -->
+
+<patient id="365">
+<name>
+	<last>Clinton</last>
+	<first>Dave</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>57 Babcock Street</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06106</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>4104171</number>
+	<extension></extension>
+</phone>
+<sex>m</sex>
+<socialsecuritynumber>801654117</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1939</year>
+<month>05</month>
+<day>24</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>1</issingle>
+<ismarried>0</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>1</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider>3</referringprovider>
+<account>059355</account>
+</patient>
+
+
+	<!-- patient 240 -->
+
+<patient id="240">
+<name>
+	<last>Mallette</last>
+	<first>Vilma</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>434 Edgewood Street</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06112</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>7812031</number>
+	<extension></extension>
+</phone>
+<sex>f</sex>
+<socialsecuritynumber>645290468</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1931</year>
+<month>08</month>
+<day>21</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>0</issingle>
+<ismarried>1</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>1</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider></referringprovider>
+<account>036686</account>
+</patient>
+
+
+	<!-- patient 418 -->
+
+<patient id="418">
+<name>
+	<last>Weiler</last>
+	<first>Bryce</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>41 Niles Street</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06105</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>1298109</number>
+	<extension></extension>
+</phone>
+<sex>m</sex>
+<socialsecuritynumber>817184946</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1961</year>
+<month>04</month>
+<day>15</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>0</issingle>
+<ismarried>1</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>0</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider>0</referringprovider>
+<account>047901</account>
+</patient>
+
+
+	<!-- patient 434 -->
+
+<patient id="434">
+<name>
+	<last>Ferreira</last>
+	<first>Felicia</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>37 Garvan Street</streetaddress>
+	<city>East Hartford</city>
+	<state>CT</state>
+	<zipcode>06108</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>6396232</number>
+	<extension></extension>
+</phone>
+<sex>f</sex>
+<socialsecuritynumber>287399971</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1953</year>
+<month>10</month>
+<day>31</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>1</issingle>
+<ismarried>0</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>0</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider>0</referringprovider>
+<account>037356</account>
+</patient>
+
+
+	<!-- patient 243 -->
+
+<patient id="243">
+<name>
+	<last>Dittman</last>
+	<first>Kelli</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>130 Bond Street</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06114</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>3263358</number>
+	<extension></extension>
+</phone>
+<sex>f</sex>
+<socialsecuritynumber>119138967</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1949</year>
+<month>04</month>
+<day>19</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>0</issingle>
+<ismarried>1</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>1</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider>0</referringprovider>
+<account>043935</account>
+</patient>
+
+
+	<!-- patient 96 -->
+
+<patient id="96">
+<name>
+	<last>Badgett</last>
+	<first>Devin</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>50 Oakland Terrace</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06112</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>8675020</number>
+	<extension></extension>
+</phone>
+<sex>m</sex>
+<socialsecuritynumber>166051940</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1937</year>
+<month>05</month>
+<day>07</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>0</issingle>
+<ismarried>0</ismarried>
+<ismaritalotherhcfa>1</ismaritalotherhcfa>
+<isemployed>1</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider>0</referringprovider>
+<account>057578</account>
+</patient>
+
+
+	<!-- patient 461 -->
+
+<patient id="461">
+<name>
+	<last>Limon</last>
+	<first>Antwan</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>415 Hillside Avenue</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06106</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>0368942</number>
+	<extension></extension>
+</phone>
+<sex>m</sex>
+<socialsecuritynumber>204833175</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1943</year>
+<month>11</month>
+<day>18</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>0</issingle>
+<ismarried>1</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>1</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider>0</referringprovider>
+<account>060250</account>
+</patient>
+
+
+	<!-- patient 487 -->
+
+<patient id="487">
+<name>
+	<last>Govan</last>
+	<first>Angel</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>31 White Street</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06114</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>2638551</number>
+	<extension></extension>
+</phone>
+<sex>f</sex>
+<socialsecuritynumber>331201038</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1935</year>
+<month>10</month>
+<day>06</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>1</issingle>
+<ismarried>0</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>0</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider></referringprovider>
+<account>045234</account>
+</patient>
+
+
+	<!-- patient 491 -->
+
+<patient id="491">
+<name>
+	<last>Coy</last>
+	<first>Darin</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>330 Birch Trail</streetaddress>
+	<city>Coventry</city>
+	<state>CT</state>
+	<zipcode>06238</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>1957934</number>
+	<extension></extension>
+</phone>
+<sex>m</sex>
+<socialsecuritynumber>411297087</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1997</year>
+<month>05</month>
+<day>01</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>1</issingle>
+<ismarried>0</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>1</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider>0</referringprovider>
+<account>061389</account>
+</patient>
+
+
+	<!-- patient 496 -->
+
+<patient id="496">
+<name>
+	<last>Delagarza</last>
+	<first>Jose</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>73 Heath Street</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06112</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>5099913</number>
+	<extension></extension>
+</phone>
+<sex>m</sex>
+<socialsecuritynumber>425471275</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1945</year>
+<month>05</month>
+<day>13</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>0</issingle>
+<ismarried>1</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>0</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider>0</referringprovider>
+<account>041122</account>
+</patient>
+
+
+	<!-- patient 27 -->
+
+<patient id="27">
+<name>
+	<last>Desalvo</last>
+	<first>Marcia</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>22 Warren Street</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06120</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>6676811</number>
+	<extension></extension>
+</phone>
+<sex>f</sex>
+<socialsecuritynumber>300632779</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1964</year>
+<month>11</month>
+<day>27</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>1</issingle>
+<ismarried>0</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>1</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider></referringprovider>
+<account>042975</account>
+</patient>
+
+
+	<!-- patient 499 -->
+
+<patient id="499">
+<name>
+	<last>Lennox</last>
+	<first>Janice</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>46 Bedford Street</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06120</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>4911020</number>
+	<extension></extension>
+</phone>
+<sex>f</sex>
+<socialsecuritynumber>710559764</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1965</year>
+<month>12</month>
+<day>03</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>0</issingle>
+<ismarried>1</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>1</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider>0</referringprovider>
+<account>056568</account>
+</patient>
+
+
+	<!-- patient 151 -->
+
+<patient id="151">
+<name>
+	<last>Wilt</last>
+	<first>Rosita</first>
+	<middle>D</middle>
+</name>
+<address>
+	<streetaddress>21 Kelsey Street</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06106</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>3375136</number>
+	<extension></extension>
+</phone>
+<sex>f</sex>
+<socialsecuritynumber>312512496</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1960</year>
+<month>10</month>
+<day>18</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>1</issingle>
+<ismarried>0</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>1</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider>0</referringprovider>
+<account>058732</account>
+</patient>
+
+
+	<!-- patient 506 -->
+
+<patient id="506">
+<name>
+	<last>Leigh</last>
+	<first>Carey</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>74 Arnold Street</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06106</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>8698639</number>
+	<extension></extension>
+</phone>
+<sex>f</sex>
+<socialsecuritynumber>425640801</socialsecuritynumber>
+<isdead>0</isdead>
+<dateofbirth>
+<year>1972</year>
+<month>01</month>
+<day>10</day>
+</dateofbirth>
+<dateofdeath>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofdeath>
+<ispregnant>0</ispregnant>
+<issingle>0</issingle>
+<ismarried>1</ismarried>
+<ismaritalotherhcfa>0</ismaritalotherhcfa>
+<isemployed>0</isemployed>
+<isfulltimestudent>0</isfulltimestudent>
+<isparttimestudent>0</isparttimestudent>
+<referringprovider>0</referringprovider>
+<account>059695</account>
+</patient>
+
+
+	<!-- provider 1 -->
+
+<provider id="1">
+<name>
+	<last>Buchbinder</last>
+	<first>Irving</first>
+	<middle>J</middle>
+</name>
+<address>
+	<streetaddress>500 Albany Avenue</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06120</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>8088740</number>
+	<extension></extension>
+</phone>
+<socialsecuritynumber>045361326</socialsecuritynumber>
+<tin>045361326</tin>
+<ipn>T23505</ipn>
+</provider>
+
+
+	<!-- provider 8 -->
+
+<provider id="8">
+<name>
+	<last>Byron</last>
+	<first>Chidinma</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>500 Albany Avenue</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06120</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area></area>
+	<number></number>
+	<extension></extension>
+</phone>
+<socialsecuritynumber></socialsecuritynumber>
+<tin></tin>
+<ipn></ipn>
+</provider>
+
+
+	<!-- provider 3 -->
+
+<provider id="3">
+<name>
+	<last>Shan</last>
+	<first>Shaheena</first>
+	<middle></middle>
+</name>
+<address>
+	<streetaddress>500 Albany Avenue</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06120</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>8088740</number>
+	<extension></extension>
+</phone>
+<socialsecuritynumber></socialsecuritynumber>
+<tin></tin>
+<ipn></ipn>
+</provider>
+
+
+	<!-- facility 1 -->
+
+<facility id="1">
+<name>Community Health Services</name>
+<address>
+	<streetaddress></streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode></zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>8081234</number>
+	<extension></extension>
+</phone>
+<description>Federally Qualified Health Center</description>
+<hcfacode>50</hcfacode>
+<x12code>50</x12code>
+</facility>
+
+
+	<!-- practice 1 -->
+
+<practice id="1">
+<name>Community Health Services</name>
+<address>
+	<streetaddress>500 Albany Avenue</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06120</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area>860</area>
+	<number>8088740</number>
+	<extension></extension>
+</phone>
+<x12id></x12id>
+<x12idtype></x12idtype>
+<ein>045361326</ein>
+</practice>
+
+
+	<!-- practice 8 -->
+
+<practice id="8">
+<name>Community Health Services</name>
+<address>
+	<streetaddress>500 Albany Avenue</streetaddress>
+	<city>Hartford</city>
+	<state>CT</state>
+	<zipcode>06120</zipcode>
+</address>
+<phone>
+	<country>1</country>
+	<area></area>
+	<number></number>
+	<extension></extension>
+</phone>
+<x12id></x12id>
+<x12idtype></x12idtype>
+<ein></ein>
+</practice>
+
+
+	<!-- diagnosis ,14 -->
+
+<diagnosis id=",14">
+<icd9code>078.19</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,41 -->
+
+<diagnosis id=",41">
+<icd9code>728.71</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis 24,95 -->
+
+<diagnosis id="24,95">
+<icd9code>282.5</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>2004</year>
+<month>03</month>
+<day>30</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>2004</year>
+<month>03</month>
+<day>30</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis 24,90 -->
+
+<diagnosis id="24,90">
+<icd9code>719.7</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>2004</year>
+<month>03</month>
+<day>30</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>2004</year>
+<month>03</month>
+<day>30</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis 27,3 -->
+
+<diagnosis id="27,3">
+<icd9code>250.60</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>2004</year>
+<month>08</month>
+<day>18</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>2004</year>
+<month>08</month>
+<day>18</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis 27,9 -->
+
+<diagnosis id="27,9">
+<icd9code>355.5</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>2004</year>
+<month>08</month>
+<day>18</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>2004</year>
+<month>08</month>
+<day>18</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis 27,41 -->
+
+<diagnosis id="27,41">
+<icd9code>728.71</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>2004</year>
+<month>08</month>
+<day>18</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>2004</year>
+<month>08</month>
+<day>18</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,8 -->
+
+<diagnosis id=",8">
+<icd9code>110.1</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,7 -->
+
+<diagnosis id=",7">
+<icd9code>110.4</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,99 -->
+
+<diagnosis id=",99">
+<icd9code>686.1</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,100 -->
+
+<diagnosis id=",100">
+<icd9code>729.6</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis 35,99 -->
+
+<diagnosis id="35,99">
+<icd9code>686.1</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>2003</year>
+<month>11</month>
+<day>01</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>2003</year>
+<month>11</month>
+<day>01</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis 35,100 -->
+
+<diagnosis id="35,100">
+<icd9code>729.6</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>2003</year>
+<month>11</month>
+<day>01</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>2003</year>
+<month>11</month>
+<day>01</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis 72,30 -->
+
+<diagnosis id="72,30">
+<icd9code>250.00</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>2004</year>
+<month>09</month>
+<day>28</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>2004</year>
+<month>09</month>
+<day>28</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis 72,10 -->
+
+<diagnosis id="72,10">
+<icd9code>703.8</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>2004</year>
+<month>09</month>
+<day>28</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>2004</year>
+<month>09</month>
+<day>28</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis 72,120 -->
+
+<diagnosis id="72,120">
+<icd9code>945.22</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>2004</year>
+<month>09</month>
+<day>28</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>2004</year>
+<month>09</month>
+<day>28</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,30 -->
+
+<diagnosis id=",30">
+<icd9code>250.00</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,10 -->
+
+<diagnosis id=",10">
+<icd9code>703.8</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis 87,16 -->
+
+<diagnosis id="87,16">
+<icd9code>703.0</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>2004</year>
+<month>12</month>
+<day>07</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>2004</year>
+<month>12</month>
+<day>07</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis 39,102 -->
+
+<diagnosis id="39,102">
+<icd9code>726.73</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>1994</year>
+<month>10</month>
+<day>01</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>1994</year>
+<month>10</month>
+<day>01</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,32 -->
+
+<diagnosis id=",32">
+<icd9code>459.81</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,56 -->
+
+<diagnosis id=",56">
+<icd9code>686.9</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,70 -->
+
+<diagnosis id=",70">
+<icd9code>706.8</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,144 -->
+
+<diagnosis id=",144">
+<icd9code>736.73</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,143 -->
+
+<diagnosis id=",143">
+<icd9code>356.1</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,3 -->
+
+<diagnosis id=",3">
+<icd9code>250.60</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis 5,145 -->
+
+<diagnosis id="5,145">
+<icd9code>826.0</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>2004</year>
+<month>08</month>
+<day>17</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>2004</year>
+<month>08</month>
+<day>17</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,6 -->
+
+<diagnosis id=",6">
+<icd9code>250.63</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,11 -->
+
+<diagnosis id=",11">
+<icd9code>701.1</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,109 -->
+
+<diagnosis id=",109">
+<icd9code>304.71</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+
+	<!-- diagnosis ,16 -->
+
+<diagnosis id=",16">
+<icd9code>703.0</icd9code>
+<icd10code></icd10code>
+<relatedtohcfa></relatedtohcfa>
+<isrelatedtoautoaccident></isrelatedtoautoaccident>
+<autoaccidentstate></autoaccidentstate>
+<isrelatedtootheraccident></isrelatedtootheraccident>
+<isrelatedtoemployment></isrelatedtoemployment>
+<dateofonset>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateofonset>
+<dateoffirstoccurence>
+<year>0000</year>
+<month>00</month>
+<day>00</day>
+</dateoffirstoccurence>
+</diagnosis>
+
+</remitt>

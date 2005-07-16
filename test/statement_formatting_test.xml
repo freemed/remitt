@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<fixedform>
+	<page>
+		<format>
+			<pagelength>66</pagelength>
+			<pdf template="statement" page="1">
+				<font name="Courier" size="10" />
+				<scaling vertical="12" horizontal="7.1" />
+				<offset vertical="16" horizontal="25" />
+			</pdf>
+		</format>
+
+		<!-- Practice Address (Make Payable to:) -->
+
+		<element>
+			<row>3</row>
+			<column>29</column>
+			<length>30</length>
+			<content>Associates in Surgery</content>
+			<attributes bold="1" />
+		</element>
+
+		<element>
+			<row>4</row>
+			<column>30</column>
+			<length>30</length>
+			<content>101 Nice Practice La</content>
+		</element>
+
+		<element>
+			<row>5</row>
+			<column>30</column>
+			<length>30</length>
+			<content>Claremont, NH 03743</content>
+		</element>
+
+		<!-- Patient address "label" -->
+
+		<element>
+			<row>8</row>
+			<column>8</column>
+			<length>30</length>
+			<content>Rufus T. Firefly</content>
+		</element>
+
+		<element>
+			<row>9</row>
+			<column>8</column>
+			<length>30</length>
+			<content>3 Hackinbush Way</content>
+		</element>
+
+		<element>
+			<row>10</row>
+			<column>8</column>
+			<length>30</length>
+			<content>Freedonia, NY 01101</content>
+		</element>
+
+		<!-- pt id and statement date -->
+
+		<element>
+			<row>10</row>
+			<column>62</column>
+			<length>10</length>
+			<content>01953</content>
+		</element>
+
+		<element>
+			<row>13</row>
+			<column>62</column>
+			<length>10</length>
+			<content>2005/01/01</content>
+		</element>
+
+		<!-- Body -->
+
+		<element>
+			<row>19</row>
+			<column>2</column>
+			<length>8</length>
+			<content>DIAGNOSIS</content>
+		</element>
+		<element>
+			<row>19</row>
+			<column>12</column>
+			<length>10</length>
+			<content>2004/01/01</content>
+		</element>
+		<element>
+			<row>19</row>
+			<column>21</column>
+			<length>10</length>
+			<content>PROCEDURE</content>
+		</element>
+		<element>
+			<row>19</row>
+			<column>31</column>
+			<length>28</length>
+			<content>This is the description of a procedure.</content>
+		</element>
+		<element>
+			<row>19</row>
+			<column>59</column>
+			<length>7</length>
+			<content>0062.00</content>
+			<format right="1" />
+		</element>
+		<element>
+			<row>19</row>
+			<column>66</column>
+			<length>7</length>
+			<content>1062.00</content>
+			<format right="1" />
+		</element>
+		<element>
+			<row>19</row>
+			<column>73</column>
+			<length>7</length>
+			<content>1072.00</content>
+			<format right="1" />
+		</element>
+
+		<!-- Totals -->
+
+		<element>
+			<row>53</row>
+			<column>73</column>
+			<length>7</length>
+			<content>1072.00</content>
+			<format right="1" />
+		</element>
+	</page>
+</fixedform>
