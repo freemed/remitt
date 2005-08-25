@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 #	$Id$
-#	$Author: jeff $
+#	$Author$
 #
 # Package: Remitt::Plugin::Transport::FreeClaims
 #
@@ -12,6 +12,7 @@
 package Remitt::Plugin::Transport::FreeClaims;
 
 use Remitt::Utilities;
+use Remitt::DataStore::Configuration;
 use File::Temp ();	# comes with Perl 5.8.x
 use WWW::Mechanize;
 use Data::Dumper;
@@ -26,10 +27,10 @@ sub Transport {
 	# 	that is to be used. Going to hack a temporary solution, but
 	# 	that isn't going to fly with HIPAA regulations, methinks.
 	#
-	my $c = Remitt::Utilities::Configuration ();
 	my $user = Remitt::Utilities::GetUsername();
-	my $f_username = $c->val('freeclaims', $user.'-username');
-	my $f_password = $c->val('freeclaims', $user.'-password');
+	my $c = Remitt::DataStore::Configuration->new($user);
+	my $f_username = $c->GetValue('freeclaims_username');
+	my $f_password = $c->GetValue('freeclaims_password');
 
 	# Have to write input to temporary bill file ...
 	# name should be stored in "$tempbillfile"
