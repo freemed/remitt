@@ -31,16 +31,10 @@ if [ -e ${CFG} ]; then
    [ -s ${ClientUsername} ] && db_set ${PKG}/clientusername $ClientUsername
    ClientPassword=`RemittGetOption client userpassword`
    [ -s ${ClientPassword} ] && db_set ${PKG}/clientpassword $ClientPassword
-   MCSIUsername=`RemittGetOption mcsi username`
-   [ -s ${MCSIUsername} ] && db_set ${PKG}/mcsiusername $MCSIUsername
-   MCSIPassword=`RemittGetOption mcsi userpassword`
-   [ -s ${MCSIPassword} ] && db_set ${PKG}/mcsipassword $MCSIPassword
 fi
 
 db_input medium ${PKG}/clienturl  || true
 db_input medium ${PKG}/clientusername  || true
 db_input medium ${PKG}/clientpassword  || true
-db_input medium ${PKG}/mcsiusername  || true
-db_input medium ${PKG}/mcsipassword  || true
 db_go || true
 

@@ -1,7 +1,7 @@
 Name:		remitt
 Summary:	REMITT Electronic Medical Information Translation and Transmission
-Version:	0.2
-Release:	1fc1
+Version:	0.3
+Release:	1
 License:	GPL
 Group:		System Environment/Daemons
 URL:		http://www.remitt.org/
@@ -11,8 +11,7 @@ Source0:	%{name}-%{version}.tar.gz
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 
-Requires:	perl, perl-XML-Parser, perl-libwww-perl, perl-XML-LibXML, perl-XML-LibXML-Common, perl-XML-Parser, perl-XML-Simple, perl-IO-Socket-SSL, perl-Net-SSLeay, perl-Config-IniFiles, curl
-# perl-PDF-API2 perl-WWW-Mechanize, perl-XML-LibXSLT, perl-CGI-Session
+Requires:	perl, perl-XML-Parser, perl-libwww-perl, perl-XML-LibXML, perl-XML-LibXML-Common, perl-XML-Parser, perl-XML-Simple, perl-IO-Socket-SSL, perl-Net-SSLeay, perl-Config-IniFiles, curl, perl-PDF-API2, perl-WWW-Mechanize, perl-XML-LibXSLT, perl-CGI-Session
 BuildPrereq:	make, perl
 
 %description
@@ -65,6 +64,9 @@ rm -fr %{buildroot}
 %{_datadir}/%{name}
 
 %changelog
+
+* Sat Aug 27 2005 Jeff Buchbinder <jeff@freemedsoftware.com> - 0.3-1
+  - New upstream version.
 
 * Wed Jan 06 2005 Jeff Buchbinder <jeff@freemedsoftware.com> - 0.2-1fc1
   - New upstream version.
