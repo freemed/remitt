@@ -281,6 +281,10 @@ sub GetStatus {
 #
 #	Get list of available months of output for a particular year.
 #
+# Parameters:
+#
+# 	$year - Target year
+#
 # Returns:
 #
 # 	Array of month stamps (YYYY-MM).
