@@ -11,6 +11,9 @@
 
 package Remitt::Plugin::Transport::FreeClaims;
 
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
 use Remitt::Utilities;
 use Remitt::DataStore::Configuration;
 use File::Temp ();	# comes with Perl 5.8.x

@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I./lib ../lib
+#!/usr/bin/perl
 #
 #	$Id$
 #	$Author$
@@ -16,6 +16,9 @@
 #
 
 package Remitt::Interface;
+
+use FindBin;
+use lib "$FindBin::Bin/../lib";
 
 use Remitt::Session;
 use Remitt::Utilities;

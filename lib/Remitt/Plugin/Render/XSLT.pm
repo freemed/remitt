@@ -14,6 +14,9 @@
 
 package Remitt::Plugin::Render::XSLT;
 
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
 use Remitt::Utilities;
 use XML::LibXSLT;
 use XML::LibXML;

@@ -7,7 +7,8 @@
 # 	Allow user administration of SQLite authentication database.
 #
 
-use lib qw(./lib ../lib /usr/share/remitt/lib);
+use FindBin;
+use lib "$FindBin::Bin/../lib";
 
 use Remitt::Plugin::Authentication::SQLite;
 

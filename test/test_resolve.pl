@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I./lib
+#!/usr/bin/perl
 #
 #	$Id$
 #	$Author$
@@ -7,6 +7,9 @@
 #
 #	Test translation layer resolving.
 #
+
+use FindBin;
+use lib "$FindBin::Bin/../lib";
 
 use Remitt::Utilities;
 
@@ -19,6 +22,13 @@ my $renderoption = shift || '837p';
 my $transport = shift || 'X12Text';
 
 print "For Render::$render (option $renderoption), Transport::$transport: \n\t";
-print Remitt::Utilities::ResolveTranslationPlugin($render,$renderoption,$transport)."\n";
+print Remitt::Utilities::ResolveTranslationPlugin($render,$renderoption,$transport)."\n\n";
+
+print "DEBUGGING INFO:\n";
+if ( ! -f "xsl/${renderoption}.xsl") {
+	print "	${renderoption}.xsl stylesheet missing\n";
+} else {
+	print "	${renderoption}.xsl stylesheet present\n";
+}
 
 1;

@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I./lib
+#!/usr/bin/perl
 #
 #	$Id$
 #	$Author$
@@ -9,6 +9,9 @@
 #	whatever perl package it is called on. The packages are in the
 #	Remitt::Package::Whatever format.
 #
+
+use FindBin;
+use lib "$FindBin::Bin/../lib";
 
 print "Module Test Loader\n";
 print "by Jeff Buchbinder\n";

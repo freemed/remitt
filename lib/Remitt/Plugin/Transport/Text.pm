@@ -10,6 +10,9 @@
 
 package Remitt::Plugin::Transport::Text;
 
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
 use Data::Dumper;
 
 sub Transport {

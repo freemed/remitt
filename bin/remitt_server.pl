@@ -10,7 +10,8 @@
 #
 
 # Force internal use of SOAP::Lite patched library and Remitt libs
-use lib qw(./lib ../lib /usr/share/remitt/lib);
+use FindBin;
+use lib "$FindBin::Bin/../lib";
 
 # Actual includes
 use XMLRPC::Transport::HTTP;

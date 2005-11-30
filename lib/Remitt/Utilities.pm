@@ -11,6 +11,9 @@
 
 package Remitt::Utilities;
 
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
 use Remitt::Session;
 use Remitt::DataStore::Output;
 use Remitt::DataStore::Processor;

@@ -10,6 +10,9 @@
 
 package Remitt::Plugin::Translation::X12XML;
 
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
 # Need XML parsing stuff
 require XML::Simple;
 use Data::Dumper;

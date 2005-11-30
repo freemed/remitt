@@ -10,6 +10,9 @@
 
 package Remitt::DataStore::Processor;
 
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
 use Remitt::Utilities;
 use Data::Dumper;
 use Compress::Zlib;

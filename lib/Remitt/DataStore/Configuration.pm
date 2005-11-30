@@ -10,6 +10,9 @@
 
 package Remitt::DataStore::Configuration;
 
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
 use Remitt::Utilities;
 use Data::Dumper;
 use DBI;

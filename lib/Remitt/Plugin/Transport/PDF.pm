@@ -10,6 +10,9 @@
 
 package Remitt::Plugin::Transport::PDF;
 
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
 use Remitt::Utilities;
 use Remitt::Session;
 use Data::Dumper;

@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I../lib -I./lib
+#!/usr/bin/perl
 #
 #	$Id$
 #	$Author$
@@ -10,6 +10,8 @@
 #	Syntax: ./test/test_837p.pl XMLFILE (XSLFILE)
 #
 
+use FindBin;
+use lib "$FindBin::Bin/../lib";
 
 use Remitt::Plugin::Translation::X12XML;
 

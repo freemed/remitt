@@ -7,7 +7,8 @@
 # 	Allow user configuration database access.
 #
 
-use lib qw(./lib ../lib /usr/share/remitt/lib);
+use FindBin;
+use lib "$FindBin::Bin/../lib";
 
 use Remitt::DataStore::Configuration;
 

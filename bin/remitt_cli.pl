@@ -8,7 +8,8 @@
 #	Command Line Interface to translation tool
 
 # Force internal use of SOAP::Lite patched library and Remitt libs
-use lib qw(./lib ../lib);
+use FindBin;
+use lib "$FindBin::Bin/../lib";
 
 # Actual includes
 use Remitt::Interface;

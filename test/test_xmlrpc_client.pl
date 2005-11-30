@@ -1,8 +1,11 @@
-#!/usr/bin/perl -I./lib -I../lib
+#!/usr/bin/perl
 #
 #	$Id$
 #	$Author$
 #
+
+use FindBin;
+use lib "$FindBin::Bin/../lib";
 
 use XMLRPC::Lite;
 use Data::Dumper;

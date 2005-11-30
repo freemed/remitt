@@ -11,6 +11,9 @@
 
 package Remitt::Plugin::Translation::FixedFormPDF;
 
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
 # Need XML parsing stuff
 require XML::Simple;
 use Remitt::Utilities;
@@ -162,7 +165,7 @@ sub Translate {
 
 	# Create PDF document
 	my $pdf = PDF::API2->new;
-	delete $pdf->{forcecompresss};
+	delete $pdf->{forcecompress};
 	#print "Created PDF document\n";
 
 	# Loop through pages
