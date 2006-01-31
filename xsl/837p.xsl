@@ -739,6 +739,7 @@
 				<content>2</content>
 			</element>
 			<element>
+				<!-- NM103: Payer Name -->
 				<content><xsl:value-of select="translate($payerobj/name, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
@@ -754,12 +755,12 @@
 				<content/>
 			</element>
 			<element>
-				<!-- ID Code Qualifier ( PI = payor id, XV = HCFA PIN ) -->
+				<!-- NM108: ID Code Qualifier ( PI = payor id, XV = HCFA PIN ) -->
 				<content>PI</content>
 			</element>
 			<element>
-				<!-- FIXME: Identification Code -->
-				<content>FIXME</content>
+				<!-- NM109: Identification Code -->
+				<content><xsl:value-of select="$payerobj/x12id" /></content>
 			</element>
 		</x12segment>
 
