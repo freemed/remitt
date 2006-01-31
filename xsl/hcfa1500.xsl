@@ -1609,6 +1609,7 @@
 		else can be found at http://exslt.org/.
 	-->
 
+	<!--
 	<exsl:function name="set:distinct">
 		<xsl:param name="nodes" select="/.."/>
 		<xsl:choose>
@@ -1621,5 +1622,6 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</exsl:function>
+	-->
 
 </xsl:stylesheet>
