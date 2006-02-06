@@ -1312,6 +1312,14 @@
 				<content><xsl:value-of select="//practice[@id = $procfirstobj/practicekey]/id[@physician = $provider and @payer=$payer]" /></content>
 			</element>
 
+			<element>
+				<!-- Box 33: Group # -->
+				<row>61</row>
+				<column>67</column>
+				<length>12</length>
+				<content><xsl:value-of select="//practice[@id = $procfirstobj/practicekey]/groupid[@physician = $provider and @payer=$payer]" /></content>
+			</element>
+
 		<!-- BOOKMARK BOOKMARK BOOKMARK -->
 
 		</page>
