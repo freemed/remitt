@@ -237,6 +237,12 @@
 		<xsl:variable name="diagobj" select="//diagnosis[@id = $diag]" />
 		<xsl:variable name="procfirstobj" select="//procedure[@id = $procs[1]]" />
 
+		<!-- Secondary payer information -->
+		<xsl:variable name="secondary" select="//procedure[@id = $procs[1]]/secondinsuredkey" />
+		<xsl:variable name="secondaryobj" select="//insured[@id = $secondary]" />
+		<xsl:variable name="secondpayer" select="//procedure[@id = $procs[1]]/secondpayerkey" />
+		<xsl:variable name="secondpayerobj" select="//payer[@id = $secondpayer]" />
+
 		<page>
 			<format>
 				<pagelength>66</pagelength>
@@ -278,6 +284,40 @@
 				<length>30</length>
 				<content><xsl:value-of select="translate(concat($payerobj/address/city,', ', $payerobj/address/state, ' ', $payerobj/address/zipcode), $lowercase, $uppercase)" /></content>
 			</element>
+	
+			<xsl:if test="boolean(string($secondpayer))">
+			<element>
+				<!-- Secondary Insurance Company Name -->
+				<row>1</row>
+				<column>1</column>
+				<length>25</length>
+				<content><xsl:value-of select="translate($secondpayerobj/name, $lowercase, $uppercase)" /></content>
+			</element>
+	
+			<element>
+				<!-- Secondary Insurance Company Attn -->
+				<row>2</row>
+				<column>1</column>
+				<length>25</length>
+				<content><xsl:value-of select="translate($secondpayerobj/attn, $lowercase, $uppercase)" /></content>
+			</element>
+	
+			<element>
+				<!-- Secondary Insurance Company Street Address -->
+				<row>3</row>
+				<column>1</column>
+				<length>25</length>
+				<content><xsl:value-of select="translate($secondpayerobj/address/streetaddress, $lowercase, $uppercase)" /></content>
+			</element>
+	
+			<element>
+				<!-- Secondary Insurance Company Street City, State Zipcode -->
+				<row>4</row>
+				<column>1</column>
+				<length>30</length>
+				<content><xsl:value-of select="translate(concat($secondpayerobj/address/city,', ', $secondpayerobj/address/state, ' ', $secondpayerobj/address/zipcode), $lowercase, $uppercase)" /></content>
+			</element>
+			</xsl:if>
 	
 			<xsl:if test="$payerobj/ismedicare = 1">
 			<element>
@@ -400,27 +440,11 @@
 			</element>
 
 			<element>
-				<!-- Box 3: Birth Date / Seperator -->
-				<row>10</row>
-				<column>33</column>
-				<length>1</length>
-				<content>/</content>
-			</element>
-
-			<element>
 				<!-- Box 3: Birth Date / DD -->
 				<row>10</row>
 				<column>34</column>
 				<length>2</length>
 				<content><xsl:value-of select="$patientobj/dateofbirth/day" /></content>
-			</element>
-
-			<element>
-				<!-- Box 3: Birth Date / Seperator -->
-				<row>10</row>
-				<column>36</column>
-				<length>1</length>
-				<content>/</content>
 			</element>
 
 			<element>
@@ -671,19 +695,20 @@
 				<content><xsl:value-of select="$insuredobj/groupnumber" /></content>
 			</element>
 
-		<xsl:variable name="secondary" select="//procedure[@id = $procs[1]]/otherinsuredkey" />
-		<xsl:variable name="secondaryobj" select="//insured[@id = $secondary]" />
-		<xsl:variable name="secondpayer" select="//procedure[@id = $procs[1]]/secondpayerkey" />
-		<xsl:variable name="secondinsured" select="//procedure[@id = $procs[1]]/secondinsuredkey" />
-
-			<!-- FIXME: Box 9a Secondary Insurance / Name -->
 			<xsl:if test="boolean(string($secondpayer))">
+			<element>
+				<!-- Box 9: Other Insured's Name -->
+				<row>18</row>
+				<column>1</column>
+				<length>28</length>
+				<content><xsl:value-of select="translate(concat($secondaryobj/name/first, ' ', $secondaryobj/name/last), $lowercase, $uppercase)" /></content>
+			</element>
 			<element>
 				<!-- Box 9a: Other Insured Policy/Group Number -->
 				<row>20</row>
 				<column>1</column>
 				<length>25</length>
-				<content></content>
+				<content><xsl:value-of select="translate($secondaryobj/id, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
 				<!-- Box 9d: Other Insurance Plan Name -->
@@ -696,7 +721,7 @@
 
 			<xsl:if test="$diagobj/isrelatedtoemployment = 1">
 			<element>
-				<!-- Box 10a: Related to Employement / Yes -->
+				<!-- Box 10a: Related to Employment / Yes -->
 				<row>20</row>
 				<column>35</column>
 				<length>1</length>
@@ -706,7 +731,7 @@
 
 			<xsl:if test="not($diagobj/isrelatedtoemployment = 1)">
 			<element>
-				<!-- Box 10a: Related to Employement / No -->
+				<!-- Box 10a: Related to Employment / No -->
 				<row>20</row>
 				<column>41</column>
 				<length>1</length>
@@ -724,27 +749,11 @@
 			</element>
 
 			<element>
-				<!-- Box 11: Insured DOB / Seperator -->
-				<row>20</row>
-				<column>56</column>
-				<length>1</length>
-				<content>/</content>
-			</element>
-
-			<element>
 				<!-- Box 11a: Insured DOB / DD -->
 				<row>20</row>
 				<column>57</column>
 				<length>2</length>
 				<content><xsl:value-of select="$insuredobj/dateofbirth/day" /></content>
-			</element>
-
-			<element>
-				<!-- Box 11: Insured DOB / Seperator -->
-				<row>20</row>
-				<column>59</column>
-				<length>1</length>
-				<content>/</content>
 			</element>
 
 			<element>
@@ -786,27 +795,11 @@
 			</element>
 
 			<element>
-				<!-- Box 9b: Insured DOB / Seperator -->
-				<row>22</row>
-				<column>4</column>
-				<length>1</length>
-				<content>/</content>
-			</element>
-
-			<element>
 				<!-- Box 9b: Insured DOB / DD -->
 				<row>22</row>
 				<column>5</column>
 				<length>2</length>
 				<content><xsl:value-of select="$insuredobj/dateofbirth/day" /></content>
-			</element>
-
-			<element>
-				<!-- Box 9b: Insured DOB / Seperator -->
-				<row>22</row>
-				<column>7</column>
-				<length>1</length>
-				<content>/</content>
 			</element>
 
 			<element>
@@ -917,8 +910,8 @@
 				<xsl:choose>
 					<!-- Handle medicaid as second payer 10d special case -->
 					<xsl:when test="boolean(string($secondpayer)) and //payer[@id = $secondpayer]/ismedicaid = 1">
-						<xsl:message><xsl:value-of select="translate($secondinsured, $lowercase, $uppercase)" /></xsl:message>
-						<content><xsl:value-of select="translate(//insured[@id = $secondinsured]/id, $lowercase, $uppercase)" /></content>
+						<xsl:message><xsl:value-of select="translate($secondary, $lowercase, $uppercase)" /></xsl:message>
+						<content><xsl:value-of select="translate(//insured[@id = $secondary]/id, $lowercase, $uppercase)" /></content>
 					</xsl:when>
 					<xsl:otherwise>
 						<content><xsl:value-of select="$procfirstobj/hcfalocaluse10d" /></content>
@@ -983,27 +976,11 @@
 			</element>
 
 			<element>
-				<!-- Box 14: Date of Onset / Seperator -->
-				<row>32</row>
-				<column>4</column>
-				<length>1</length>
-				<content>/</content>
-			</element>
-
-			<element>
 				<!-- Box 14: Date of Onset / DD -->
 				<row>32</row>
 				<column>5</column>
 				<length>2</length>
 				<content><xsl:value-of select="$diagobj/dateofonset/day" /></content>
-			</element>
-
-			<element>
-				<!-- Box 14: Date of Onset / Seperator -->
-				<row>32</row>
-				<column>7</column>
-				<length>1</length>
-				<content>/</content>
 			</element>
 
 			<element>
@@ -1019,7 +996,7 @@
 			<!-- FIXME: isCantWork equiv -->
 
 			<xsl:if test="($patientobj/referringprovider + 0) &gt; 0">
-			<xsl:variable name="refprov" select="//provider[@id = $patientobj/referringprovider]" />
+			<xsl:variable name="refprov" select="//provider[@id = $procfirstobj/referringproviderkey]" />
 			<element>
 				<!-- Box 17: Referring Physician / Name -->
 				<row>34</row>
@@ -1160,7 +1137,7 @@
 				<row>56</row>
 				<column>1</column>
 				<length>15</length>
-				<content><xsl:value-of select="$practiceobj/ein"/></content>
+				<content><xsl:value-of select="$facilityobj/ein"/></content>
 			</element>
 
 			<element>
@@ -1260,14 +1237,6 @@
 			</element>
 
 			<element>
-				<!-- Box 32: Physician Name -->
-				<row>60</row>
-				<column>1</column>
-				<length>20</length>
-				<content><xsl:value-of select="translate(concat($providerobj/name/first, ' ', $providerobj/name/last), $lowercase, $uppercase)" /></content>
-			</element>
-
-			<element>
 				<!-- Box 32: Facility City State Zip -->
 				<row>60</row>
 				<column>23</column>
@@ -1297,9 +1266,17 @@
 			</xsl:comment>
 
 			<element>
+				<!-- Box 31: Authorized Signature -->
+				<row>61</row>
+				<column>1</column>
+				<length>17</length>
+				<content>SIGNATURE ON FILE</content>
+			</element>
+
+			<element>
 				<!-- Box 31: Signature and Date -->
 				<row>61</row>
-				<column>19</column>
+				<column>26</column>
 				<length>8</length>
 				<content><xsl:value-of select="concat(//global/currentdate/month, '-', //global/currentdate/day, '-', substring(//global/currentdate/year, 3, 2))" /></content>
 			</element>
@@ -1340,27 +1317,11 @@
 		</element>
 
 		<element>
-			<!-- Box 24a: Date of Service S / Seperator -->
-			<row><xsl:value-of select="$cptline" /></row>
-			<column>3</column>
-			<length>1</length>
-			<content>/</content>
-		</element>
-
-		<element>
 			<!-- Box 24a: Date of Service S / DD -->
 			<row><xsl:value-of select="$cptline" /></row>
 			<column>4</column>
 			<length>2</length>
 			<content><xsl:value-of select="$curproc/dateofservicestart/day" /></content>
-		</element>
-
-		<element>
-			<!-- Box 24a: Date of Service S / Seperator -->
-			<row><xsl:value-of select="$cptline" /></row>
-			<column>6</column>
-			<length>1</length>
-			<content>/</content>
 		</element>
 
 		<element>
@@ -1380,27 +1341,11 @@
 		</element>
 
 		<element>
-			<!-- Box 24a: Date of Service E / Seperator -->
-			<row><xsl:value-of select="$cptline" /></row>
-			<column>12</column>
-			<length>1</length>
-			<content>/</content>
-		</element>
-
-		<element>
 			<!-- Box 24a: Date of Service E / DD -->
 			<row><xsl:value-of select="$cptline" /></row>
 			<column>13</column>
 			<length>2</length>
 			<content><xsl:value-of select="$curproc/dateofserviceend/day" /></content>
-		</element>
-
-		<element>
-			<!-- Box 24a: Date of Service E / Seperator -->
-			<row><xsl:value-of select="$cptline" /></row>
-			<column>15</column>
-			<length>1</length>
-			<content>/</content>
 		</element>
 
 		<element>
