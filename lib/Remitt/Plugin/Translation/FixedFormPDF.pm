@@ -46,6 +46,10 @@ sub ProcessElement {
 
 	my $content = $e->{content};
 	my $clength  = $e->{length};
+
+	# Skip PDF output for a field
+	return '' if ($e->{omitpdf} eq '1');
+
 	#print "processelement content=$content, length=$clength\n";
 
 	# Handle null array instances
