@@ -13,13 +13,12 @@
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 
-use Remitt::Plugin::Translation::FixedFormXML;
-
 use XML::LibXSLT;
 use XML::LibXML;
 
 # Get parameters
 my $input = shift || 'remitt.test.xml';
+my $outputformat = shift || 'txt';
 my $xsl = shift || 'xsl/hcfa1500.xsl';
 
 if (! -f $input) {
@@ -38,4 +37,10 @@ my $results = $stylesheet->transform($source);
 
 my $output = $stylesheet->output_string($results);
 
-print Remitt::Plugin::Translation::FixedFormXML::Translate($output);
+if ($outputformat eq 'pdf') {
+	use Remitt::Plugin::Translation::FixedFormPDF;
+	print Remitt::Plugin::Translation::FixedFormPDF::Translate($output);
+} else {
+	use Remitt::Plugin::Translation::FixedFormXML;
+	print Remitt::Plugin::Translation::FixedFormXML::Translate($output);
+}
