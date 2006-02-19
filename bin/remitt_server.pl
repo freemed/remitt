@@ -20,7 +20,7 @@ use Remitt::Utilities;
 use Remitt::DataStore::Log;
 use Sys::Syslog;
 
-my $version = "0.3";
+my $version = "0.3.1";
 my $protocolversion = 0.2;
 my $quiet = 0;
 
