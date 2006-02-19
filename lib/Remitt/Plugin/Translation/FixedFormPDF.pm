@@ -50,6 +50,9 @@ sub ProcessElement {
 	# Skip PDF output for a field
 	return '' if ($e->{omitpdf} eq '1');
 
+	# Strip periods in case the form has separators already ...
+	$content =~ s/\./ /g if ($e->{periodstrippdf} eq '1');
+
 	#print "processelement content=$content, length=$clength\n";
 
 	# Handle null array instances
