@@ -248,8 +248,8 @@
 				<pagelength>66</pagelength>
 				<pdf template="cms1500" page="1">
 					<font name="Courier" size="10" />
-					<scaling vertical="12" horizontal="7.1" />
-					<offset vertical="16" horizontal="25" />
+					<scaling vertical="12" horizontal="7.2" />
+					<offset vertical="16" horizontal="21" />
 				</pdf>
 			</format>
 	
@@ -286,7 +286,7 @@
 			</element>
 	
 			<xsl:if test="boolean(string($secondpayer))">
-			<element>
+			<element omitpdf="1">
 				<!-- Secondary Insurance Company Name -->
 				<row>1</row>
 				<column>1</column>
@@ -294,7 +294,7 @@
 				<content><xsl:value-of select="translate($secondpayerobj/name, $lowercase, $uppercase)" /></content>
 			</element>
 	
-			<element>
+			<element omitpdf="1">
 				<!-- Secondary Insurance Company Attn -->
 				<row>2</row>
 				<column>1</column>
@@ -302,7 +302,7 @@
 				<content><xsl:value-of select="translate($secondpayerobj/attn, $lowercase, $uppercase)" /></content>
 			</element>
 	
-			<element>
+			<element omitpdf="1">
 				<!-- Secondary Insurance Company Street Address -->
 				<row>3</row>
 				<column>1</column>
@@ -310,13 +310,30 @@
 				<content><xsl:value-of select="translate($secondpayerobj/address/streetaddress, $lowercase, $uppercase)" /></content>
 			</element>
 	
-			<element>
+			<element omitpdf="1">
 				<!-- Secondary Insurance Company Street City, State Zipcode -->
 				<row>4</row>
 				<column>1</column>
 				<length>30</length>
 				<content><xsl:value-of select="translate(concat($secondpayerobj/address/city,', ', $secondpayerobj/address/state, ' ', $secondpayerobj/address/zipcode), $lowercase, $uppercase)" /></content>
 			</element>
+
+			<element omitpdf="1">
+				<!-- Secondary Insurance/Facility has Provider -  PIN # -->
+				<row>5</row>
+				<column>1</column>
+				<length>12</length>
+				<content><xsl:value-of select="//practice[@id = $procfirstobj/practicekey]/id[@physician = $provider and @payer=$secondpayer]" /></content>
+			</element>
+
+			<element omitpdf="1">
+				<!-- Secondary Insurance/Facility has Provider -  Group # -->
+				<row>5</row>
+				<column>17</column>
+				<length>12</length>
+				<content><xsl:value-of select="//practice[@id = $procfirstobj/practicekey]/groupid[@physician = $provider and @payer=$secondpayer]" /></content>
+			</element>
+			
 			</xsl:if>
 	
 			<xsl:if test="$payerobj/ismedicare = 1">
@@ -674,7 +691,7 @@
 			<element>
 				<!-- Box 7: Insured Phone Number -->
 				<row>16</row>
-				<column>63</column>
+				<column>64</column>
 				<length>14</length>
 				<content><xsl:value-of select="concat(' ',$insuredobj/phone/area, ' ', $insuredobj/phone/number)" /></content>
 			</element>
@@ -1057,7 +1074,7 @@
 			</xsl:if>
 
 			<!-- Handle ICD codes, if they exist -->
-			<element>
+			<element periodstrippdf="1">
 				<!-- Box 21: ICD Code / #1 -->
 				<row>38</row>
 				<column>3</column>
@@ -1066,7 +1083,7 @@
 			</element>
 
 			<xsl:if test="count($diags) &gt; 1">
-			<element>
+			<element periodstrippdf="1">
 				<!-- Box 21: ICD Code / #2 -->
 				<row>40</row>
 				<column>3</column>
@@ -1076,7 +1093,7 @@
 			</xsl:if>
 
 			<xsl:if test="count($diags) &gt; 2">
-			<element>
+			<element periodstrippdf="1">
 				<!-- Box 21: ICD Code / #3 -->
 				<row>38</row>
 				<column>30</column>
@@ -1086,7 +1103,7 @@
 			</xsl:if>
 
 			<xsl:if test="count($diags) &gt; 3">
-			<element>
+			<element periodstrippdf="1">
 				<!-- Box 21: ICD Code / #4 -->
 				<row>40</row>
 				<column>30</column>
@@ -1176,7 +1193,7 @@
 			</element>
 			</xsl:if>
 
-			<element>
+			<element periodstrippdf="1">
 				<!-- Box 28: Total Charge -->
 				<row>56</row>
 				<column>52</column>
@@ -1185,7 +1202,7 @@
 				<format right="1" />
 			</element>
 
-			<element>
+			<element periodstrippdf="1">
 				<!-- Box 29: Amount Paid -->
 				<row>56</row>
 				<column>63</column>
@@ -1194,7 +1211,7 @@
 				<format right="1" />
 			</element>
 
-			<element>
+			<element periodstrippdf="1">
 				<!-- Box 30: Balance Due -->
 				<row>56</row>
 				<column>72</column>
@@ -1267,7 +1284,7 @@
 
 			<element>
 				<!-- Box 31: Authorized Signature -->
-				<row>61</row>
+				<row>60</row>
 				<column>1</column>
 				<length>17</length>
 				<content>SIGNATURE ON FILE</content>
@@ -1276,7 +1293,7 @@
 			<element>
 				<!-- Box 31: Signature and Date -->
 				<row>61</row>
-				<column>26</column>
+				<column>14</column>
 				<length>8</length>
 				<content><xsl:value-of select="concat(//global/currentdate/month, '-', //global/currentdate/day, '-', substring(//global/currentdate/year, 3, 2))" /></content>
 			</element>
@@ -1399,7 +1416,7 @@
 			</xsl:call-template></content>
 		</element>
 
-		<element>
+		<element periodstrippdf="1">
 			<!-- Box 24f: Charges -->
 			<row><xsl:value-of select="$cptline" /></row>
 			<column>51</column>
