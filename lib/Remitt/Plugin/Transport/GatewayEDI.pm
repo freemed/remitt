@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 #
 #	$Id$
 #	$Author$
@@ -12,7 +12,7 @@
 package Remitt::Plugin::Transport::GatewayEDI;
 
 use FindBin;
-use lib "$FindBin::Bin/../lib";
+use lib "$FindBin::Bin/../../../";
 
 use Remitt::Utilities;
 use Remitt::DataStore::Configuration;
@@ -78,7 +78,7 @@ sub Transport {
 	#print "[done]\n";
 
 	#print " * Uploading $tempbillfile to server ... ";
-	#$m->submit_form(
+	$m->submit_form(
 		form_name => '_ctl0',
 		fields => {
 			'UploadedFile' => $tempbillfile
