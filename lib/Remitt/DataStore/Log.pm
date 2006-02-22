@@ -60,8 +60,8 @@ sub Log {
 		'( stamp, verbosity, username, method, message ) '.
 		'VALUES ( DATETIME(\'now\'), ?, ?, ?, ? )');
 	my $r = $s->execute(
-		$username,
 		$verbosity,
+		$username,
 		$method,
 		$message
 	);
