@@ -57,12 +57,24 @@ sub Execute {
 	shift if UNIVERSAL::isa($_[0] => __PACKAGE__);
 	Remitt::Utilities::ForceAuthentication();
 
-	my $input = shift || die("Input not given");
-	my $render = shift || die("Render not given");
+	my $input = shift;
+	if (!$input) {
+		$main::log->Log($username, 1, 'Remitt.Interface.Execute', 'Called without valid input parameter');
+		die("Input not given");
+	}
+	my $render = shift;
+	if (!$render) {
+		$main::log->Log($username, 1, 'Remitt.Interface.Execute', 'Called without valid render parameter');
+		die("Render not given");
+	}
 	my $renderoption = shift;
 
 	# FIXME: Check to see if we have to have an option for error-checking
-	my $transport = shift || die("Transport not given");
+	my $transport = shift;
+	if (!$transport) {
+		$main::log->Log($username, 1, 'Remitt.Interface.Execute', 'Called without valid transport parameter');
+		die("Transport not given");
+	}
 
 	# Fix old FreeB mappings
 	if ($renderoption eq "hcfa") { $renderoption = "hcfa1500"; }
@@ -86,7 +98,10 @@ sub Execute {
 	my $translation = Remitt::Utilities::ResolveTranslationPlugin (
 		$render, $renderoption, $transport );
 	$main::log->Log($username, 3, 'Remitt.Utilities.ResolveTranslation', '( '.$render.', '.$renderoption.', '.$transport.' ) = '.$translation);
-	die("No translation plugin found") if ($translation eq '');
+	if ($translation eq '') {
+		$main::log->Log($username, 1, 'Remitt.Interface.Execute', sprintf('Could not find an appropriate traslation plugin for %s / %s / %s', $render, $renderoption, $transport));
+		die("No translation plugin found") 
+	}
 
 	# Deal with CLI seperately
 	if (!defined $main::auth) {
@@ -99,6 +114,7 @@ sub Execute {
 		eval '$z = Remitt::Plugin::Transport::'.$transport.'::Transport($y);';
 		return $z;
 		#eval 'return Remitt::Plugin::Transport::'.$transport.'::Transport(Remitt::Plugin::Translation::'.$translation.'::Translate(Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption)));';
+		$main::log->Log($username, 1, 'Remitt.Interface.Execute', 'SHOULD NEVER GET HERE');
 		die ( "Should never get here\n" );
 	}
 
@@ -446,6 +462,7 @@ sub SystemLogin {
 	# Only verify if we are sure that we need to
 	if ($config->val('installation', 'authentication') eq 'conf') {
 		# Built-in configuration file
+		$main::log->Log($username, 2, 'Remitt.Interface.SystemLogin', 'Invalid login attempt with username '.$username);
 		die ("Incorrect username or password") if ($password != $config->val('users', $username));
 	} elsif ($config->val('installation', 'authentication') eq 'none') {
 		# Skip, no auth here	
