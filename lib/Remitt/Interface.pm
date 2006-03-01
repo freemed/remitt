@@ -22,6 +22,7 @@ use lib "$FindBin::Bin/../lib";
 
 use Remitt::Session;
 use Remitt::Utilities;
+use Remitt::DataStore::Log;
 use Remitt::DataStore::Output;
 use Digest::MD5;
 use Sys::Syslog;
@@ -58,21 +59,24 @@ sub Execute {
 	Remitt::Utilities::ForceAuthentication();
 
 	my $input = shift;
+	my $render = shift;
+	my $renderoption = shift;
+
+	my $log = Remitt::DataStore::Log->new;
+
 	if (!$input) {
-		$main::log->Log($username, 1, 'Remitt.Interface.Execute', 'Called without valid input parameter');
+		$log->Log($username, 1, 'Remitt.Interface.Execute', 'Called without valid input parameter');
 		die("Input not given");
 	}
-	my $render = shift;
 	if (!$render) {
-		$main::log->Log($username, 1, 'Remitt.Interface.Execute', 'Called without valid render parameter');
+		$log->Log($username, 1, 'Remitt.Interface.Execute', 'Called without valid render parameter');
 		die("Render not given");
 	}
-	my $renderoption = shift;
 
 	# FIXME: Check to see if we have to have an option for error-checking
 	my $transport = shift;
 	if (!$transport) {
-		$main::log->Log($username, 1, 'Remitt.Interface.Execute', 'Called without valid transport parameter');
+		$log->Log($username, 1, 'Remitt.Interface.Execute', 'Called without valid transport parameter');
 		die("Transport not given");
 	}
 
@@ -86,7 +90,7 @@ sub Execute {
 	# Get username information
 	my $username = Remitt::Utilities::GetUsername();
 
-	$main::log->Log($username, 2, 'Remitt.Interface.Execute', sprintf('called with %s, %s, %s, data length = %d', $render, $renderoption, $transport, length($input)));
+	$log->Log($username, 2, 'Remitt.Interface.Execute', sprintf('called with %s, %s, %s, data length = %d', $render, $renderoption, $transport, length($input)));
 	#print "Running Execute ( length of ".length($input).", $render, $renderoption, $transport ) ... \n";
 
 	# Sanitize (not input!)
@@ -97,9 +101,9 @@ sub Execute {
 	# Get resolve for translation plugin
 	my $translation = Remitt::Utilities::ResolveTranslationPlugin (
 		$render, $renderoption, $transport );
-	$main::log->Log($username, 3, 'Remitt.Utilities.ResolveTranslation', '( '.$render.', '.$renderoption.', '.$transport.' ) = '.$translation);
+	$log->Log($username, 3, 'Remitt.Utilities.ResolveTranslation', '( '.$render.', '.$renderoption.', '.$transport.' ) = '.$translation);
 	if ($translation eq '') {
-		$main::log->Log($username, 1, 'Remitt.Interface.Execute', sprintf('Could not find an appropriate traslation plugin for %s / %s / %s', $render, $renderoption, $transport));
+		$log->Log($username, 1, 'Remitt.Interface.Execute', sprintf('Could not find an appropriate traslation plugin for %s / %s / %s', $render, $renderoption, $transport));
 		die("No translation plugin found") 
 	}
 
@@ -114,23 +118,23 @@ sub Execute {
 		eval '$z = Remitt::Plugin::Transport::'.$transport.'::Transport($y);';
 		return $z;
 		#eval 'return Remitt::Plugin::Transport::'.$transport.'::Transport(Remitt::Plugin::Translation::'.$translation.'::Translate(Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption)));';
-		$main::log->Log($username, 1, 'Remitt.Interface.Execute', 'SHOULD NEVER GET HERE');
+		$log->Log($username, 1, 'Remitt.Interface.Execute', 'SHOULD NEVER GET HERE');
 		die ( "Should never get here\n" );
 	}
 
 	# Use the data store to create a unique id
-	#print "Calling Remitt::DataStore::Create ( $renderoption, $transport, XML )\n";
+	$log->Log($username, 3, 'Remitt.Interface.Execute', "Calling Remitt::DataStore::Create ( $renderoption, $transport, XML )");
 	my $ds = Remitt::DataStore::Output->new($username);
 	my $unique = $ds->Create( $renderoption, $transport, $input );
 
 	# Here, we fork a new process, so that we can return a value in realtime.
 	my $results;
 
-	#print "Pushing into process queue from Execute\n";	
+	$log->Log($username, 3, 'Remitt.Interface.Execute', "Pushing into process queue from Execute");	
 	my $p = Remitt::DataStore::Processor->new;
 	$p->Create($username, $input, $render, $renderoption, $translation, $transport, $unique);
 
-	#print "after thread execute\n";
+	$log->Log($username, 3, 'Remitt.Interface.Execute', "after thread execute");
 
 	#----- Parent thread
 		
@@ -139,7 +143,7 @@ sub Execute {
 	#$SIG{CHLD} = 'IGNORE';
 	
 	# Return actual value
-	$main::log->Log($username, 3, 'Remitt.Interface.Execute', 'Returning "Z'.$unique.'" to calling program');
+	$log->Log($username, 3, 'Remitt.Interface.Execute', 'Returning "Z'.$unique.'" to calling program');
 
 	# Prefix this with a non-numeric character to prevent autotyping
 	return 'Z'.$unique;
