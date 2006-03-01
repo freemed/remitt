@@ -192,6 +192,8 @@ sub ProcessorThread {
 	# Set polling interval
 	my $poll = shift || 5;
 
+	my $log = Remitt::DataStore::Log->new;
+
 	$log->Log('SYSTEM', 2, 'Remitt.Utilities.ProcessorThread| started processor thread with polling interval of '.$poll.'s');
 
 	my $p = Remitt::DataStore::Processor->new;
