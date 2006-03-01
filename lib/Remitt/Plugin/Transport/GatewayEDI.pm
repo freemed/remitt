@@ -5,7 +5,7 @@
 #
 # Package: Remitt::Plugin::Transport::GatewayEDI
 #
-#	GatewayEID transport plugin. This allows claims to be sent to the
+#	GatewayEDI transport plugin. This allows claims to be sent to the
 #	gatewayedi.com clearinghouse transparently.
 #
 
@@ -16,6 +16,7 @@ use lib "$FindBin::Bin/../../../";
 
 use Remitt::Utilities;
 use Remitt::DataStore::Configuration;
+use Remitt::DataStore::Log;
 use File::Temp ();	# comes with Perl 5.8.x
 use WWW::Mechanize;
 use Data::Dumper;
@@ -23,6 +24,8 @@ use Data::Dumper;
 sub Transport {
 	my $input = shift;
 	my $username = shift || Remitt::Utilities::GetUsername();
+
+	my $log = Remitt::DataStore::Log->new;
 
 	#	Get from configuration datastore
 	my $c = Remitt::DataStore::Configuration->new($username);
@@ -34,26 +37,27 @@ sub Transport {
 	my $tempbillfile = $fh->filename;
 
 	#	Put date into file
+	$log->Log($username, 3, 'Remitt.Plugin.Transport.GatewayEDI', "Exporting data to file ${tempbillfile}");
 	open TEMP, '>'.$tempbillfile or die("$!");
 	print TEMP $input;
 	close TEMP;
+	$log->Log($username, 3, 'Remitt.Plugin.Transport.GatewayEDI', "Finished exporting data successfully");
 
 	#	Fetch logon form
 	my $url = 'https://www.gatewayedi.com/gedi/logon.aspx';
 	my $m = WWW::Mechanize->new();
 	#print " * Getting initial logon page ... ";
+	$log->Log($username, 3, 'Remitt.Plugin.Transport.GatewayEDI', "Getting initial gatewayedi.com login page");
 	$m->get($url);
-	#print "[done]\n";
 
 	#	Sanity check
 	if ($m->content() !~ /LogonForm/) {
-		if (defined($main::log)) {
-			$main::log->Log($username, 1, 'Remitt.Plugin.Transport.GatewayEDI', "Failed to get logon form");
-		}
+		$log->Log($username, 1, 'Remitt.Plugin.Transport.GatewayEDI', "Failed to get logon form");
 		return '';
 	}
 
 	#	Submit authentication, etc
+	$log->Log($username, 3, 'Remitt.Plugin.Transport.GatewayEDI', "Sending authentication information");
 	$m->submit_form(
 		form_name => 'LogonForm',
 		fields => {
@@ -68,30 +72,26 @@ sub Transport {
 		print "Failed to log in ($f_username)\n";
 		return '';
 	}
-	if (defined($main::log)) {
-		$main::log->Log($username, 2, 'Remitt.Plugin.Transport.GatewayEDI', "Logged into gatewayedi.com with username ${f_username} from REMITT acct ${username}");
-	}
+	$log->Log($username, 2, 'Remitt.Plugin.Transport.GatewayEDI', "Logged into gatewayedi.com with username ${f_username} from REMITT acct ${username}");
 
 	#	Upload claim file
-	#print " * Fetching upload form ... ";
+	$log->Log($username, 3, 'Remitt.Plugin.Transport.GatewayEDI', "Fetching upload form");
 	$m->get('https://www.gatewayedi.com/gedi/SendAndGet/httpupload.aspx?uploadtype=claims');
-	#print "[done]\n";
 
-	#print " * Uploading $tempbillfile to server ... ";
+	$log->Log($username, 3, 'Remitt.Plugin.Transport.GatewayEDI', "Uploading ${tempbillfile} to server");
 	$m->submit_form(
 		form_name => '_ctl0',
 		fields => {
 			'UploadedFile' => $tempbillfile
 		}
 	);
-	#print "[done]\n";
 
 	#	Sanity check for whether or not this was received properly
 	if ($m->content !~ /was uploaded successfully/) {
-		if (defined($main::log)) {
-			$main::log->Log($username, 2, 'Remitt.Plugin.Transport.GatewayEDI', "Logged into gatewayedi.com with username ${f_username} from REMITT acct ${username}");
-		}
+		$log->Log($username, 2, 'Remitt.Plugin.Transport.GatewayEDI', "Upload for ${tempbillfile} FAILED!");
 		return '';
+	} else {
+		$log->Log($username, 2, 'Remitt.Plugin.Transport.GatewayEDI', "Upload for ${tempbillfile} successful.");
 	}
 
 	return Remitt::Utilities::StoreContents ( $input, 'plaintext', 'txt', $username);
