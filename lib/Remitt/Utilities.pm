@@ -202,7 +202,7 @@ sub ProcessorThread {
 	while (1) {
 		# Check for new entries
 		my @items = $p->GetQueue();
-		if ($items[0] ne undef) {
+		if (defined($items[0]) {
 			foreach my $item (@items) {
 				# Remove from the queue and start threads to
 				# handle. Need to optimize at some point.
@@ -325,7 +325,7 @@ sub ResolveTranslationPlugin {
 sub StoreContents {
 	my ($input, $transport, $extension, $username) = @_;
 
-        if ($username eq undef) {
+        if (!defined($username)) {
                 return $input;
         } else {
 		my $filename = strftime('%Y%m%d.%H%M%S', localtime(time)).
