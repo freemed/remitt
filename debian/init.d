@@ -52,10 +52,10 @@ case "$1" in
 	#	option to the "reload" entry above. If not, "force-reload" is
 	#	just the same as "restart".
 	#
-	echo -n "Restarting $DESC: "
+	echo "Restarting $DESC: "
 	$0 stop
+	sleep 3
 	$0 start
-	echo "$NAME."
 	;;
   *)
 	N=/etc/init.d/$NAME
