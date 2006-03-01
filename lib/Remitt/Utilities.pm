@@ -15,6 +15,7 @@ use FindBin;
 use lib "$FindBin::Bin/../lib";
 
 use Remitt::Session;
+use Remitt::DataStore::Log;
 use Remitt::DataStore::Output;
 use Remitt::DataStore::Processor;
 use Compress::Zlib;
@@ -149,7 +150,9 @@ sub ForceAuthentication {
 sub ExecuteThread {
 	my ( $username, $input, $render, $renderoption, $translation, $transport, $unique ) = @_;
 
-	syslog('info', 'Remitt.Utilities.ExecuteThread| started execute thread for '.$username.' ('.$unique.')');
+	my $log = Remitt::DataStore::Log->new;
+
+	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', 'Started execute thread for '.$username.' ('.$unique.')');
 
 	my $ds = Remitt::DataStore::Output->new($username);
 
@@ -159,12 +162,15 @@ sub ExecuteThread {
 	eval 'use Remitt::Plugin::Render::'.$render.';';
 	eval 'use Remitt::Plugin::Translation::'.$translation.';';
 	eval 'use Remitt::Plugin::Transport::'.$transport.';';
+	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', $unique.' :: render');
 	eval '$x = Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption);';
+	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', $unique.' :: translation');
 	eval '$y = Remitt::Plugin::Translation::'.$translation.'::Translate($x);';
+	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', $unique.' :: transport');
 	eval '$results = Remitt::Plugin::Transport::'.$transport.'::Transport($y, $username);';
 	#eval '$results = Remitt::Plugin::Transport::'.$transport.'::Transport(Remitt::Plugin::Translation::'.$translation.'::Translate(Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption)), $username);';
 	# Store value in proper place in 'state' directory
-	syslog('info', 'Remitt.Utilities.ExecuteThread| child thread: storing state after successful run');
+	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', 'child thread: storing state after successful run');
 	$ds->SetStatus($unique, 1, $results);
 		
 	# Terminate child thread
@@ -186,7 +192,7 @@ sub ProcessorThread {
 	# Set polling interval
 	my $poll = shift || 5;
 
-	syslog('info', 'Remitt.Utilities.ProcessorThread| started processor thread with polling interval of '.$poll.'s');
+	$log->Log('SYSTEM', 2, 'Remitt.Utilities.ProcessorThread| started processor thread with polling interval of '.$poll.'s');
 
 	my $p = Remitt::DataStore::Processor->new;
 
