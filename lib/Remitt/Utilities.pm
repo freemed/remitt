@@ -202,7 +202,7 @@ sub ProcessorThread {
 	while (1) {
 		# Check for new entries
 		my @items = $p->GetQueue();
-		if (defined($items[0]) {
+		if (defined($items[0])) {
 			foreach my $item (@items) {
 				# Remove from the queue and start threads to
 				# handle. Need to optimize at some point.
