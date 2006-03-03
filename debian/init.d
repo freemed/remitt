@@ -26,7 +26,7 @@ set -e
 case "$1" in
   start)
 	echo -n "Starting $DESC: "
-	( cd /usr/share/remitt; ./bin/remitt_server.pl 2>&1 > /dev/null & )
+	/usr/share/remitt/bin/remitt_server.pl
 	echo "$NAME."
 	;;
   stop)

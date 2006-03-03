@@ -19,6 +19,7 @@ use Data::Dumper;
 use Remitt::Utilities;
 use Remitt::DataStore::Log;
 use Sys::Syslog;
+use POSIX qw(setsid);
 
 my $version = "0.3.1";
 my $protocolversion = 0.2;
@@ -42,6 +43,9 @@ $auth = 1;
 #	'Translation',
 #	'Transport'
 #];
+
+# Fork off into the background
+&daemonize;
 
 $log = Remitt::DataStore::Log->new;
 
@@ -68,4 +72,16 @@ if (!$quiet) {
 }
 $log->Log('SYSTEM', 2, 'XML-RPC Server', 'Daemon running at '.$daemon->url);
 $daemon->handle;
+
+#----------------------------------------------------------------------------------------
+
+sub daemonize {
+        open STDIN, '/dev/null'   or die "Can't read /dev/null: $!";
+        open STDOUT, '>>/dev/null' or die "Can't write to /dev/null: $!";
+	open STDERR, '>>/dev/null' or die "Can't write to /dev/null: $!";
+        defined(my $pid = fork)   or die "Can't fork: $!";
+        exit if $pid;
+        setsid                    or die "Can't start a new session: $!";
+        umask 0;
+}
 
