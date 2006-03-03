@@ -113,9 +113,9 @@ sub DistinctMonths {
 	$year =~ s/[^0-9]//g;
 	my $s;
 	if ($y) {
-		$s = $d->prepare('SELECT STRFTIME(\'%Y-%m\', generated) AS month, STRFTIME(\'%Y\', generated) AS year, COUNT(OID) AS my_count FROM output WHERE year=\''.$year.'\' GROUP BY month ORDER BY month DESC');
+		$s = $d->prepare('SELECT STRFTIME(\'%Y-%m\', generated) AS month, STRFTIME(\'%Y\', generated) AS year, COUNT(OID) AS my_count FROM output WHERE year=\''.$year.'\' AND LENGTH(filename) > 0 GROUP BY month ORDER BY month DESC');
 	} else {
-		$s = $d->prepare('SELECT STRFTIME(\'%Y-%m\', generated) AS month, STRFTIME(\'%Y\', generated) AS year, COUNT(OID) AS my_count FROM output GROUP BY month ORDER BY month DESC');
+		$s = $d->prepare('SELECT STRFTIME(\'%Y-%m\', generated) AS month, STRFTIME(\'%Y\', generated) AS year, COUNT(OID) AS my_count FROM output WHERE LENGTH(filename) > 0 GROUP BY month ORDER BY month DESC');
 	}
 	my $r = $s->execute; #($year);
 	if ($r) {
