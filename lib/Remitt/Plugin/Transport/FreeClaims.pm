@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 #
 #	$Id$
 #	$Author$
@@ -12,26 +12,21 @@
 package Remitt::Plugin::Transport::FreeClaims;
 
 use FindBin;
-use lib "$FindBin::Bin/../lib";
+use lib "$FindBin::Bin/../../../";
 
 use Remitt::Utilities;
 use Remitt::DataStore::Configuration;
+use Remitt::DataStore::Log;
 use File::Temp ();	# comes with Perl 5.8.x
 use WWW::Mechanize;
 use Data::Dumper;
 
 sub Transport {
-	my ( $input, $username ) = @_;
+	my $input = shift;
+	my $username = shift || Remitt::Utilities::GetUsername();
 
-	# Here's the cluster-fsck ...
-	#
-	# 	When dealing with a multi-user environment, there isn't a
-	# 	good way to centrally store the username and password
-	# 	that is to be used. Going to hack a temporary solution, but
-	# 	that isn't going to fly with HIPAA regulations, methinks.
-	#
-	my $user = Remitt::Utilities::GetUsername();
-	my $c = Remitt::DataStore::Configuration->new($user);
+	# Get from configuration datastore
+	my $c = Remitt::DataStore::Configuration->new($username);
 	my $f_username = $c->GetValue('freeclaims_username');
 	my $f_password = $c->GetValue('freeclaims_password');
 
@@ -39,20 +34,21 @@ sub Transport {
 	# name should be stored in "$tempbillfile"
 	my $fh = new File::Temp ( UNLINK => 1 );
 	my $tempbillfile = $fh->filename;
+	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Exporting data to file ${tempbillfile}");
 
 	# Put date into file
 	open TEMP, '>'.$tempbillfile or die("$!");
 	print TEMP $input;
 	close TEMP;
+	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Finished exporting data successfully");
 
 	# Login to FreeClaims
 	my $url = 'https://secure.freeclaims.com/docs/login.asp';
 	my $m = WWW::Mechanize->new();
-	print " * Getting initial logon page ... ";
+	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Fetching initial logon page");
 	$m->get($url);
-	print "[done]\n";
 
-	print " * Logging in ... ";
+	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Logging in with account ${f_username}");
 	$m->submit_form(
 		form_name => 'loginForm',
 		fields => {
@@ -60,22 +56,20 @@ sub Transport {
 			userpassword => $f_password
 		}
 	);
-	print "[done]\n";
-	syslog('notice', 'FreeClaims transport| Logged into freeclaims.com with username '.$username);
+	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Logged in successfully");
 
 	# Upload claim file
-	print " * Fetching upload form ... ";
+	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Fetching upload form");
 	$m->get('https://secure.freeclaims.com/docs/upload.asp');
-	print "[done]\n";
 	
 	print " * Uploading $tempbillfile to server ... ";
+	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Uploading ${tempbillfile} to the server");
 	$m->submit_form(
 		form_name => 'Upload',
 		fields => {
 			file1 => $tempbillfile
 		}
 	);
-	print "[done]\n";
 
 	return Remitt::Utilities::StoreContents ( $input, 'plaintext', 'txt', $username);
 } # end method Transport
@@ -95,8 +89,8 @@ sub Config {
 } # end sub Config
 
 sub test {
-	print "\nNo test for FreeClaims transport yet ... \n";
-	print "\n---\n";
+	my $data = "DUMMY FILE TEST DATA\n" x 20;
+	Transport($data, 'test');
 } # end sub test
 
 1;
