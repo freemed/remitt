@@ -14,6 +14,7 @@ use FindBin;
 use lib "$FindBin::Bin/../lib";
 
 use Remitt::Utilities;
+use Remitt::DataStore::Log;
 use Data::Dumper;
 use Compress::Zlib;
 use MIME::Base64;
@@ -110,6 +111,9 @@ sub Create {
 #
 sub GetQueue {
 	my ( $self ) = @_;
+
+	my $log = Remitt::DataStore::Log->new;
+
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
 	my $s = $d->prepare('SELECT username, data, render, renderoption, translation, transport, unique_id, OID FROM queue ORDER BY OID');
@@ -117,7 +121,7 @@ sub GetQueue {
 	if ($r) {
 		my @results;
 		while (my $data = $s->fetchrow_hashref) {
-			syslog('info', 'Remitt.DataStore.Processor| found '.$data->{rowid}.' in processor queue');
+			$log->Log('SYSTEM', 3, 'Remitt.DataStore.Processor', 'found '.$data->{rowid}.' in processor queue');
 			push @results, $data;
 		}
 		return @results;
@@ -141,12 +145,13 @@ sub Init {
 	my $config = Remitt::Utilities::Configuration ( );
 	my $p = $config->val('installation', 'path').'/spool';
 	my $f = $p.'/processor.db';
+	my $log = Remitt::DataStore::Log->new;
 	#print "(file = $f)\n";
 	if ( -e $f ) {
 		# Skip
 		return 1;
 	} else {
-		syslog('info', "Remitt.DataStore.Processor.Init| creating $f");
+		$log->Log('SYSTEM', 3, 'Remitt.DataStore.Processor.Init', 'creating '.$f);
 		umask 000;
 		mkpath($p, 1, 0755);
 		my $d = DBI->connect('dbi:SQLite:dbname='.$f, '', '');

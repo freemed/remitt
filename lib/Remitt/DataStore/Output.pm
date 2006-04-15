@@ -14,6 +14,7 @@ use FindBin;
 use lib "$FindBin::Bin/../lib";
 
 use Remitt::Utilities;
+use Remitt::DataStore::Log;
 use Data::Dumper;
 use Compress::Zlib;
 use MIME::Base64;
@@ -225,12 +226,13 @@ sub Init {
 	my $config = Remitt::Utilities::Configuration ( );
 	my $p = $config->val('installation', 'path').'/spool/'.$self->{username};
 	my $f = $p.'/data.db';
+	my $log = Remitt::DataStore::Log->new();
 	#print "(file = $f)\n";
 	if ( -e $f ) {
 		# Skip
 		return 1;
 	} else {
-		syslog('info', "Remitt.DataStore.Output.Init| creating $f for $self->{username}");
+		$log->Log($username, 3, 'Remitt.DataStore.Output.Init', "creating $f for $self->{username}");
 		umask 000;
 		mkpath($p, 1, 0755);
 		my $d = DBI->connect('dbi:SQLite:dbname='.$f, '', '');
