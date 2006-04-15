@@ -162,7 +162,7 @@ sub ExecuteThread {
 	#----- Child branch
 	#print "D-Child: running execute code\n";
 	my ( $x, $y, $results );
-	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', $unique.' :: load '.$render.', '.$translation.', $transport ['.$uid.']');
+	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', $unique.' :: load '.$render.', '.$translation.', '.$transport.' ['.$uid.']');
 	eval 'use Remitt::Plugin::Render::'.$render.';';
 	eval 'use Remitt::Plugin::Translation::'.$translation.';';
 	eval 'use Remitt::Plugin::Transport::'.$transport.';';
