@@ -152,25 +152,29 @@ sub ExecuteThread {
 
 	my $log = Remitt::DataStore::Log->new;
 
-	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', 'Started execute thread for '.$username.' ('.$unique.')');
+	# Get a unique ID to append to everything
+	chomp ( my $uid = `uuidgen` );
+
+	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', 'Execute thread for '.$username.' ('.$unique.') ['.$uid.']');
 
 	my $ds = Remitt::DataStore::Output->new($username);
 
 	#----- Child branch
 	#print "D-Child: running execute code\n";
 	my ( $x, $y, $results );
+	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', $unique.' :: load '.$render.', '.$translation.', $transport ['.$uid.']');
 	eval 'use Remitt::Plugin::Render::'.$render.';';
 	eval 'use Remitt::Plugin::Translation::'.$translation.';';
 	eval 'use Remitt::Plugin::Transport::'.$transport.';';
-	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', $unique.' :: render');
+	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', $unique.' :: render ['.$uid.']');
 	eval '$x = Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption);';
-	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', $unique.' :: translation');
+	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', $unique.' :: translation ['.$uid.']');
 	eval '$y = Remitt::Plugin::Translation::'.$translation.'::Translate($x);';
-	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', $unique.' :: transport');
+	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', $unique.' :: transport ['.$uid.']');
 	eval '$results = Remitt::Plugin::Transport::'.$transport.'::Transport($y, $username);';
 	#eval '$results = Remitt::Plugin::Transport::'.$transport.'::Transport(Remitt::Plugin::Translation::'.$translation.'::Translate(Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption)), $username);';
 	# Store value in proper place in 'state' directory
-	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', 'child thread: storing state after successful run');
+	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', 'child thread: storing state after successful run ['.$uid.']');
 	$ds->SetStatus($unique, 1, $results);
 		
 	# Terminate child thread

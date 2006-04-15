@@ -271,7 +271,7 @@ sub GetStatus {
 	# Get username information
 	my $username = Remitt::Utilities::GetUsername();
 	
-	$main::log->Log($username, 2, 'Remitt.Interface.GetStatus', sprintf('Called for %s', $unique));
+	$main::log->Log($username, 4, 'Remitt.Interface.GetStatus', sprintf('Called for %s', $unique));
 
 	# Get configuration information
 	my $config = Remitt::Utilities::Configuration ( );
@@ -290,7 +290,7 @@ sub GetStatus {
 
 	# If the file doesn't exist, return -1
 	if (!$status) {
-		$main::log->Log($username, 3, 'Remitt.Interface.GetStatus', 'Output doesn\'t exist yet (status was 0)');
+		$main::log->Log($username, 5, 'Remitt.Interface.GetStatus', 'Output doesn\'t exist yet (status was 0)');
 		return -1;
 	} else {
 		# Send back filename from data store
