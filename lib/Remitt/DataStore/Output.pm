@@ -184,6 +184,34 @@ sub GetFilename {
 	}
 } # end method GetFilename
 
+# Method: GetOriginalXml
+#
+#	Get original XML stored in the output table in data.db which was used to
+#	generate the specified batch.
+#
+# Parameters:
+#
+#	$id - Unique OID describing fields
+#
+# Returns:
+#
+# 	XML data
+#
+sub GetOriginalXml {
+	my ($self, $id) = @_;
+
+	# Make sure database is initialized
+	my $_x = $self->Init();
+	my $d = $self->_Handle();
+	my $s = $d->prepare('SELECT original_data FROM output WHERE OID=?');
+	my $r = $s->execute($id);
+	if ($r) {
+		my $h = $s->fetchrow_arrayref;
+		return Compress::Zlib::memGunzip(decode_base64($h->[0]));
+	}
+	return '';
+} # end method GetOriginalXml
+
 # Method: GetStatus
 #
 # Parameters:
