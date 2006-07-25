@@ -12,9 +12,9 @@ if [ ! -e ./doc/naturaldocs/src/generate.sh ]; then \
 fi
 
 # Get minor version number
-NV=`perl /usr/share/naturaldocs/NaturalDocs -h | grep version | awk '{ print \$4 }'`
-if [ ! "x$NV" = "x1.3" ]; then \
-	echo "You need to have NaturalDocs version 1.3 installed in /usr/share/naturaldocs/"; \
+NV=`perl /usr/share/naturaldocs/NaturalDocs -h | grep version | awk '{ print \$4 }' | grep 1.2`
+if [ ! "x${NV}" = "x" ]; then \
+	echo "You need to have NaturalDocs version 1.3x installed in /usr/share/naturaldocs/"; \
 	exit; \
 fi
 echo "Found Naturaldocs v$NV"
