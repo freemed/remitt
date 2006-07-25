@@ -1,6 +1,6 @@
 Name:		remitt
 Summary:	REMITT Electronic Medical Information Translation and Transmission
-Version:	0.3.1
+Version:	0.3.2
 Release:	1
 License:	GPL
 Group:		System Environment/Daemons
@@ -64,6 +64,9 @@ rm -fr %{buildroot}
 %{_datadir}/%{name}
 
 %changelog
+
+* Wed Jul 26 2006 Jeff Buchbinder <jeff@freemedsoftware.com> - 0.3.2-1
+  - New upstream version.
 
 * Sun Feb 19 2006 Jeff Buchbinder <jeff@freemedsoftware.com> - 0.3.1-1
   - New upstream version.

@@ -1,7 +1,7 @@
 Source: remitt
 Section: misc
 Priority: optional
-Maintainer: Jeff Buchbinder <jeff@freemedsoftware.com>
+Maintainer: Jeff Buchbinder <jeff@freemedsoftware.org>
 Build-Depends: debhelper (>= 4.0.0), po-debconf
 Standards-Version: 3.6.0
 
