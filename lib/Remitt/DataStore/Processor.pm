@@ -77,7 +77,7 @@ sub Create {
 
 	# Open appropriate file
 	my $d = $self->_Handle();
-	my $s = $d->prepare('INSERT INTO queue '.
+	my $s = $d->prepare('INSERT INTO processorqueue '.
 		'( username, data, render, renderoption, translation, transport, unique_id ) '.
 		'VALUES ( ?, ?, ?, ?, ?, ?, ? )');
 	my $r = $s->execute(
@@ -91,7 +91,7 @@ sub Create {
 	);
 
 	# Get id to give back
-	my $s2 = $d->prepare('SELECT OID FROM queue ORDER BY OID DESC');
+	my $s2 = $d->prepare('SELECT OID FROM processorqueue ORDER BY OID DESC');
 	my $r2 = $s2->execute;
 	if ($r2) {
 		my $data = $s2->fetchrow_arrayref;
@@ -101,7 +101,76 @@ sub Create {
 	}
 } # end method Create
 
-# Method: GetQueue
+# Method: AddToExecuteQueue
+#
+# 	Add entry to execute queue
+#
+# Parameters:
+#
+# 	$username - Username for job
+#
+# 	$unique - Unique ID
+#
+# Returns:
+#
+# 	OID of entry if successful, else 0
+#
+sub AddToExecuteQueue {
+	my $self = shift;
+	my ( $username, $unique ) = @_;
+
+	# Make sure database is initialized
+	my $_x = $self->Init();
+
+	my $d = $self->_Handle();
+	my $s = $d->prepare('INSERT INTO executequeue ( username, unique_id ) VALUES ( ?, ? )');
+	my $r = $s->execute(
+		$username,		# name of user
+		$unique			# unique id
+	);
+
+	# Get id to give back
+	my $s2 = $d->prepare('SELECT OID FROM executequeue ORDER BY OID DESC');
+	my $r2 = $s2->execute;
+	if ($r2) {
+		my $data = $s2->fetchrow_arrayref;
+		return $data->[0];
+	} else {
+		return 0;
+	}
+} # end method AddToExecuteQueue
+
+# Method: GetExecuteQueueCount
+#
+# 	Get current execute queue count.
+#
+# Returns:
+#
+#	Number of items in the execute queue.
+#
+sub GetExecuteQueueCount {
+	my ( $self ) = @_;
+
+	my $log = Remitt::DataStore::Log->new;
+
+	my $_x = $self->Init();
+	my $d = $self->_Handle();
+	my $s = $d->prepare('SELECT OID FROM executequeue ORDER BY OID');
+	my $r = $s->execute;
+	if ($r) {
+		my $count = 0;
+		while (my $data = $s->fetchrow_hashref) {
+			$count++;
+		}
+		$log->Log('SYSTEM', 3, 'Remitt.DataStore.Processor', 'found '.$count.' items in execute queue');
+		return $count;
+	} else {
+		# No results, return 0
+		return 0;
+	}
+} # end method GetExecuteQueueCount
+
+# Method: GetProcessorQueue
 #
 # 	Get current processor queue.
 #
@@ -109,14 +178,14 @@ sub Create {
 #
 # 	Array of hash of items in processor queue, or undef if none.
 #
-sub GetQueue {
+sub GetProcessorQueue {
 	my ( $self ) = @_;
 
 	my $log = Remitt::DataStore::Log->new;
 
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $s = $d->prepare('SELECT username, data, render, renderoption, translation, transport, unique_id, OID FROM queue ORDER BY OID');
+	my $s = $d->prepare('SELECT username, data, render, renderoption, translation, transport, unique_id, OID FROM processorqueue ORDER BY OID');
 	my $r = $s->execute;
 	if ($r) {
 		my @results;
@@ -128,7 +197,7 @@ sub GetQueue {
 	} else {
 		return undef;
 	}
-} # end method GetQueue
+} # end method GetProcessorQueue
 
 # Method: Init
 #
@@ -155,7 +224,7 @@ sub Init {
 		umask 000;
 		mkpath($p, 1, 0755);
 		my $d = DBI->connect('dbi:SQLite:dbname='.$f, '', '');
-		my $s = $d->do('CREATE TABLE queue ( '.
+		my $s = $d->do('CREATE TABLE processorqueue ( '.
 			'username VARCHAR, '.
 			'data BLOB, '.
 			'render VARCHAR, '.
@@ -164,17 +233,21 @@ sub Init {
 			'transport VARCHAR, '.
 			'unique_id VARCHAR '.
 		')');
+		my $s2 = $d->do('CREATE TABLE executequeue ( '.
+			'username VARCHAR, '.
+			'unique_id VARCHAR '.
+		')');
 		if ($s) { return 1; } else { return 0; }
 	}
 } # end method Init
 
-# Method: RemoveFromQueue
+# Method: RemoveFromExecuteQueue
 #
 # Parameters:
 #
 # 	$id - Unique OID describing field
 #
-sub RemoveFromQueue {
+sub RemoveFromExecuteQueue {
 	my $self = shift;
 	my ( $id ) = @_;
 
@@ -184,9 +257,29 @@ sub RemoveFromQueue {
 	# Make sure database is initialized
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $s = $d->prepare('DELETE FROM queue WHERE OID=?');
+	my $s = $d->prepare('DELETE FROM executequeue WHERE OID=?');
 	my $r = $s->execute($id);
 } # end method RemoveFromQueue
+
+# Method: RemoveFromProcessorQueue
+#
+# Parameters:
+#
+# 	$id - Unique OID describing field
+#
+sub RemoveFromProcessorQueue {
+	my $self = shift;
+	my ( $id ) = @_;
+
+	# Get file size
+	my $config = Remitt::Utilities::Configuration ( );
+
+	# Make sure database is initialized
+	my $_x = $self->Init();
+	my $d = $self->_Handle();
+	my $s = $d->prepare('DELETE FROM processorqueue WHERE OID=?');
+	my $r = $s->execute($id);
+} # end method RemoveFromProcessorQueue
 
 # Method: _Handle
 # 

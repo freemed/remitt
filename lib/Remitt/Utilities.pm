@@ -151,6 +151,7 @@ sub ExecuteThread {
 	my ( $username, $input, $render, $renderoption, $translation, $transport, $unique ) = @_;
 
 	my $log = Remitt::DataStore::Log->new;
+	my $p = Remitt::DataStore::Processor->new;
 
 	# Get a unique ID to append to everything
 	chomp ( my $uid = `uuidgen` );
@@ -177,7 +178,8 @@ sub ExecuteThread {
 	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', 'child thread: storing state after successful run ['.$uid.']');
 	$ds->SetStatus($unique, 1, $results);
 		
-	# Terminate child thread
+	# Terminate child thread, removing from queue first
+	$p->RemoveFromExecuteQueue( $username, $unique );
 	#print "ExecuteThread end\n";
 } # end method ExecuteThread
 
@@ -192,9 +194,14 @@ sub ExecuteThread {
 # 	$poll - (optional) Number of seconds during idle between polling
 # 	for new data in the queue. Defaults to 5 seconds.
 #
+#	$execute_threads - (optional) Maximum number of execute threads to
+#	run at the same time. Do not set this too high or your system will
+#	do very strange things. Defaults to 3.
+#
 sub ProcessorThread {
 	# Set polling interval
 	my $poll = shift || 5;
+	my $execute_threads = shift || 3;
 
 	my $log = Remitt::DataStore::Log->new;
 
@@ -205,20 +212,23 @@ sub ProcessorThread {
 	# Loop endlessly
 	while (1) {
 		# Check for new entries
-		my @items = $p->GetQueue();
+		my @items = $p->GetProcessorQueue();
 		if (defined($items[0])) {
 			foreach my $item (@items) {
-				# Remove from the queue and start threads to
-				# handle. Need to optimize at some point.
-				$p->RemoveFromQueue($item->{rowid});
-				my $thread = new Thread \&ExecuteThread,
-					$item->{username},
-					Compress::Zlib::memGunzip(decode_base64($item->{data})),
-					$item->{render},
-					$item->{renderoption},
-					$item->{translation},
-					$item->{transport},
-					$item->{unique_id};
+				if ($p->GetExecuteQueueCount() <= $execute_threads) {
+					# Remove from the queue and start threads to
+					# handle. Need to optimize at some point.
+					$p->RemoveFromProcessorQueue($item->{rowid});
+					$p->AddToExecuteQueue($item->{rowid});
+					my $thread = new Thread \&ExecuteThread,
+						$item->{username},
+						Compress::Zlib::memGunzip(decode_base64($item->{data})),
+						$item->{render},
+						$item->{renderoption},
+						$item->{translation},
+						$item->{transport},
+						$item->{unique_id};
+				} # end checking for execute threads
 			} # end foreach item loop
 		} else {
 			# If there is nothing, Wait $poll seconds between polls
