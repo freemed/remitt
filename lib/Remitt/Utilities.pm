@@ -196,12 +196,13 @@ sub ExecuteThread {
 #
 #	$execute_threads - (optional) Maximum number of execute threads to
 #	run at the same time. Do not set this too high or your system will
-#	do very strange things. Defaults to 3.
+#	do very strange things. Defaults to 2.
 #
 sub ProcessorThread {
 	# Set polling interval
 	my $poll = shift || 5;
-	my $execute_threads = shift || 3;
+	my $config = Remitt::Utilities::Configuration();
+	my $execute_threads = shift || $config->val('processor', 'execute_threads');
 
 	my $log = Remitt::DataStore::Log->new;
 
@@ -215,7 +216,8 @@ sub ProcessorThread {
 		my @items = $p->GetProcessorQueue();
 		if (defined($items[0])) {
 			foreach my $item (@items) {
-				if ($p->GetExecuteQueueCount() <= $execute_threads) {
+				if ($p->GetExecuteQueueCount() < $execute_threads) {
+					$log->Log('SYSTEM', 4, 'Remitt.Utilities.ProcessorThread', 'Found '.$p->GetExecuteQueueCount().' items in execute queue, adding additional item');
 					# Remove from the queue and start threads to
 					# handle. Need to optimize at some point.
 					$p->RemoveFromProcessorQueue($item->{rowid});

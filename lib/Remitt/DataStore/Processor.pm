@@ -162,7 +162,7 @@ sub GetExecuteQueueCount {
 		while (my $data = $s->fetchrow_hashref) {
 			$count++;
 		}
-		$log->Log('SYSTEM', 3, 'Remitt.DataStore.Processor', 'found '.$count.' items in execute queue');
+		#$log->Log('SYSTEM', 3, 'Remitt.DataStore.Processor', 'found '.$count.' items in execute queue');
 		return $count;
 	} else {
 		# No results, return 0
@@ -190,7 +190,7 @@ sub GetProcessorQueue {
 	if ($r) {
 		my @results;
 		while (my $data = $s->fetchrow_hashref) {
-			$log->Log('SYSTEM', 3, 'Remitt.DataStore.Processor', 'found '.$data->{rowid}.' in processor queue');
+			#$log->Log('SYSTEM', 3, 'Remitt.DataStore.Processor', 'found '.$data->{rowid}.' in processor queue');
 			push @results, $data;
 		}
 		return @results;
