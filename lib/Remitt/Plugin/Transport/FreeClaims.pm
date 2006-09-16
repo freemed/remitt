@@ -26,6 +26,9 @@ sub Transport {
 	my $username = shift || Remitt::Utilities::GetUsername();
 
 	my $log = Remitt::DataStore::Log->new;
+	my $messages = "";
+
+	$messages .= Remitt::Utilities::DateStamp()." [INFO] Beginning FreeClaims billing transmission run\n";
 
 	# Get from configuration datastore
 	my $c = Remitt::DataStore::Configuration->new($username);
@@ -37,6 +40,7 @@ sub Transport {
 	my $fh = new File::Temp ( UNLINK => 1 );
 	my $tempbillfile = $fh->filename;
 	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Exporting data to file ${tempbillfile}");
+	$messages .= Remitt::Utilities::DateStamp()." [INFO] Creating temporary file ${tempbillfile}\n";
 
 	# Put date into file
 	open TEMP, '>'.$tempbillfile or die("$!");
@@ -49,6 +53,7 @@ sub Transport {
 	my $m = WWW::Mechanize->new();
 	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Fetching initial logon page");
 	$m->get($url);
+	$messages .= Remitt::Utilities::DateStamp()." [INFO] Connected to freeclaims server\n";
 
 	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Logging in with account ${f_username}");
 	$m->submit_form(
@@ -59,15 +64,17 @@ sub Transport {
 		}
 	);
 	if ($m->content =~ /login attempt was not/) {
-		return Remitt::Utilities::StoreContents ( "Failed to login to freeclaims site using provided credentials", 'error', 'txt', $username);
+		$messages .= Remitt::Utilities::DateStamp()." [ERROR] failed to login to FreeClaims site using provided credentials.\n";
+		return Remitt::Utilities::StoreContents ( $messages, 'freeclaims', 'log', $username);
 	}
 	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Logged in successfully");
+	$messages .= Remitt::Utilities::DateStamp()." [INFO] logged into Freeclaims site using account # ${f_username}\n";
 
 	# Upload claim file
 	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Fetching upload form");
 	$m->get('https://secure.freeclaims.com/docs/upload.asp');
 	
-	print " * Uploading $tempbillfile to server ... ";
+	$messages .= Remitt::Utilities::DateStamp()." [INFO] beginning transmission of file to FreeClaims\n";
 	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Uploading ${tempbillfile} to the server");
 	$m->submit_form(
 		form_name => 'Upload',
@@ -75,8 +82,11 @@ sub Transport {
 			file1 => $tempbillfile
 		}
 	);
+	$messages .= Remitt::Utilities::DateStamp()." [INFO] ".length($input)." bytes sent to freeclaims\n"; 
 
-	return Remitt::Utilities::StoreContents ( $input, 'plaintext', 'txt', $username);
+	$messages .= Remitt::Utilities::DateStamp()." [INFO] completed FreeClaims billing transmission\n\n";
+
+	return Remitt::Utilities::StoreContents ( $messages, 'freeclaims', 'log', $username);
 } # end method Transport
 
 # Method: Config

@@ -24,8 +24,11 @@ use Data::Dumper;
 sub Transport {
 	my $input = shift;
 	my $username = shift || Remitt::Utilities::GetUsername();
+	my $messages;
 
 	my $log = Remitt::DataStore::Log->new;
+
+	$messages .= Remitt::Utilities::DateStamp()." [INFO] starting GatewayEDI billing transmission\n";
 
 	#	Get from configuration datastore
 	my $c = Remitt::DataStore::Configuration->new($username);
@@ -47,6 +50,7 @@ sub Transport {
 	my $url = 'https://www.gatewayedi.com/gedi/logon.aspx';
 	my $m = WWW::Mechanize->new();
 	#print " * Getting initial logon page ... ";
+	$messages .= Remitt::Utilities::DateStamp()." [INFO] connecting to GatewayEDI\n";
 	$log->Log($username, 3, 'Remitt.Plugin.Transport.GatewayEDI', "Getting initial gatewayedi.com login page");
 	$m->get($url);
 
@@ -69,8 +73,9 @@ sub Transport {
 
 	# Check for failed logon producing new logon form
 	if ($m->content() =~ /name="LogonForm"/) {
-		print "Failed to log in ($f_username)\n";
-		return '';
+		#print "Failed to log in ($f_username)\n";
+		$messages .= Remitt::Utilities::DateStamp()." [ERROR] failed to log in using account # ${f_username}\n";
+		return Remitt::Utilities::StoreContents ( $messages, 'gatewayedi', 'log', $username);
 	}
 	$log->Log($username, 2, 'Remitt.Plugin.Transport.GatewayEDI', "Logged into gatewayedi.com with username ${f_username} from REMITT acct ${username}");
 
@@ -78,6 +83,7 @@ sub Transport {
 	$log->Log($username, 3, 'Remitt.Plugin.Transport.GatewayEDI', "Fetching upload form");
 	$m->get('https://www.gatewayedi.com/gedi/SendAndGet/httpupload.aspx?uploadtype=claims');
 
+	$messages .= Remitt::Utilities::DateStamp()." [INFO] transmitting ${tempbillfile} to server\n";
 	$log->Log($username, 3, 'Remitt.Plugin.Transport.GatewayEDI', "Uploading ${tempbillfile} to server");
 	$m->submit_form(
 		form_name => '_ctl0',
@@ -89,12 +95,15 @@ sub Transport {
 	#	Sanity check for whether or not this was received properly
 	if ($m->content !~ /was uploaded successfully/) {
 		$log->Log($username, 2, 'Remitt.Plugin.Transport.GatewayEDI', "Upload for ${tempbillfile} FAILED!");
-		return '';
+		$messages .= Remitt::Utilities::DateStamp()." [ERROR] failed to upload ${tempbillfile}\n";
+		return Remitt::Utilities::StoreContents ( $messages, 'gatewayedi', 'log', $username);
 	} else {
 		$log->Log($username, 2, 'Remitt.Plugin.Transport.GatewayEDI', "Upload for ${tempbillfile} successful.");
 	}
 
-	return Remitt::Utilities::StoreContents ( $input, 'plaintext', 'txt', $username);
+	$messages .= Remitt::Utilities::DateStamp()." [INFO] completed GatewayEDI billing transmission\n\n";
+
+	return Remitt::Utilities::StoreContents ( $messages, 'gatewayedi', 'log', $username);
 } # end method Transport
 
 # Method: Config
