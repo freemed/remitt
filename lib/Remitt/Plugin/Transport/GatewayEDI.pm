@@ -12,7 +12,7 @@
 package Remitt::Plugin::Transport::GatewayEDI;
 
 use FindBin;
-use lib "$FindBin::Bin/../../../";
+use lib "$FindBin::Bin/../lib/";
 
 use Remitt::Utilities;
 use Remitt::DataStore::Configuration;

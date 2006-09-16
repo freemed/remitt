@@ -12,7 +12,7 @@
 package Remitt::Plugin::Transport::FreeClaims;
 
 use FindBin;
-use lib "$FindBin::Bin/../../../";
+use lib "$FindBin::Bin/../lib/";
 
 use Remitt::Utilities;
 use Remitt::DataStore::Configuration;
@@ -24,6 +24,8 @@ use Data::Dumper;
 sub Transport {
 	my $input = shift;
 	my $username = shift || Remitt::Utilities::GetUsername();
+
+	my $log = Remitt::DataStore::Log->new;
 
 	# Get from configuration datastore
 	my $c = Remitt::DataStore::Configuration->new($username);
