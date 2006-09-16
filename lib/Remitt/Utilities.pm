@@ -221,7 +221,7 @@ sub ProcessorThread {
 					# Remove from the queue and start threads to
 					# handle. Need to optimize at some point.
 					$p->RemoveFromProcessorQueue($item->{rowid});
-					$p->AddToExecuteQueue($item->{rowid});
+					$p->AddToExecuteQueue($item->{username}, $item->{unique_id});
 					my $thread = new Thread \&ExecuteThread,
 						$item->{username},
 						Compress::Zlib::memGunzip(decode_base64($item->{data})),
