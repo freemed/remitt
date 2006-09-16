@@ -58,6 +58,9 @@ sub Transport {
 			userpassword => $f_password
 		}
 	);
+	if ($m->content =~ /login attempt was not/) {
+		return Remitt::Utilities::StoreContents ( "Failed to login to freeclaims site using provided credentials", 'error', 'txt', $username);
+	}
 	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Logged in successfully");
 
 	# Upload claim file
