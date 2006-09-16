@@ -85,6 +85,20 @@ sub Configuration {
 	return new Config::IniFiles( -file => $c );
 } # end sub Configuration
 
+# Function: Remitt::Utilities::DateStamp
+#
+#	Human readable datestamp
+#	
+# Returns:
+#
+#	String
+#
+sub DateStamp {
+	chomp ( my $datestamp = `date` );
+	$datestamp =~ s/\n$//;
+	return $datestamp;
+} # end sub DateStamp
+
 # Function: Remitt::Utilities::Fault
 #
 #	Produce "authentication failed" XML-RPC fault.
