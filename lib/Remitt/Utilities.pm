@@ -193,8 +193,8 @@ sub ExecuteThread {
 	$ds->SetStatus($unique, 1, $results);
 		
 	# Terminate child thread, removing from queue first
+	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', 'attempting to remove '.$username.' entry '.$unique);
 	$p->RemoveFromExecuteQueue( $username, $unique );
-	#print "ExecuteThread end\n";
 } # end method ExecuteThread
 
 # Function: Remitt::Utilities::ProcessorThread

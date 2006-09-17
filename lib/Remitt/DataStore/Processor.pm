@@ -245,11 +245,13 @@ sub Init {
 #
 # Parameters:
 #
+#	$username - Username of REMITT user
+#
 # 	$id - Unique OID describing field
 #
 sub RemoveFromExecuteQueue {
 	my $self = shift;
-	my ( $id ) = @_;
+	my ( $username, $id ) = @_;
 
 	# Get file size
 	my $config = Remitt::Utilities::Configuration ( );
@@ -257,8 +259,8 @@ sub RemoveFromExecuteQueue {
 	# Make sure database is initialized
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $s = $d->prepare('DELETE FROM executequeue WHERE OID=?');
-	my $r = $s->execute($id);
+	my $s = $d->prepare('DELETE FROM executequeue WHERE username=? AND unique_id=?');
+	my $r = $s->execute( $username, $id );
 } # end method RemoveFromQueue
 
 # Method: RemoveFromProcessorQueue
@@ -278,7 +280,7 @@ sub RemoveFromProcessorQueue {
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
 	my $s = $d->prepare('DELETE FROM processorqueue WHERE OID=?');
-	my $r = $s->execute($id);
+	my $r = $s->execute( $id );
 } # end method RemoveFromProcessorQueue
 
 # Method: _Handle
