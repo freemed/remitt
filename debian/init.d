@@ -26,12 +26,13 @@ set -e
 case "$1" in
   start)
 	echo -n "Starting $DESC: "
-	/usr/share/remitt/bin/remitt_server.pl
+	/usr/share/remitt/bin/remitt_server.pl -d < /dev/null &
 	echo "$NAME."
 	;;
   stop)
 	echo -n "Stopping $DESC: "
 	killall -9 remitt_server.pl 2>&1 > /dev/null
+	rm -f /var/run/remitt.pid
 	echo "$NAME."
 	;;
   #reload)

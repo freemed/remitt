@@ -77,9 +77,12 @@ $daemon->handle;
 
 sub daemonize {
         open STDIN, '/dev/null'   or die "Can't read /dev/null: $!";
-        open STDOUT, '>>/dev/null' or die "Can't write to /dev/null: $!";
-	open STDERR, '>>/dev/null' or die "Can't write to /dev/null: $!";
+        open STDOUT, '>>/var/log/remitt.log' or die "Can't write to /var/log/remitt.log: $!";
+	open STDERR, '>>/var/log/remitt.log' or die "Can't write to /var/log/remitt.log: $!";
         defined(my $pid = fork)   or die "Can't fork: $!";
+	open PID, ">/var/run/remitt.pid" or die "Can't write to /var/run/remitt.pid: $!";
+	print PID $pid;
+	close PID;
         exit if $pid;
         setsid                    or die "Can't start a new session: $!";
         umask 0;
