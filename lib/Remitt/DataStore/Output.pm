@@ -84,8 +84,8 @@ sub Create {
 	);
 
 	# Get id to give back
-	my $s2 = $d->prepare('SELECT OID,JULIANDAY(generated) FROM output ORDER BY JULIANDAY(generated) DESC');
-	my $r2 = $s2->execute;
+	my $s2 = $d->prepare('SELECT OID,JULIANDAY(generated) FROM output WHERE original_data=? ORDER BY JULIANDAY(generated) DESC');
+	my $r2 = $s2->execute( $compressed_data );
 	if ($r2) {
 		my $data = $s2->fetchrow_arrayref;
 		return $data->[0];
