@@ -249,7 +249,7 @@
 				<pdf template="cms1500" page="1">
 					<font name="Courier" size="10" />
 					<scaling vertical="12" horizontal="7.2" />
-					<offset vertical="16" horizontal="21" />
+					<offset vertical="-38" horizontal="55" />
 				</pdf>
 			</format>
 	
@@ -1023,18 +1023,33 @@
 			</element>
 
 			<element>
-				<!-- Box 17a: Referring Physician / ID -->
+				<!-- Box 17b: Referring Physician / NPI -->
 				<row>34</row>
-				<column>28</column>
-				<length>15</length>
-				<content><xsl:value-of select="$refprov/ipn" /></content>
+				<column>33</column>
+				<length>10</length>
+				<content><xsl:value-of select="$refprov/npi" /></content>
 			</element>
 			</xsl:if>
 
-			<!-- FIXME: Hospitalization dates
-				if ($procfirstobj/ishospitalized = 1)
-				$procfirstobj/dateofhospital{start,end}
-			-->	
+		<!-- Hospitalization dates -->
+		<xsl:comment>#### HOSPITALIZATION DATES ####</xsl:comment>
+		<xsl:if test="$procfirstobj/ishospitalized = 1">
+		<element>
+			<!-- Box 18: Date of Hospitalization Start -->
+			<row>35</row>
+			<column>55</column>
+			<length>17</length>
+			<content><xsl:value-of select="concat($procfirstobj/dateofhospitalstart/month, '   ', $procfirstobj/dateofhospitalstart/day, '    ', $procfirstobj/dateofhospitalstart/year)" /></content>
+		</element>
+		<element>
+			<!-- Box 18: Date of Hospitalization End -->
+			<row>35</row>
+			<column>69</column>
+			<length>17</length>
+			<content><xsl:value-of select="concat($procfirstobj/dateofhospitalend/month, '   ', $procfirstobj/dateofhospitalend/day, '    ', $procfirstobj/dateofhospitalend/year)" /></content>
+		</element>
+		</xsl:if>
+
 
 			<element>
 				<!-- Box 19: Local Use -->
@@ -1146,6 +1161,7 @@
 					<xsl:with-param name="cptline" select="(($pos - 1) * 2) + 44" />
 					<xsl:with-param name="curproc" select="//procedure[@id = $procs[$pos]]" />
 					<xsl:with-param name="facilityobj" select="$facilityobj" />
+					<xsl:with-param name="providerobj" select="$providerobj" />
 				</xsl:call-template>
 			</xsl:for-each>
 
@@ -1238,11 +1254,11 @@
 		        </element>
 
 			<element>
-				<!-- Box 32: Facility City State Zip -->
+				<!-- Box 32: Facility Rendering NPI # -->
 				<row>59</row>
 				<column>23</column>
 				<length>27</length>
-				<content><xsl:value-of select="translate($facilityobj/address/streetaddress, $lowercase, $uppercase)" /></content>
+				<content><xsl:value-of select="$facilityobj/npi" /></content>
 			</element>
 
 			<element>
@@ -1299,11 +1315,27 @@
 			</element>
 
 			<element>
-				<!-- Box 33: PIN # -->
+				<!-- Box 32: Group Rendering NPI # -->
+				<row>61</row>
+				<column>24</column>
+				<length>10</length>
+				<content><xsl:value-of select="$facilityobj/fnpi" /></content>
+			</element>
+
+			<element>
+				<!-- Box 32b: Other Numbers -->
+				<row>61</row>
+				<column>36</column>
+				<length>10</length>
+				<content><xsl:value-of select="$facilityobj/taxonomy" /></content>
+			</element>
+
+			<element>
+				<!-- Box 33: Provider Billing NPI # -->
 				<row>61</row>
 				<column>52</column>
 				<length>12</length>
-				<content><xsl:value-of select="//practice[@id = $procfirstobj/practicekey]/id[@physician = $provider and @payer=$payer]" /></content>
+				<content><xsl:value-of select="$providerobj/npi" /></content>
 			</element>
 
 			<element>
@@ -1324,6 +1356,7 @@
 		<xsl:param name="cptline" />
 		<xsl:param name="curproc" />
 		<xsl:param name="facilityobj" />
+		<xsl:param name="providerobj" />
 				
 		<element>
 			<!-- Box 24a: Date of Service S / MM -->
@@ -1443,25 +1476,34 @@
 		</element>
 		</xsl:if>
 
-		<xsl:if test="$curproc/cptemergency = 1">
-		<element>
-			<!-- Box 24i: Emergency -->
-			<row><xsl:value-of select="$cptline" /></row>
-			<column>66</column>
-			<length>1</length>
-			<content>X</content>
-		</element>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="boolean(string($curproc/hcfalocaluse24k))">
+				<element>
+					<!-- Box 24i: Non-NPI Qualifier -->
+					<row><xsl:value-of select="$cptline" /></row>
+					<column>66</column>
+					<length>2</length>
+					<content>1C</content>
+				</element>
 
-		<xsl:if test="$curproc/cptcob = 1">
-		<element>
-			<!-- Box 24j: COB -->
-			<row><xsl:value-of select="$cptline" /></row>
-			<column>69</column>
-			<length>1</length>
-			<content>X</content>
-		</element>
-		</xsl:if>
+				<element>
+					<!-- Box 24j: Rendering Provider Non-NPI -->
+					<row><xsl:value-of select="$cptline" /></row>
+					<column>69</column>
+					<length>10</length>
+					<content><xsl:value-of select="$curproc/hcfalocaluse24k" /></content>
+				</element>
+			</xsl:when>
+			<xsl:otherwise>
+				<element>
+					<!-- Box 24j: Rendering Provider NPI -->
+					<row><xsl:value-of select="$cptline" /></row>
+					<column>69</column>
+					<length>10</length>
+					<content><xsl:value-of select="$providerobj/npi" /></content>
+				</element>
+			</xsl:otherwise>
+		</xsl:choose>
 
 	</xsl:template>
 
