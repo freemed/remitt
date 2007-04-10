@@ -1,4 +1,4 @@
-Format: 1.3
+Format: 1.35
 
 
 Title: REMITT
@@ -9,7 +9,7 @@ Footer: (c) 2004 by the FreeMED Software Foundation
 # These are indexes you deleted, so Natural Docs will not add them again
 # unless you remove them from this line.
 
-Don't Index: Variables, Functions, Files, Classes
+Don't Index: Functions, Variables, Files, Classes
 
 
 # --------------------------------------------------------------------------
@@ -35,6 +35,8 @@ Don't Index: Variables, Functions, Files, Classes
 Index: Everything
 File: bin/remitt_cli.pl  (bin/remitt_cli.pl)
 File: bin/remitt_server.pl  (bin/remitt_server.pl)
+File: bin/sqlite_user_admin.pl  (bin/sqlite_user_admin.pl)
+File: bin/sqlite_user_config.pl  (bin/sqlite_user_config.pl)
 
 Group: Lib  {
 
@@ -47,9 +49,23 @@ Group: Lib  {
 
    Group: Remitt  {
 
+      Group: DataStore  {
+
+         File: Configuration  (lib/Remitt/DataStore/Configuration.pm)
+         File: Log  (lib/Remitt/DataStore/Log.pm)
+         File: Output  (lib/Remitt/DataStore/Output.pm)
+         File: Output  (lib/Remitt/DataStore/Remittance.pm)
+         File: Processor  (lib/Remitt/DataStore/Processor.pm)
+         }  # Group: DataStore
+
       File: Interface  (lib/Remitt/Interface.pm)
 
       Group: Plugin  {
+
+         Group: Authentication  {
+
+            File: SQLite  (lib/Remitt/Plugin/Authentication/SQLite.pm)
+            }  # Group: Authentication
 
          Group: Render  {
 
@@ -66,7 +82,7 @@ Group: Lib  {
          Group: Transport  {
 
             File: FreeClaims  (lib/Remitt/Plugin/Transport/FreeClaims.pm)
-            File: MCSI  (lib/Remitt/Plugin/Transport/MCSI.pm)
+            File: GatewayEDI  (lib/Remitt/Plugin/Transport/GatewayEDI.pm)
             File: PDF  (lib/Remitt/Plugin/Transport/PDF.pm)
             File: Text  (lib/Remitt/Plugin/Transport/Text.pm)
             }  # Group: Transport
@@ -113,12 +129,14 @@ Group: Lib  {
 
 Group: Test  {
 
-   File: test/test_loader.pl  (test/test_loader.pl)
-   File: test/test_resolve.pl  (test/test_resolve.pl)
-   File: test/test_837p.pl  (no auto-title, test/test_837p.pl)
-   File: test/test_scan_xsl.pl  (no auto-title, test/test_scan_xsl.pl)
-   File: test/test_xmlrpc_client.pl  (no auto-title, test/test_xmlrpc_client.pl)
-   File: test/test_xsl.pl  (no auto-title, test/test_xsl.pl)
-   File: test_freeclaims.pl  (test/test_freeclaims.pl)
+   File: test_dependencies.sh  (test/test_dependencies.sh)
+   File: test_loader.pl  (test/test_loader.pl)
+   File: test_resolve.pl  (test/test_resolve.pl)
+   File: test_837p.pl  (no auto-title, test/test_837p.pl)
+   File: test_scan_xsl.pl  (no auto-title, test/test_scan_xsl.pl)
+   File: test_xmlrpc_client.pl  (no auto-title, test/test_xmlrpc_client.pl)
+   File: test_xsl.pl  (no auto-title, test/test_xsl.pl)
+   File: test_render_pdf.pl  (test/test_render_pdf.pl)
+   File: test_hcfa1500.pl  (test/test_hcfa1500.pl)
    }  # Group: Test
 
