@@ -1319,7 +1319,7 @@
 				<row>61</row>
 				<column>24</column>
 				<length>10</length>
-				<content><xsl:value-of select="$facilityobj/fnpi" /></content>
+				<content><xsl:value-of select="$facilityobj/npi" /></content>
 			</element>
 
 			<element>
