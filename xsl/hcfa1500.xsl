@@ -1254,11 +1254,11 @@
 		        </element>
 
 			<element>
-				<!-- Box 32: Facility Rendering NPI # -->
+				<!-- Box 32: Facility Rendering Facility Address -->
 				<row>59</row>
 				<column>23</column>
 				<length>27</length>
-				<content><xsl:value-of select="$facilityobj/npi" /></content>
+				<content><xsl:value-of select="translate($facilityobj/address/streetaddress, $lowercase, $uppercase)" /></content>
 			</element>
 
 			<element>
