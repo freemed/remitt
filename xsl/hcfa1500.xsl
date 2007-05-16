@@ -1309,7 +1309,7 @@
 			<element>
 				<!-- Box 31: Signature and Date -->
 				<row>61</row>
-				<column>14</column>
+				<column>5</column>
 				<length>8</length>
 				<content><xsl:value-of select="concat(//global/currentdate/month, '-', //global/currentdate/day, '-', substring(//global/currentdate/year, 3, 2))" /></content>
 			</element>
