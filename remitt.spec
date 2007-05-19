@@ -1,6 +1,6 @@
 Name:		remitt
 Summary:	REMITT Electronic Medical Information Translation and Transmission
-Version:	0.3.2
+Version:	0.3.3
 Release:	1
 License:	GPL
 Group:		System Environment/Daemons
@@ -65,18 +65,21 @@ rm -fr %{buildroot}
 
 %changelog
 
-* Wed Jul 26 2006 Jeff Buchbinder <jeff@freemedsoftware.com> - 0.3.2-1
+* Mon May 21 2007 Jeff Buchbinder <jeff@freemedsoftware.org> - 0.3.3-1
   - New upstream version.
 
-* Sun Feb 19 2006 Jeff Buchbinder <jeff@freemedsoftware.com> - 0.3.1-1
+* Wed Jul 26 2006 Jeff Buchbinder <jeff@freemedsoftware.org> - 0.3.2-1
   - New upstream version.
 
-* Sat Aug 27 2005 Jeff Buchbinder <jeff@freemedsoftware.com> - 0.3-1
+* Sun Feb 19 2006 Jeff Buchbinder <jeff@freemedsoftware.org> - 0.3.1-1
   - New upstream version.
 
-* Wed Jan 06 2005 Jeff Buchbinder <jeff@freemedsoftware.com> - 0.2-1fc1
+* Sat Aug 27 2005 Jeff Buchbinder <jeff@freemedsoftware.org> - 0.3-1
   - New upstream version.
 
-* Wed Nov 03 2004 Jeff Buchbinder <jeff@freemedsoftware.com> - 0.1-1fc1
+* Wed Jan 06 2005 Jeff Buchbinder <jeff@freemedsoftware.org> - 0.2-1fc1
+  - New upstream version.
+
+* Wed Nov 03 2004 Jeff Buchbinder <jeff@freemedsoftware.org> - 0.1-1fc1
   - Initial Fedora Core 1 packaging (apologies to RH9 users)
 
