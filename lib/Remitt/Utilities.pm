@@ -333,6 +333,25 @@ sub ResolveTranslationPlugin {
 	return '';
 } # end sub ResolveTranslationPlugin
 
+# Method: Remitt::Utilities::SqlConnection
+#
+# 	Get connection to SQL server.
+#
+# Returns:
+#
+# 	DBI connection object.
+#
+sub SqlConnection {
+	return DBI->connect('DBI:' .
+		$config->val( 'database', 'engine' ) . ':' .
+		'database=' . $config->val( 'database', 'dbname' ) . ';' .
+		'host=' . $config->val( 'database', 'host' ) . ';' .
+		'port=' . $config->val( 'database', 'port' ),
+		$config->val( 'database', 'username' ),
+		$config->val( 'database', 'password' )
+	);
+} # end sub SqlConnection
+
 # Method: Remitt::Utilities::StoreContents
 #
 # 	Store output from a transport plugin, and return the data. This
