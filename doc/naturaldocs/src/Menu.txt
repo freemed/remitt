@@ -64,7 +64,7 @@ Group: Lib  {
 
          Group: Authentication  {
 
-            File: SQLite  (lib/Remitt/Plugin/Authentication/SQLite.pm)
+            File: SQL  (lib/Remitt/Plugin/Authentication/SQL.pm)
             }  # Group: Authentication
 
          Group: Render  {

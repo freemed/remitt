@@ -22,9 +22,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-# File: bin/original_xml.pl
+# File: bin/sql_user_config.pl
 #
-# 	Extract original XML from data store
+# 	Allow user configuration database access.
 #
 
 use FindBin;
@@ -32,10 +32,32 @@ use lib "$FindBin::Bin/../lib";
 
 use Remitt::DataStore::Configuration;
 
-my $usage = "$0 (username) (oid)\n";
-my $user  = shift || die ($usage);
-my $oid   = shift || die ($usage);
+my $usage = "$0 (action) (parameters)\n".
+	" actions:\n".
+	"\tset (username) (key) (value)\n".
+	"\tget (username) (key)\n";
+my $action = shift || die ($usage);
+my $user   = shift || die ($usage);
+my $key    = shift || die ($usage);
 
-my $o = Remitt::DataStore::Output->new( $user );
-print $o->GetOriginalXml( $oid );
+if ($action eq 'set') {
+	my $value = shift || die ($usage);
+	my $c = Remitt::DataStore::Configuration->new($user);
+	my $x = $c->SetValue($key, $value);
+	if ($x) {
+		print "Key '".$key."' set successfully.\n";
+	} else {
+		print "Key '".$key."' failed to set.\n";
+	}
+} elsif ($action eq 'get') {
+	my $c = Remitt::DataStore::Configuration->new($user);
+	my $x = $c->GetValue($key, $value);
+	if ($x) {
+		print $x."\n";
+	} else {
+		print "\n";
+	}
+} else {
+	die($usage);
+}
 

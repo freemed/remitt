@@ -1,11 +1,30 @@
 #!/usr/bin/perl -w
 #
-#	$Id$
-#	$Author$
+# $Id$
 #
+# Authors:
+#      Jeff Buchbinder <jeff@freemedsoftware.org>
+#
+# REMITT Electronic Medical Information Translation and Transmission
+# Copyright (C) 1999-2007 FreeMED Software Foundation
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 # Package: Remitt::DataStore::Output
 #
-#	Manage REMITT output using SQLite
+#	Manage REMITT output using SQL
 #
 
 package Remitt::DataStore::Output;
@@ -22,8 +41,6 @@ use DBI;
 use POSIX;
 use Sys::Syslog;
 use File::Path;
-
-require DBD::SQLite;
 
 # Method: new
 #
@@ -73,10 +90,11 @@ sub Create {
 
 	# Open appropriate file
 	my $d = $self->_Handle();
-	my $s = $d->prepare('INSERT INTO output '.
-		'( generated, status, used_format, used_transport, original_data ) '.
-		'VALUES ( DATETIME(\'now\'), ?, ?, ?, ? )');
+	my $s = $d->prepare( 'INSERT INTO output '.
+		'( username, generated, status, used_format, used_transport, original_data ) '.
+		'VALUES ( ?, NOW(), ?, ?, ?, ? )' );
 	my $r = $s->execute(
+		$self->{username},
 		'0',			# status is 0, since it isn't done
 		$format,		# format used in rendering
 		$transport,		# transport used
@@ -84,8 +102,8 @@ sub Create {
 	);
 
 	# Get id to give back
-	my $s2 = $d->prepare('SELECT OID,JULIANDAY(generated) FROM output WHERE original_data=? ORDER BY JULIANDAY(generated) DESC');
-	my $r2 = $s2->execute( $compressed_data );
+	my $s2 = $d->prepare( 'SELECT OID, generated FROM output WHERE username = ? AND original_data=? ORDER BY generated DESC');
+	my $r2 = $s2->execute( $self->{username}, $compressed_data );
 	if ($r2) {
 		my $data = $s2->fetchrow_arrayref;
 		return $data->[0];
@@ -114,11 +132,11 @@ sub DistinctMonths {
 	$year =~ s/[^0-9]//g;
 	my $s;
 	if ($y) {
-		$s = $d->prepare('SELECT STRFTIME(\'%Y-%m\', generated) AS month, STRFTIME(\'%Y\', generated) AS year, COUNT(OID) AS my_count FROM output WHERE year=\''.$year.'\' AND LENGTH(filename) > 0 GROUP BY month ORDER BY month DESC');
+		$s = $d->prepare('SELECT STRFTIME(\'%Y-%m\', generated) AS month, STRFTIME(\'%Y\', generated) AS year, COUNT(OID) AS my_count FROM output WHERE username = ? AND year=\''.$year.'\' AND LENGTH(filename) > 0 GROUP BY month ORDER BY month DESC');
 	} else {
-		$s = $d->prepare('SELECT STRFTIME(\'%Y-%m\', generated) AS month, STRFTIME(\'%Y\', generated) AS year, COUNT(OID) AS my_count FROM output WHERE LENGTH(filename) > 0 GROUP BY month ORDER BY month DESC');
+		$s = $d->prepare('SELECT STRFTIME(\'%Y-%m\', generated) AS month, STRFTIME(\'%Y\', generated) AS year, COUNT(OID) AS my_count FROM output WHERE username = ? AND LENGTH(filename) > 0 GROUP BY month ORDER BY month DESC');
 	}
-	my $r = $s->execute; #($year);
+	my $r = $s->execute( $self->{username} ); #($year);
 	if ($r) {
 		my $results;
 		while (my $data = $s->fetchrow_hashref) {
@@ -143,8 +161,8 @@ sub DistinctYears {
 	my ( $self ) = @_;
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $s = $d->prepare('SELECT STRFTIME(\'%Y\', generated) AS year, COUNT(*) AS counted FROM output GROUP BY year ORDER BY year');
-	my $r = $s->execute;
+	my $s = $d->prepare('SELECT STRFTIME(\'%Y\', generated) AS year, COUNT(*) AS counted FROM output WHERE username = ? GROUP BY year ORDER BY year');
+	my $r = $s->execute( $self->{username} );
 	if ($r) {
 		my $results;
 		while (my $data = $s->fetchrow_arrayref) {
@@ -173,8 +191,8 @@ sub GetFilename {
 	# Make sure database is initialized
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $s = $d->prepare('SELECT filename FROM output WHERE OID=?');
-	my $r = $s->execute($id);
+	my $s = $d->prepare('SELECT filename FROM output WHERE username = ? AND OID = ?');
+	my $r = $s->execute( $self->{username}, $id );
 	if ($r) {
 		my $h = $s->fetchrow_arrayref;
 		#print Dumper($h);
@@ -203,8 +221,8 @@ sub GetOriginalXml {
 	# Make sure database is initialized
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $s = $d->prepare('SELECT original_data FROM output WHERE OID=?');
-	my $r = $s->execute($id);
+	my $s = $d->prepare( 'SELECT original_data FROM output WHERE username = ? AND OID = ?' );
+	my $r = $s->execute( $self->{username}, $id );
 	if ($r) {
 		my $h = $s->fetchrow_arrayref;
 		return Compress::Zlib::memGunzip(decode_base64($h->[0]));
@@ -228,8 +246,8 @@ sub GetStatus {
 	# Make sure database is initialized
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $s = $d->prepare('SELECT status FROM output WHERE OID=?');
-	my $r = $s->execute($id);
+	my $s = $d->prepare( 'SELECT status FROM output WHERE username = ? AND OID = ?' );
+	my $r = $s->execute( $self->{username}, $id );
 	if ($r) {
 		my $h = $s->fetchrow_arrayref;
 		#print "GetStatus: "; print Dumper($h);
@@ -252,30 +270,7 @@ sub Init {
 
 	# Open appropriate file
 	my $config = Remitt::Utilities::Configuration ( );
-	my $p = $config->val('installation', 'path').'/spool/'.$self->{username};
-	my $f = $p.'/data.db';
-	my $log = Remitt::DataStore::Log->new();
-	#print "(file = $f)\n";
-	if ( -e $f ) {
-		# Skip
-		return 1;
-	} else {
-		$log->Log($username, 3, 'Remitt.DataStore.Output.Init', "creating $f for $self->{username}");
-		umask 000;
-		mkpath($p, 1, 0755);
-		my $d = DBI->connect('dbi:SQLite:dbname='.$f, '', '');
-		my $s = $d->do('CREATE TABLE output ( '.
-			'filename VARCHAR UNIQUE, '.
-			'filesize INTEGER, '.
-			'generated DATE, '.
-			'generated_end DATE, '.
-			'status INTEGER, '.
-			'used_format VARCHAR, '.
-			'used_transport VARCHAR, '.
-			'original_data BLOB '.
-		')');
-		if ($s) { return 1; } else { return 0; }
-	}
+	return 1;
 } # end method Init
 
 # Method: Search
@@ -304,9 +299,9 @@ sub Search {
 
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $q ='SELECT filename, DATETIME(generated) AS generated_on, used_format, used_transport, filesize, ABS(JULIANDAY(generated_end)*86400 - JULIANDAY(generated)*86400) AS execute_time FROM output WHERE '.$clause.' ORDER BY generated';
-	my $s = $d->prepare($q);
-	my $r = $s->execute;
+	my $q ='SELECT filename, generated AS generated_on, used_format, used_transport, filesize, ABS( generated_end - generated ) AS execute_time FROM output WHERE username = ? AND '.$clause.' ORDER BY generated';
+	my $s = $d->prepare( $q );
+	my $r = $s->execute( $self->{username} );
 	if ($r) {
 		my $results;
 		while (my $data = $s->fetchrow_arrayref) {
@@ -348,8 +343,8 @@ sub SetStatus {
 	# Make sure database is initialized
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $s = $d->prepare('UPDATE output SET status=?, filename=?, filesize=?, generated_end=DATETIME(\'now\') WHERE OID=?');
-	my $r = $s->execute($status, $filename, $file_size, $id);
+	my $s = $d->prepare( 'UPDATE output SET status=?, filename=?, filesize=?, generated_end=NOW() WHERE username = ? AND OID = ?' );
+	my $r = $s->execute( $status, $filename, $file_size, $self->{username}, $id );
 } # end method SetStatus
 
 # Method: _Handle
@@ -362,22 +357,19 @@ sub SetStatus {
 #
 sub _Handle {
 	my ( $self ) = shift;
-	# Open appropriate file
-	my $config = Remitt::Utilities::Configuration ( );
-	my $f = $config->val('installation', 'path').'/spool/'.$self->{username}.'/data.db';
-	return DBI->connect('dbi:SQLite:dbname='.$f, '', '');
+	return Remitt::Utilities::SqlConnection( );
 } # end sub _Handle
 
 sub test {
 	$obj = new Remitt::DataStore::Output->new ( 'test' );
 	#print " * Creating temporary output state ... "; 
-	#my $x = $obj->Create('testformat', 'testtransport', '<?xml version="1.0"?><test/>');
+	#my $x = $obj->Create( 'testformat', 'testtransport', '<?xml version="1.0"?><test/>' );
 	#if ($x) { print "passed ($x)\n"; } else { print "failed\n"; }
 	print " * Checking status of 11 ... "; 
-	my $x2 = $obj->GetStatus('11');
+	my $x2 = $obj->GetStatus( '11' );
 	if ($x2) { print "passed ($x2)\n"; } else { print "failed ($x2)\n"; }
 	print " * Checking filename of 11 ... "; 
-	my $x3 = $obj->GetFilename('11');
+	my $x3 = $obj->GetFilename( '11' );
 	if ($x3) { print "passed ($x3)\n"; } else { print "failed ($x3)\n"; }
 } # end sub test
 

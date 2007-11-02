@@ -1,11 +1,30 @@
 #!/usr/bin/perl -w
 #
-#	$Id$
-#	$Author$
+# $Id$
 #
+# Authors:
+#      Jeff Buchbinder <jeff@freemedsoftware.org>
+#
+# REMITT Electronic Medical Information Translation and Transmission
+# Copyright (C) 1999-2007 FreeMED Software Foundation
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 # Package: Remitt::DataStore::Processor
 #
-#	Manage REMITT processor queue using SQLite
+#	Manage REMITT processor queue using SQL
 #
 
 package Remitt::DataStore::Processor;
@@ -23,8 +42,6 @@ use POSIX;
 use Sys::Syslog;
 use File::Path;
 use Data::Dumper;
-
-require DBD::SQLite;
 
 # Method: new
 #
@@ -212,33 +229,7 @@ sub Init {
 
 	# Open appropriate file
 	my $config = Remitt::Utilities::Configuration ( );
-	my $p = $config->val('installation', 'path').'/spool';
-	my $f = $p.'/processor.db';
-	my $log = Remitt::DataStore::Log->new;
-	#print "(file = $f)\n";
-	if ( -e $f ) {
-		# Skip
-		return 1;
-	} else {
-		$log->Log('SYSTEM', 3, 'Remitt.DataStore.Processor.Init', 'creating '.$f);
-		umask 000;
-		mkpath($p, 1, 0755);
-		my $d = DBI->connect('dbi:SQLite:dbname='.$f, '', '');
-		my $s = $d->do('CREATE TABLE processorqueue ( '.
-			'username VARCHAR, '.
-			'data BLOB, '.
-			'render VARCHAR, '.
-			'renderoption VARCHAR, '.
-			'translation VARCHAR, '.
-			'transport VARCHAR, '.
-			'unique_id VARCHAR '.
-		')');
-		my $s2 = $d->do('CREATE TABLE executequeue ( '.
-			'username VARCHAR, '.
-			'unique_id VARCHAR '.
-		')');
-		if ($s) { return 1; } else { return 0; }
-	}
+	return 1;
 } # end method Init
 
 # Method: RemoveFromExecuteQueue
@@ -293,10 +284,7 @@ sub RemoveFromProcessorQueue {
 #
 sub _Handle {
 	my ( $self ) = shift;
-	# Open appropriate file
-	my $config = Remitt::Utilities::Configuration ( );
-	my $f = $config->val('installation', 'path').'/spool/processor.db';
-	return DBI->connect('dbi:SQLite:dbname='.$f, '', '');
+	return Remitt::Utilities::SqlConnection( );
 } # end sub _Handle
 
 sub test {

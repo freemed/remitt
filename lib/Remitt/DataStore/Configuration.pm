@@ -1,8 +1,27 @@
 #!/usr/bin/perl -w
 #
-#	$Id$
-#	$Author$
+# $Id$
 #
+# Authors:
+#      Jeff Buchbinder <jeff@freemedsoftware.org>
+#
+# REMITT Electronic Medical Information Translation and Transmission
+# Copyright (C) 1999-2007 FreeMED Software Foundation
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 # Package: Remitt::DataStore::Configuration
 #
 #	REMITT per-user configuration facility
@@ -20,8 +39,6 @@ use POSIX;
 use Sys::Syslog;
 use File::Path;
 use Data::Dumper;
-
-require DBD::SQLite;
 
 # Method: new
 #
@@ -60,14 +77,14 @@ sub SetValue {
 	my $d = $self->{handle};
 
 	# Remove old value (if there is one)
-	my $k = $d->prepare('DELETE FROM config WHERE k = ?');
-	my $k_r = $k->execute($key);
+	my $k = $d->prepare( 'DELETE FROM config WHERE username = ? AND k = ?' );
+	my $k_r = $k->execute( $self->{username}, $key );
 
 	# ... and insert a new one
-	my $s = $d->prepare('INSERT INTO config '.
-		'( k, v ) '.
-		'VALUES ( ?, ? )');
-	my $r = $s->execute($key, $value);
+	my $s = $d->prepare( 'INSERT INTO config '.
+		'( username, k, v ) '.
+		'VALUES ( ?, ?, ? )' );
+	my $r = $s->execute( $self->{username}, $key, $value );
 } # end method SetValue
 
 # Method: GetValue
@@ -86,8 +103,8 @@ sub GetValue {
 	my $self = shift;
 	my ( $key ) = @_;
 	my $d = $self->{handle};
-	my $s = $d->prepare('SELECT * FROM config WHERE k = ?');
-	my $r = $s->execute($key);
+	my $s = $d->prepare( 'SELECT * FROM config WHERE username = ? AND k = ?' );
+	my $r = $s->execute( $self->{username}, $key );
 	if ($r) {
 		my $data = $s->fetchrow_hashref;
 		return $data->{v};
@@ -109,23 +126,7 @@ sub Init {
 
 	# Open appropriate file
 	my $config = Remitt::Utilities::Configuration ( );
-	my $p = $config->val('installation', 'path').'/spool';
-	my $f = $p.'/'.$self->{username}.'/config.db';
-	#print "(file = $f)\n";
-	if ( -e $f ) {
-		# Skip
-		return 1;
-	} else {
-		syslog('info', "Remitt.DataStore.Configuration.Init| creating $f");
-		umask 000;
-		mkpath($p, 1, 0755);
-		my $d = DBI->connect('dbi:SQLite:dbname='.$f, '', '');
-		my $s = $d->do('CREATE TABLE config ( '.
-			'k VARCHAR, '.
-			'v VARCHAR '.
-		')');
-		if ($s) { return 1; } else { return 0; }
-	}
+	return 1;
 } # end method Init
 
 # Method: _Handle
@@ -138,10 +139,7 @@ sub Init {
 #
 sub _Handle {
 	my ( $self ) = shift;
-	# Open appropriate file
-	my $config = Remitt::Utilities::Configuration ( );
-	my $f = $config->val('installation', 'path').'/spool/'.$self->{username}.'/config.db';
-	return DBI->connect('dbi:SQLite:dbname='.$f, '', '');
+	return Remitt::Utilities::SqlConnection( );
 } # end sub _Handle
 
 sub test {

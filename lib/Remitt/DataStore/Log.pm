@@ -21,8 +21,6 @@ use Sys::Syslog;
 use File::Path;
 use Data::Dumper;
 
-require DBD::SQLite;
-
 # Method: new
 #
 # 	Constructor; initializes log database if necessary.
@@ -57,8 +55,8 @@ sub Log {
 	# Open appropriate file
 	my $d = $self->{handle};
 	my $s = $d->prepare('INSERT INTO log '.
-		'( stamp, verbosity, username, method, message ) '.
-		'VALUES ( DATETIME(\'now\'), ?, ?, ?, ? )');
+		'( verbosity, username, method, message ) '.
+		'VALUES ( ?, ?, ?, ? )');
 	my $r = $s->execute(
 		$verbosity,
 		$username,
@@ -115,26 +113,6 @@ sub Init {
 
 	# Open appropriate file
 	my $config = Remitt::Utilities::Configuration ( );
-	my $p = $config->val('installation', 'path').'/spool';
-	my $f = $p.'/log.db';
-	#print "(file = $f)\n";
-	if ( -e $f ) {
-		# Skip
-		return 1;
-	} else {
-		syslog('info', "Remitt.DataStore.Log.Init| creating $f");
-		umask 000;
-		mkpath($p, 1, 0755);
-		my $d = DBI->connect('dbi:SQLite:dbname='.$f, '', '');
-		my $s = $d->do('CREATE TABLE log ( '.
-			'stamp DATE, '.
-			'verbosity INTEGER, '.
-			'username VARCHAR, '.
-			'method VARCHAR, '.
-			'message VARCHAR '.
-		')');
-		if ($s) { return 1; } else { return 0; }
-	}
 } # end method Init
 
 # Method: _Handle
@@ -147,10 +125,7 @@ sub Init {
 #
 sub _Handle {
 	my ( $self ) = shift;
-	# Open appropriate file
-	my $config = Remitt::Utilities::Configuration ( );
-	my $f = $config->val('installation', 'path').'/spool/log.db';
-	return DBI->connect('dbi:SQLite:dbname='.$f, '', '');
+	return Remitt::Utility::SqlConnection( );
 } # end sub _Handle
 
 sub test {
