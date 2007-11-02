@@ -21,7 +21,8 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 CREATE TABLE log (
-	  stamp			TIMESTAMP NOT NULL DEFAULT NOW()
+	  OID			SERIAL
+	, stamp			TIMESTAMP NOT NULL DEFAULT NOW()
 	, verbosity		INT UNSIGNED NOT NULL DEFAULT 0
 	, username		VARCHAR( 100 ) NOT NULL
 	, method		VARCHAR( 100 )
