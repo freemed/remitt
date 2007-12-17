@@ -88,7 +88,7 @@ sub Log {
 	);
 
 	# Push to syslog
-	syslog( LOG_INFO|LOG_LOCAL0, "$username | $method | $message" );
+	syslog( 'info|local0', "$username | $method | $message" );
 } # end method Log
 
 # Method: GetLogDate
@@ -151,7 +151,7 @@ sub Init {
 #
 sub _Handle {
 	my ( $self ) = shift;
-	return Remitt::Utility::SqlConnection( );
+	return Remitt::Utilities::SqlConnection( );
 } # end sub _Handle
 
 sub test {

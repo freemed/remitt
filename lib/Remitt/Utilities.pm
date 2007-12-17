@@ -342,6 +342,7 @@ sub ResolveTranslationPlugin {
 # 	DBI connection object.
 #
 sub SqlConnection {
+	my $config = Remitt::Utilities::Configuration ( );
 	return DBI->connect('DBI:' .
 		$config->val( 'database', 'engine' ) . ':' .
 		'database=' . $config->val( 'database', 'dbname' ) . ';' .
