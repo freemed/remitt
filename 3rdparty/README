@@ -1,0 +1,31 @@
+$Id$
+
+The following 3rd party libraries are used in this version of REMITT:
+
+GotDotNet.Exslt.dll
+	EXSLT.NET 1.0.1
+	http://www.25hoursaday.com/exslt/
+	License: GOTDOTNET WORKSPACES COMMERCIAL DERIVATIVES LICENSE
+		Copyright (C) 2003 Microsoft Corporation
+		You can use this Software for any commercial or noncommercial
+		purpose, including distributing derivative works.
+	Used for EXSLT routines for XSL transformations.
+
+iTextSharp.dll
+	iTextSharp 4.0.7
+	http://itextsharp.sourceforge.net/
+	License: LGPL / MPL
+	Used for PDF compositing (like Perl's PDF::API2)
+
+log4net.dll
+	log4net 1.2.10
+	http://logging.apache.org/log4net/
+	License: Apache License, Version 2.0
+	Used for internal logging
+
+Mysql.Data.dll
+	MySQL Connector/Net 5.0
+	http://dev.mysql.com/downloads/connector/net/5.0.html
+	License: GPL
+	Used for MySQL connectivity.
+
