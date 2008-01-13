@@ -22,16 +22,13 @@
 
 CREATE TABLE output (
 	  OID			SERIAL
-	, username		VARCHAR( 100 )
+	, username		VARCHAR( 100 ) NOT NULL
+	, job_id		INT UNSIGNED NOT NULL
+	, stamp			TIMESTAMP NOT NULL DEFAULT NOW ()
 	, filename		VARCHAR( 100 ) UNIQUE
 	, filesize		INT UNSIGNED NOT NULL DEFAULT 0
-	, generated		DATE
-	, generated_end		DATE
-	, status		INT NOT NULL DEFAULT 0
-	, used_format		VARCHAR( 100 )
-	, used_transport	VARCHAR( 100 )
-	, original_data		BLOB 
 
 	, PRIMARY KEY ( OID )
 	, INDEX ( username )
 );
+

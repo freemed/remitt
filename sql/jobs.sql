@@ -20,12 +20,23 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-CREATE TABLE auth (
-	  user		VARCHAR ( 100 ) NOT NULL UNIQUE
-	, pass		CHAR ( 32 ) NOT NULL
+CREATE TABLE jobs (
+	  OID			SERIAL
+	, user			VARCHAR( 100 )
+	, generated		TIMESTAMP
+	, generated_end		TIMESTAMP
+	, status		INT NOT NULL DEFAULT 0
+	, used_format		VARCHAR( 100 )
+	, used_transport	VARCHAR( 100 )
+	, original_data		BLOB 
+	, current_status	ENUM (
+					  'pending'
+					, 'render-queued'
+					, 'translation-queued'
+					, 'transport-queued'
+					, 'complete'
+				)
 
-	, PRIMARY KEY ( user )
+	, PRIMARY KEY ( OID )
+	, INDEX ( user, current_status )
 );
-
-INSERT INTO auth VALUES ( 'admin', MD5( 'admin' ) );
-
