@@ -25,6 +25,7 @@ all: clean 3rdparty bin/Remitt.Interface.dll
 bin/Remitt.Interface.dll:
 	gmcs \
 		-r:System,System.Web,System.Web.Services \
+		-r:../3rdparty/log4net.dll \
 		src/Remitt.Interface.cs \
 		-t:library \
 		-out:bin/Remitt.Interface.dll
