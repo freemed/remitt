@@ -23,16 +23,23 @@
 all: clean 3rdparty bin/Remitt.Interface.dll
 
 bin/Remitt.Interface.dll:
-	gmcs \
+	@echo " > Compiling $@ "
+	@echo "    * Building $@"
+	@gmcs \
 		-r:System,System.Web,System.Web.Services \
 		-r:../3rdparty/log4net.dll \
+		-r:../3rdparty/MySql.Data.dll \
+		-r:../library/bin/Remitt.Configuration.dll \
 		src/Remitt.Interface.cs \
 		-t:library \
 		-out:bin/Remitt.Interface.dll
 
 3rdparty:
-	cp ../3rdparty/*.dll ../library/bin/*.dll bin/ -fv
+	@echo " > Installing 3rd party libraries "
+	@cp ../3rdparty/*.dll ../library/bin/*.dll bin/ -f
 
 clean:
-	rm -f bin/*
+	@echo " > Cleaning "
+	@echo "    * Cleaning old build directories and files"
+	@rm -f bin/*
 
