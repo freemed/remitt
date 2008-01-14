@@ -26,8 +26,10 @@ CREATE TABLE jobs (
 	, generated		TIMESTAMP
 	, generated_end		TIMESTAMP
 	, status		INT NOT NULL DEFAULT 0
-	, used_format		VARCHAR( 100 )
-	, used_transport	VARCHAR( 100 )
+	, render_plugin		VARCHAR( 100 ) NOT NULL DEFAULT 'Xslt'
+	, render_option		VARCHAR( 100 ) NOT NULL DEFAULT ''
+	, transport_plugin	VARCHAR( 100 ) NOT NULL
+	, translation_used	VARCHAR( 100 )
 	, original_data		BLOB 
 	, current_status	ENUM (
 					  'pending'
@@ -35,7 +37,7 @@ CREATE TABLE jobs (
 					, 'translation-queued'
 					, 'transport-queued'
 					, 'complete'
-				)
+				) DEFAULT 'pending'
 
 	, PRIMARY KEY ( OID )
 	, INDEX ( user, current_status )
