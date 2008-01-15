@@ -29,8 +29,6 @@ libs:
 	@make -C library all
 
 engine: libs
-	@echo " > Moving in copies of compiled libraries ... "
-	@cp library/bin/*.dll engine/bin/
 	@echo " > Building RemittEngineService and plugins "
 	@make -C engine all
 

@@ -20,7 +20,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-all: clean 3rdparty bin/Remitt.Interface.dll
+all: clean bin/Remitt.Interface.dll
 
 bin/Remitt.Interface.dll:
 	@echo " > Compiling $@ "
@@ -33,10 +33,6 @@ bin/Remitt.Interface.dll:
 		src/Remitt.Interface.cs \
 		-t:library \
 		-out:bin/Remitt.Interface.dll
-
-3rdparty:
-	@echo " > Installing 3rd party libraries "
-	@cp ../3rdparty/*.dll ../library/bin/*.dll bin/ -f
 
 clean:
 	@echo " > Cleaning "

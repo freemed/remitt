@@ -32,16 +32,16 @@ DEPENDENCIES= \
 	-r:MySql.Data
 
 LIBS= \
-	-lib:./lib \
-	-lib:./bin \
-	-r:bin/Remitt.Configuration.dll \
-	-r:bin/Remitt.PluginManager.dll \
-	-r:bin/itextsharp.dll \
-	-r:bin/log4net.dll
+	-lib:../3rdparty \
+	-lib:../library/bin \
+	-r:../library/bin/Remitt.Configuration.dll \
+	-r:../library/bin/Remitt.PluginManager.dll \
+	-r:../3rdparty/itextsharp.dll \
+	-r:../3rdparty/log4net.dll
 
 all: .targets
 
-.targets: libs bin/PluginTestHarness.exe bin/RemittEngineService.exe plugins
+.targets: bin/PluginTestHarness.exe bin/RemittEngineService.exe plugins
 
 bin/RemittEngineService.exe:
 	@echo " > Compiling engine "
@@ -73,10 +73,6 @@ plugins:
 			$(DEPENDENCIES) \
 			-out:$$j $$i; \
 	done
-
-libs:
-	@echo "    * Importing libraries into bin/ distribution directory"
-	@cp ../3rdparty/*.dll bin/
 
 clean:
 	@echo " > Cleaning "

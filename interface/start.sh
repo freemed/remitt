@@ -21,6 +21,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+OUR_PATH="$( cd "$( dirname "$0" )/../" ; pwd )" 
+export MONO_PATH=${OUR_PATH}/3rdparty:${OUR_PATH}/library/bin
 xsp2 \
 	--appconfigfile Web.config \
 	--applications /:. \

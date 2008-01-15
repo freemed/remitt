@@ -31,6 +31,10 @@ echo " > Running engine "
 echo "    * Removing old service locks (if they exist) "
 rm -f /tmp/RemittEngineService.exe.lock
 echo "    * Running RemittEngineService ... "
+
+# Need to derive full *absolute* path name for MONO_PATH to work
+OUR_PATH="$( cd "$( dirname "$0" )/../" ; pwd )" 
+export MONO_PATH=${OUR_PATH}/3rdparty:${OUR_PATH}/library/bin
 mono \
 	--runtime=v2.0.50727 \
 	/usr/lib/mono/2.0/mono-service.exe \
