@@ -25,7 +25,7 @@
 
 -->
 <RemittSettings>
-	<InstallLocation>/home/jbuchbinder/code/remitt2</InstallLocation>
+	<InstallLocation>/usr/share/remitt</InstallLocation>
 	<DbHost>127.0.0.1</DbHost>
 	<DbUsername>remitt</DbUsername>
 	<DbPassword>remitt</DbPassword>
