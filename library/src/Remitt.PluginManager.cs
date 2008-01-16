@@ -28,20 +28,28 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 
 using log4net;
 
+[assembly: AssemblyVersion ("0.0.*")]
 namespace Remitt {
 
 	public class PluginConfiguration {
 		public string		PluginName;
 		public string		PluginFile;
 		public string		Version;
-		public StringDictionary	Options;
+		public object[]		Options;
 		public string		InputFormat;
 		public string		OutputFormat;
 
 		public override string ToString ( ) {
+			int size = 0;
+			try {
+				size = this.Options.Length;
+			} catch ( NullReferenceException ex ) {
+				if ( ex.ToString().Length > 1 ) { }
+			}
 			return String.Format( "\n" +
 				"PluginFile = {0}\n" +
 				"\tPluginName = {1}\n" +
@@ -52,10 +60,43 @@ namespace Remitt {
 				, this.PluginFile
 				, this.PluginName
 				, this.Version
-				, this.Options
+				, size.ToString()
 				, this.InputFormat
 				, this.OutputFormat
 			);
+		}
+	}
+
+	[Serializable]
+	public class PluginOption {
+		private string f_pluginfile = "";
+		public string PluginFile {
+			get { return f_pluginfile; }
+			set { f_pluginfile = value; }
+		}
+
+		private string f_description = "";
+		public string Description {
+			get { return f_description; }
+			set { f_description = value; }
+		}
+
+		private string f_inputformat = "";
+		public string InputFormat {
+			get { return f_inputformat; }
+			set { f_inputformat = value; }
+		}
+
+		private string f_outputformat = "";
+		public string OutputFormat {
+			get { return f_outputformat; }
+			set { f_outputformat = value; }
+		}
+
+		private string f_media = "";
+		public string Media {
+			get { return f_media; }
+			set { f_media = value; }
 		}
 	}
 
@@ -97,8 +138,6 @@ namespace Remitt {
 			DirectoryInfo d = new DirectoryInfo ( this.PluginPath );
 			foreach ( FileInfo f in d.GetFiles ( ) ) {
 				if ( Regex.IsMatch ( f.FullName, ".*/Plugin\\..+\\.dll" ) ) {
-					//PluginConfiguration ThisPlugin = new
-
 					Assembly a = Assembly.LoadFrom( f.FullName );
 					Type [] types = a.GetTypes ( );
 					log.Debug( "Assembly: " + f.FullName );
@@ -122,21 +161,54 @@ namespace Remitt {
 					}
 				}
 			}
+			Array.Resize( ref (Remitt.PluginConfiguration[]) this.Plugins, count );
 			this.AlreadyReadPlugins = true;
+		}
+
+		public static PluginOption[] ReadXslOptions ( ) {
+			PluginOption[] Options = (Remitt.PluginOption[]) Array.CreateInstance( typeof( PluginOption ), 100 );
+
+			RemittConfiguration Configuration = new RemittConfiguration ( );
+			RemittSettings settings = Configuration.GetSettings();
+
+			int count = 0;
+			string xslLocation = String.Format ( "{0}/xsl", settings.InstallLocation );
+			log.Debug( "XSL location = " + xslLocation );
+			DirectoryInfo d = new DirectoryInfo ( xslLocation );
+			foreach ( FileInfo f in d.GetFiles ( ) ) {
+				log.Debug( "Found file = " + f.FullName );
+				if ( Regex.IsMatch ( f.FullName, ".*/.*\\.xsl\\.xml" ) ) {
+					log.Debug( f.FullName );
+
+					// Deserialize
+					XmlSerializer formatter = new XmlSerializer( typeof( PluginOption ) );
+					Stream s = new FileStream( f.FullName, FileMode.Open, FileAccess.Read, FileShare.None );
+					Options[ count ] = null;
+					try {
+						Options[ count ] = ( PluginOption ) formatter.Deserialize( s );
+					} finally {
+						s.Close( );
+					}
+					count++;
+				}
+			}
+			Array.Resize( ref (PluginOption[]) Options, count );
+			log.Info( "Read " + count.ToString() + " xsl options" );
+			return Options;
 		}
 
 		public string ResolveTranslationPlugin ( ) {
 			return "";
 		}
 
-		public string ExecuteRenderPlugin ( string PluginName, string Input, string Option ) {
+		public string ExecuteRenderPlugin ( string PluginName, string Input, string Option, int OID ) {
 			string FullName = String.Format( "{0}/Plugin.Render.{1}.dll", this.PluginPath, PluginName );
 			log.Debug( String.Format( "FullName = {0}", FullName ) );
 			Assembly a = Assembly.LoadFrom( FullName );
 			Type [] types = a.GetTypes( );
 			foreach ( Type t in types ) {
 				MethodInfo ThisMethod = t.GetMethod( "Render" );
-				object[] args = { Input, Option };
+				object[] args = { OID, Input, Option };
 				string Output = (string) ThisMethod.Invoke( null, args );
 				return Output;
 			}
@@ -144,14 +216,14 @@ namespace Remitt {
 			return "";
 		}
 
-		public string ExecuteTranslationPlugin ( string PluginName, string Input ) {
+		public string ExecuteTranslationPlugin ( string PluginName, string Input, int OID ) {
 			string FullName = String.Format( "{0}/Plugin.Translation.{1}.dll", this.PluginPath, PluginName );
 			log.Debug( String.Format( "FullName = {0}", FullName ) );
 			Assembly a = Assembly.LoadFrom( FullName );
 			Type [] types = a.GetTypes( );
 			foreach ( Type t in types ) {
 				MethodInfo ThisMethod = t.GetMethod( "Translate" );
-				object[] args = { Input };
+				object[] args = { OID, Input };
 				string Output = (string) ThisMethod.Invoke( null, args );
 				return Output;
 			}
