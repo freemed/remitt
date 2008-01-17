@@ -24,10 +24,10 @@
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 -->
-<RemittPlugin>
+<PluginOption>
 	<PluginFile>hcfa1500.xsl</PluginFile>
 	<Description>HCFA-1500/CMS-1500</Description>
 	<InputFormat>payerxml</InputFormat>
 	<OutputFormat>fixedformxml</OutputFormat>
 	<Media>Paper</Media>
-</RemittPlugin>
+</PluginOption>

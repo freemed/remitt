@@ -24,10 +24,10 @@
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 -->
-<RemittPlugin>
+<PluginOption>
 	<PluginFile>837p.xsl</PluginFile>
 	<Description>X12 NSF 837 Professional</Description>
 	<InputFormat>payerxml</InputFormat>
 	<OutputFormat>x12xml</OutputFormat>
 	<Media>Electronic</Media>
-</RemittPlugin>
+</PluginOption>
