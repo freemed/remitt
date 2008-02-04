@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections;
+using System.Reflection;
 using System.Xml;
 using System.Xml.Xsl;
 using System.IO;
@@ -34,6 +35,7 @@ using iTextSharp.text.pdf;
 
 using log4net;
 
+[assembly: AssemblyVersion ("0.0.*")]
 namespace Remitt {
 
 	public class Plugin_Translation_FixedFormPDF {

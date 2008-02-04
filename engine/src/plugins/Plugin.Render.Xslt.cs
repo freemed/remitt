@@ -23,6 +23,8 @@
  */
 
 using System;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Xsl;
 using System.IO;
@@ -30,6 +32,7 @@ using System.IO;
 using GotDotNet.Exslt;
 using log4net;
 
+[assembly: AssemblyVersion ("0.0.*")]
 namespace Remitt {
 
 	public class Plugin_Render_Xslt {
@@ -42,6 +45,7 @@ namespace Remitt {
 			c.Version = "0.1";
 			c.InputFormat = "remittxml";
 			c.OutputFormat = "variable";
+			c.Options = (Remitt.PluginOption[]) PluginManager.ReadXslOptions( );
 			return c;
 		}
 

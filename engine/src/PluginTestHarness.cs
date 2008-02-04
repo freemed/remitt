@@ -47,6 +47,10 @@ namespace Remitt
 
 			// Create PluginManager instance
 			PluginManager p = new PluginManager ( );
+			PluginOption[] po = PluginManager.ReadXslOptions( );
+			log.Debug( po.Length.ToString() + " xsl options found" );
+			PluginConfiguration[] pc = p.GetPlugins( );
+			log.Debug( pc.Length.ToString() + " plugins found" );
 
 			// Read input file
 			log.Debug( String.Format( "Reading {0} from file", argv[2] ) );
@@ -55,12 +59,12 @@ namespace Remitt
 
 			if ( argv[0].Equals( "Render" ) ) {
 				log.Debug( "Executing Render" );
-				Console.WriteLine( p.ExecuteRenderPlugin( argv[1], FileContents, argv[3] ) );
+				Console.WriteLine( p.ExecuteRenderPlugin( argv[1], FileContents, argv[3], 0 ) );
 			}
 
 			if ( argv[0].Equals( "Translation" ) ) {
 				log.Debug( "Executing Translation" );
-				Console.WriteLine( p.ExecuteTranslationPlugin( argv[1], FileContents ) );
+				Console.WriteLine( p.ExecuteTranslationPlugin( argv[1], FileContents, 0 ) );
 			}
 
 			if ( argv[0].Equals( "Transmission" ) ) {

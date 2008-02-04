@@ -39,7 +39,7 @@ LIBS= \
 	-r:../3rdparty/itextsharp.dll \
 	-r:../3rdparty/log4net.dll
 
-all: .targets
+all: clean .targets
 
 .targets: bin/PluginTestHarness.exe bin/RemittEngineService.exe plugins
 
