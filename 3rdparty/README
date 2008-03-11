@@ -12,7 +12,7 @@ GotDotNet.Exslt.dll
 	Used for EXSLT routines for XSL transformations.
 
 iTextSharp.dll
-	iTextSharp 4.0.7
+	iTextSharp 4.0.8
 	http://itextsharp.sourceforge.net/
 	License: LGPL / MPL
 	Used for PDF compositing (like Perl's PDF::API2)
