@@ -24,8 +24,8 @@ log4net.dll
 	Used for internal logging
 
 Mysql.Data.dll
-	MySQL Connector/Net 5.0
-	http://dev.mysql.com/downloads/connector/net/5.0.html
+	MySQL Connector/Net 5.2.1
+	http://dev.mysql.com/downloads/connector/net/5.2.html
 	License: GPL
 	Used for MySQL connectivity.
 
