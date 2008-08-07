@@ -62,7 +62,9 @@ namespace Remitt {
 
 		public EngineService ( ) {
 			// Set up log4net logging
-			BasicConfigurator.Configure();
+			//BasicConfigurator.Configure();
+			Console.WriteLine( Path.GetDirectoryName( System.Reflection.Assembly.GetExecutingAssembly().Location ) + "/../../log4net.xml" );
+			XmlConfigurator.Configure( new System.IO.FileInfo( Path.GetDirectoryName( System.Reflection.Assembly.GetExecutingAssembly().Location ) + "/../../log4net.xml" ) );
 
 			log.Info( "InitializeComponent needs to load" );
 			InitializeComponent();
