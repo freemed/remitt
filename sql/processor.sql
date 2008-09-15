@@ -27,13 +27,15 @@ CREATE TABLE processorqueue (
 	, renderoption		VARCHAR( 100 )
 	, translation		VARCHAR( 100 )
 	, transport		VARCHAR( 100 )
-	, unique_id		VARCHAR( 32 )
+	, unique_id		VARCHAR( 32 ) UNIQUE
+	, OID			SERIAL
 
 	, INDEX 		( username, unique_id )
 );
 
 CREATE TABLE executequeue (
 	  username		VARCHAR( 100 ) NOT NULL 
-	, unique_id		VARCHAR( 100 ) NOT NULL
+	, unique_id		VARCHAR( 100 ) NOT NULL UNIQUE
+	, OID			SERIAL
 );
 

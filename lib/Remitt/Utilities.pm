@@ -236,6 +236,7 @@ sub ProcessorThread {
 					# handle. Need to optimize at some point.
 					$p->RemoveFromProcessorQueue($item->{rowid});
 					$p->AddToExecuteQueue($item->{username}, $item->{unique_id});
+					$log->Log('SYSTEM', 4, 'Remitt.Utilities.ProcessorThread', 'AddToExecuteQueue ' . $item->{username} . ', ' . $item->{unique_id});
 					my $thread = new Thread \&ExecuteThread,
 						$item->{username},
 						Compress::Zlib::memGunzip(decode_base64($item->{data})),

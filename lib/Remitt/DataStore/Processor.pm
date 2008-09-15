@@ -202,7 +202,7 @@ sub GetProcessorQueue {
 
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $s = $d->prepare('SELECT username, data, render, renderoption, translation, transport, unique_id, OID FROM processorqueue ORDER BY OID');
+	my $s = $d->prepare('SELECT username, data, render, renderoption, translation, transport, unique_id, OID AS rowid FROM processorqueue ORDER BY OID');
 	my $r = $s->execute;
 	if ($r) {
 		my @results;
