@@ -20,7 +20,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-CREATE TABLE output (
+CREATE TABLE IF NOT EXISTS output (
 	  OID			SERIAL
 	, username		VARCHAR( 100 )
 	, filename		VARCHAR( 100 ) UNIQUE
@@ -31,7 +31,11 @@ CREATE TABLE output (
 	, used_format		VARCHAR( 100 )
 	, used_transport	VARCHAR( 100 )
 	, original_data		BLOB 
+	, foreign_id		VARCHAR( 150 )
 
 	, PRIMARY KEY ( OID )
 	, INDEX ( username )
 );
+
+ALTER IGNORE TABLE output ADD COLUMN foreign_id VARCHAR( 150 ) AFTER original_data;
+

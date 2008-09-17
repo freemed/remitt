@@ -186,8 +186,7 @@ sub ExecuteThread {
 	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', $unique.' :: translation ['.$uid.']');
 	eval '$y = Remitt::Plugin::Translation::'.$translation.'::Translate($x);';
 	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', $unique.' :: transport ['.$uid.']');
-	eval '$results = Remitt::Plugin::Transport::'.$transport.'::Transport($y, $username);';
-	#eval '$results = Remitt::Plugin::Transport::'.$transport.'::Transport(Remitt::Plugin::Translation::'.$translation.'::Translate(Remitt::Plugin::Render::'.$render.'::Render($input, $renderoption)), $username);';
+	eval '$results = Remitt::Plugin::Transport::'.$transport.'::Transport($y, $username, $unique);';
 	# Store value in proper place in 'state' directory
 	$log->Log($username, 3, 'Remitt.Utilities.ExecuteThread', 'child thread: storing state after successful run ['.$uid.']');
 	$ds->SetStatus($unique, 1, $results);
