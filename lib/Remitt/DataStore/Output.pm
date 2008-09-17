@@ -78,6 +78,8 @@ sub new {
 sub Create {
 	my ( $self, $format, $transport, $data ) = @_;
 
+	my $log = Remitt::DataStore::Log->new;
+
 	# Make sure database is initialized
 	my $_x = $self->Init();
 
@@ -100,14 +102,17 @@ sub Create {
 		$transport,		# transport used
 		$compressed_data	# original data, slightly thinner
 	);
+	$log->Log('SYSTEM', 5, 'Remitt.DataStore.Output', Dumper($r));
 
 	# Get id to give back
 	my $s2 = $d->prepare( 'SELECT OID, generated FROM output WHERE username = ? AND original_data=? ORDER BY generated DESC');
 	my $r2 = $s2->execute( $self->{username}, $compressed_data );
 	if ($r2) {
 		my $data = $s2->fetchrow_arrayref;
+		$log->Log('SYSTEM', 5, 'Remitt.DataStore.Output', Dumper($data));
 		return $data->[0];
 	} else {
+		$log->Log('SYSTEM', 5, 'Remitt.DataStore.Output', Dumper($r2));
 		return 0;
 	}
 } # end method Create
@@ -132,9 +137,9 @@ sub DistinctMonths {
 	$year =~ s/[^0-9]//g;
 	my $s;
 	if ($y) {
-		$s = $d->prepare('SELECT STRFTIME(\'%Y-%m\', generated) AS month, STRFTIME(\'%Y\', generated) AS year, COUNT(OID) AS my_count FROM output WHERE username = ? AND year=\''.$year.'\' AND LENGTH(filename) > 0 GROUP BY month ORDER BY month DESC');
+		$s = $d->prepare('SELECT DATE_FORMAT(generated, \'%Y-%m\') AS month, DATE_FORMAT(generated, \'%Y\') AS year, COUNT(OID) AS my_count FROM output WHERE username = ? AND year=\''.$year.'\' AND LENGTH(filename) > 0 GROUP BY month ORDER BY month DESC');
 	} else {
-		$s = $d->prepare('SELECT STRFTIME(\'%Y-%m\', generated) AS month, STRFTIME(\'%Y\', generated) AS year, COUNT(OID) AS my_count FROM output WHERE username = ? AND LENGTH(filename) > 0 GROUP BY month ORDER BY month DESC');
+		$s = $d->prepare('SELECT DATE_FORMAT(generated, \'%Y-%m\') AS month, DATE_FORMAT(generated, \'%Y\') AS year, COUNT(OID) AS my_count FROM output WHERE username = ? AND LENGTH(filename) > 0 GROUP BY month ORDER BY month DESC');
 	}
 	my $r = $s->execute( $self->{username} ); #($year);
 	if ($r) {
@@ -161,7 +166,7 @@ sub DistinctYears {
 	my ( $self ) = @_;
 	my $_x = $self->Init();
 	my $d = $self->_Handle();
-	my $s = $d->prepare('SELECT STRFTIME(\'%Y\', generated) AS year, COUNT(*) AS counted FROM output WHERE username = ? GROUP BY year ORDER BY year');
+	my $s = $d->prepare('SELECT DATE_FORMAT(generated, \'%Y\') AS year, COUNT(*) AS counted FROM output WHERE username = ? GROUP BY year ORDER BY year');
 	my $r = $s->execute( $self->{username} );
 	if ($r) {
 		my $results;
@@ -257,6 +262,24 @@ sub GetStatus {
 	}
 } # end method GetStatus
 
+# Method: SetForeignId
+#
+# Parameters:
+#
+# 	$id - Unique OID describing field
+# 	
+# 	$foreign - New foreign id
+#
+sub SetForeignId {
+	my ($self, $id, $foreign) = @_;
+
+	# Make sure database is initialized
+	my $_x = $self->Init();
+	my $d = $self->_Handle();
+	my $s = $d->prepare( 'UPDATE output SET foreign_id = ? WHERE username = ? AND OID = ?' );
+	$s->execute( $foreign, $self->{username}, $id );
+} # end method SetForeignId
+
 # Method: Init
 #
 # 	Initialize the database, if this has not been done so already.
@@ -289,9 +312,9 @@ sub Search {
 	my ( $self, $criteria, $value ) = @_;
 	my $clause;
 	if ($criteria eq 'year') {
-		$clause = 'STRFTIME(\'%Y\', generated) = \''.$value.'\'';
+		$clause = 'DATE_FORMAT(generated, \'%Y\') = \''.$value.'\'';
 	} elsif ($criteria eq 'month') {
-		$clause = 'STRFTIME(\'%Y-%m\', generated) = \''.$value.'\'';
+		$clause = 'DATE_FORMAT(generated, \'%Y-%m\') = \''.$value.'\'';
 	} else {
 		# Return nothing if unknown
 		return [];
