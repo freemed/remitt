@@ -16,9 +16,11 @@ use lib "$FindBin::Bin/../lib";
 use Data::Dumper;
 
 sub Transport {
-	my ( $input, $username ) = @_;
+        my $input = shift;
+        my $username = shift || Remitt::Utilities::GetUsername();
+        my $id = shift || 0;
 
-	return Remitt::Utilities::StoreContents ( $input, 'plaintext', 'txt', $username );
+	return Remitt::Utilities::StoreContents ( $input, $id, 'txt', $username );
 } # end method Transport
 
 sub Config {
