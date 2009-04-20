@@ -1,3 +1,9 @@
+remitt (0.4.0-1) stable; urgency=low
+
+  * Upstream release for 0.4.0
+
+ -- Jeff Buchbinder <jeff@freemedsoftware.org>  Mon, 20 Apr 2009 15:38:32 -0400
+
 remitt (0.3.3-1) stable; urgency=low
 
   * Upstream release for 0.3.3

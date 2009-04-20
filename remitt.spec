@@ -1,6 +1,6 @@
 Name:		remitt
 Summary:	REMITT Electronic Medical Information Translation and Transmission
-Version:	0.3.3
+Version:	0.4.0
 Release:	1
 License:	GPL
 Group:		System Environment/Daemons

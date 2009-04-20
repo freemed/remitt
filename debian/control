@@ -7,7 +7,7 @@ Standards-Version: 3.6.0
 
 Package: remitt
 Architecture: all
-Depends: ${perl:Depends}, debconf, perl, libxml-libxml-perl, libxml-libxslt-perl, libcrypt-ssleay-perl, libwww-perl, libxml-simple-perl, libcgi-session-perl, libconfig-inifiles-perl, libpdf-api2-perl, libwww-mechanize-perl, libio-socket-ssl-perl, libdbd-sqlite3-perl, libcompress-zlib-perl, libsys-syslog-perl
+Depends: ${perl:Depends}, debconf, perl, libxml-libxml-perl, libxml-libxslt-perl, libcrypt-ssleay-perl, libwww-perl, libxml-simple-perl, libcgi-session-perl, libconfig-inifiles-perl, libpdf-api2-perl, libwww-mechanize-perl, libio-socket-ssl-perl, libdbd-mysql-perl, libcompress-zlib-perl, libsys-syslog-perl
 Description: REMITT Electronic Medical Information Translation and Transmission
  REMITT is a second-generation medical bill generation system, which
  is capable of accepting electronic medical record (EMR) information,
