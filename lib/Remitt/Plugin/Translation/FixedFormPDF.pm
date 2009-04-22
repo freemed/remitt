@@ -106,8 +106,9 @@ sub ProcessPage {
 	}
 
 	# Create text page object
-	my $page = $pdf->openpage($pagecount);
-	my $txt = $page->text;
+	#my $page = $pdf->openpage($pagecount);
+	my $page = $pdf->page();
+	my $txt = $page->text();
 	my $corefont = $pdf->corefont($font_name, 1);
 	$txt->font($corefont, $font_size);
 
@@ -153,7 +154,7 @@ sub ProcessPage {
 	} # end second loop through elements
 
 	# End page and attach
-	$txt->compress;
+	$txt->compressFlate;
 } # end sub ProcessPage
 
 sub Translate {
