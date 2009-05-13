@@ -69,6 +69,10 @@ sub Transport {
 	close TEMP;
 	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Finished exporting data successfully");
 
+	# Store backup copy
+	my $x = Remitt::Utilities::StoreContents ( $input, 'freeclaims', 'batch', $username);
+	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Stored batch in $x");
+
 	# Login to FreeClaims
 	my $url = 'https://sfreeclaims.anvicare.com/docs/member_login.asp';
 	my $m = WWW::Mechanize->new();
