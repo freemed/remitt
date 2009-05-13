@@ -6,7 +6,7 @@
 #      Jeff Buchbinder <jeff@freemedsoftware.org>
 #
 # REMITT Electronic Medical Information Translation and Transmission
-# Copyright (C) 1999-2007 FreeMED Software Foundation
+# Copyright (C) 1999-2009 FreeMED Software Foundation
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
