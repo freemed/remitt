@@ -6,7 +6,7 @@
 #      Jeff Buchbinder <jeff@freemedsoftware.org>
 #
 # REMITT Electronic Medical Information Translation and Transmission
-# Copyright (C) 1999-2008 FreeMED Software Foundation
+# Copyright (C) 1999-2009 FreeMED Software Foundation
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -70,7 +70,7 @@ sub Transport {
 	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Finished exporting data successfully");
 
 	# Login to FreeClaims
-	my $url = 'https://secure.freeclaims.com/docs/login.asp';
+	my $url = 'https://sfreeclaims.anvicare.com/docs/member_login.asp';
 	my $m = WWW::Mechanize->new();
 	$m->agent_alias( 'Windows IE 6' );
 	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Fetching initial logon page");
@@ -94,7 +94,7 @@ sub Transport {
 
 	# Upload claim file
 	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Fetching upload form");
-	$m->get('https://secure.freeclaims.com/docs/upload.asp');
+	$m->get('https://sfreeclaims.anvicare.com/docs/upload.asp');
 	
 	$messages .= Remitt::Utilities::DateStamp()." [INFO] beginning transmission of file to FreeClaims\n";
 	$log->Log($username, 3, 'Remitt.Plugin.Transport.FreeClaims', "Uploading ${tempbillfile} to the server");
