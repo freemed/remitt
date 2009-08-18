@@ -373,8 +373,10 @@ public class ControlThread extends Thread {
 
 		PreparedStatement cStmt = null;
 		try {
-			// TODO : FIXME: Put in a query here to get these
-			cStmt = c.prepareStatement("{ }");
+			cStmt = c
+					.prepareStatement("{ SELECT a.id AS id FROM tPayload AS a "
+							+ " WHERE a.id NOT IN "
+							+ " ( SELECT b.payloadId FROM tProcessor ) " + " }");
 
 			boolean hadResults = cStmt.execute();
 			while (hadResults) {
