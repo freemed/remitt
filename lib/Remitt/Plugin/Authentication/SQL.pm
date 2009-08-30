@@ -60,10 +60,10 @@ sub Authenticate {
 
 	# Open appropriate file
 	my $d = Remitt::Utilities::SqlConnection( );
-	my $s = $d->prepare('SELECT pass FROM auth WHERE user=?');
-	my $r = $s->execute($user);
+	my $s = $d->prepare('SELECT COUNT(*) AS c FROM auth WHERE user=? AND pass=MD5(?)');
+	my $r = $s->execute($user, $pass);
 	my $data = $s->fetchrow_hashref;
-	if ($data->{'pass'} eq md5_base64($pass)) {
+	if ($data->{'c'} eq 1) {
 		#print "matched ( ".$data->{'pass'}." == ".md5_base64($pass)." ) ";
 		return 1;
 	} else {
@@ -94,8 +94,8 @@ sub Create {
 
 	# Open appropriate file
 	my $d = Remitt::Utilities::SqlConnection( );
-	my $s = $d->prepare('INSERT INTO auth ( user, pass ) VALUES ( ?, ? )');
-	my $r = $s->execute($user, md5_base64($pass));
+	my $s = $d->prepare('INSERT INTO auth ( user, pass ) VALUES ( ?, MD5(?) )');
+	my $r = $s->execute($user, $pass);
 
 	if ($r) { return 1; } else { return 0; }
 } # end method Create
