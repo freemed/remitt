@@ -31,6 +31,7 @@
 	</servlet-mapping>
 
 	<!--  Threads  -->
+
 	<servlet>
 		<description></description>
 		<display-name>MasterControl</display-name>
@@ -38,6 +39,19 @@
 		<servlet-class>org.remitt.server.MasterControl</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+
+	<!-- Generic servlets -->
+
+	<servlet>
+		<description></description>
+		<display-name>TestHarnessServlet</display-name>
+		<servlet-name>TestHarnessServlet</servlet-name>
+		<servlet-class>org.remitt.server.TestHarnessServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TestHarnessServlet</servlet-name>
+		<url-pattern>/TestHarness</url-pattern>
+	</servlet-mapping>
 
 	<!--  Web services -->
 

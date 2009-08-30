@@ -37,8 +37,8 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.remitt.server.Configuration;
 import org.remitt.prototype.PluginInterface;
+import org.remitt.server.Configuration;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -123,8 +123,10 @@ public class FixedFormPdf implements PluginInterface {
 					.debug("No PDF template found in XML stream, defaulting to LETTER size");
 			newDocument = new Document(PageSize.LETTER);
 		} else {
-			String templateFqdn = Configuration.getInstallLocation() + "/pdf/"
-					+ pdfTemplate + ".pdf";
+			String templateFqdn = Configuration.getServletContext()
+					.getServletContext().getRealPath(
+							"/WEB-INF/pdf/" + pdfTemplate + ".pdf");
+			log.debug("Found template path = " + templateFqdn);
 			PdfReader srcDocument = new PdfReader(templateFqdn);
 			Rectangle srcPageRectangle = srcDocument
 					.getPageSizeWithRotation(pdfPageNumber);
