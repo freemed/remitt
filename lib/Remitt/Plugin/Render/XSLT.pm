@@ -172,14 +172,14 @@ sub GetConfigFromXSL {
 	while (<FILE>) {
 		$line ++;
 		my $buf = $_;
-		if ($buf =~ /([^:\-\<\!\$]*)?: (.*)?/ and $line < 10) {
+		if ($buf =~ /([^:\-\<\!\$]*)?: (.*)?/ and $line < 30) {
 			my $name = $1;
 			my $value = $2;
 			$name =~ s/^\s//; $name =~ s/\s$//;
 			$value =~ s/^\s//; $value =~ s/\s$//;
-			if ( ! ( $name =~ / / ) )  {
+			#if ( ! ( $name =~ / / ) )  {
 				$c{$name} = $value;
-			}
+			#}
 		}
 	}
 	close FILE;
