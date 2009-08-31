@@ -460,7 +460,8 @@
 
 		<xsl:comment>2010AB Loop (p99)</xsl:comment>
 
-		<xsl:comment>
+		<!-- Disable for now -->
+		<xsl:if test="0 = 1">
 		<x12segment sid="NM1">
 			<comment>NM1 (p99)</comment>
 			<element>
@@ -513,7 +514,7 @@
 				<content><xsl:value-of select="$thispractice/address/zipcode" /></content>
 			</element>
 		</x12segment>
-		</xsl:comment>
+		</xsl:if>
 
 		-- selecting patients for <xsl:value-of select="$practice" /> --
 

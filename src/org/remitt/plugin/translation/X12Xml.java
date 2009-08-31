@@ -99,9 +99,9 @@ public class X12Xml implements PluginInterface {
 
 		// Loop through all segment elements
 		for (int iter = 0; iter < nodeList.getLength(); iter++) {
-			sb
-					.append(TranslateSegmentFromNode(nodeList.item(iter), eEnd,
-							sEnd));
+			String segment = TranslateSegmentFromNode(nodeList.item(iter),
+					eEnd, sEnd);
+			sb.append(segment);
 			sb.append("\n");
 		}
 
@@ -119,6 +119,7 @@ public class X12Xml implements PluginInterface {
 		// Perform sorting by creating list
 		ArrayList<Element> elements = new ArrayList<Element>();
 		for (int iter = 0; iter < elementNodes.getLength(); iter++) {
+			elements.add((Element) elementNodes.item(iter));
 		}
 
 		Iterator<Element> eIter = elements.iterator();
