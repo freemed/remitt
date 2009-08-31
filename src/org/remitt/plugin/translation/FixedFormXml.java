@@ -24,6 +24,7 @@
 
 package org.remitt.plugin.translation;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -84,7 +85,9 @@ public class FixedFormXml implements PluginInterface {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = dbFactory.newDocumentBuilder();
 		log.debug("Loading input into XmlDocument");
-		org.w3c.dom.Document xmlInput = builder.parse(input);
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(input
+				.getBytes("UTF-8"));
+		org.w3c.dom.Document xmlInput = builder.parse(inputStream);
 
 		XPathFactory xpFactory = XPathFactory.newInstance();
 		xpath = xpFactory.newXPath();

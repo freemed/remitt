@@ -83,7 +83,16 @@ public class TestHarnessServlet extends HttpServlet {
 		} finally {
 			try {
 				String output = p.render(0, input, option);
-				response.setContentType("text/plain");
+				if (output.startsWith("<?xml ")) {
+					// Handle XML output properly
+					response.setContentType("text/xml");
+				} else if (output.startsWith("PDF")) {
+					// Return PDF
+					response.setContentType("application/pdf");
+				} else {
+					// Assume plain text
+					response.setContentType("text/plain");
+				}
 				PrintWriter pw = new PrintWriter(response.getOutputStream());
 				pw.print(output);
 				pw.flush();
