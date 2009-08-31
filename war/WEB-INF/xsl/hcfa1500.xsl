@@ -1610,7 +1610,8 @@
 			Index of largest possible working subset
 	-->
 	<xsl:template name="procs-get-largest-subset">
-		<xsl:param name="procs" select="$procs" />
+		<xsl:param name="procs" />
+
 		<xsl:variable name="pcount" select="count($procs)" />
 
 		<xsl:choose>
