@@ -48,6 +48,8 @@ public class X12Xml implements PluginInterface {
 
 	protected XPath xpath = null;
 
+	protected HashMap<String, Integer> hlcount = new HashMap<String, Integer>();
+
 	@Override
 	public String getInputFormat() {
 		return "x12xml";
@@ -100,7 +102,7 @@ public class X12Xml implements PluginInterface {
 		// Loop through all segment elements
 		for (int iter = 0; iter < nodeList.getLength(); iter++) {
 			String segment = TranslateSegmentFromNode(nodeList.item(iter),
-					eEnd, sEnd);
+					eEnd, sEnd, iter);
 			sb.append(segment);
 			sb.append("\n");
 		}
@@ -109,8 +111,11 @@ public class X12Xml implements PluginInterface {
 	}
 
 	private String TranslateSegmentFromNode(Node segment, String elementEnd,
-			String segmentEnd) {
+			String segmentEnd, int segmentCount) {
 		List<String> l = new ArrayList<String>();
+
+		// Get the X12 segment id
+		String segmentId = ((Element) segment).getAttribute("sid");
 
 		// Get elements ...
 		NodeList elementNodes = ((Element) segment)
@@ -127,7 +132,38 @@ public class X12Xml implements PluginInterface {
 			Element element = eIter.next();
 
 			String content = "";
+			String hl = "";
 
+			// Check for segmentcounter
+			try {
+				@SuppressWarnings("unused")
+				Node segmentCounter = ((Element) element).getElementsByTagName(
+						"segmentcounter").item(0);
+				if (segmentCounter != null) {
+					log
+							.info("Found segmentcounter element, using that for content at index "
+									+ segmentCount);
+					l.add(new Integer(segmentCount - 2).toString());
+					continue;
+				}
+			} catch (Exception ex) {
+				if (ex.toString().length() > 1) {
+				}
+				log.debug("No segmentcounter element, moving on to next check");
+			}
+
+			// Check for "hl" element, which is a counter
+			// TODO: make this stuff actually work
+			try {
+				hl = ((Element) element).getElementsByTagName("hl").item(0)
+						.getTextContent();
+			} catch (Exception ex) {
+				if (ex.toString().length() > 1) {
+				}
+				hl = "";
+			}
+
+			// Process content tag
 			try {
 				content = ((Element) element).getElementsByTagName("content")
 						.item(0).getTextContent();
@@ -136,6 +172,7 @@ public class X12Xml implements PluginInterface {
 				}
 				content = "";
 			}
+			// If there's no content tag content, try text attribute
 			if (content.length() == 0) {
 				try {
 					content = ((Element) element).getElementsByTagName(
@@ -151,6 +188,12 @@ public class X12Xml implements PluginInterface {
 		}
 
 		StringBuilder sb = new StringBuilder();
+
+		// Start segment with segment id
+		sb.append(segmentId);
+		sb.append(elementEnd);
+
+		// Iterate through all elements
 		int elementCount = l.size();
 		for (int iter = 0; iter < elementCount; iter++) {
 			sb.append(l.get(iter));
@@ -159,50 +202,6 @@ public class X12Xml implements PluginInterface {
 			}
 		}
 		sb.append(segmentEnd);
-		return sb.toString();
-	}
-
-	/**
-	 * Pad a string from one page position to another.
-	 * 
-	 * @param oldRow
-	 *            Originating row
-	 * @param oldColumn
-	 *            Originating column
-	 * @param newRow
-	 *            Desired destination row
-	 * @param newColumn
-	 *            Desired destination column
-	 * @return
-	 */
-	protected String padToPosition(int oldRow, int oldColumn, int newRow,
-			int newColumn) {
-		// Sanity checks
-		if (oldRow > newRow) {
-			log.debug("oldRow = " + oldRow + ", newRow = " + newRow);
-			return "";
-		}
-		if ((oldRow == newRow) && (oldColumn > newColumn)) {
-			log.debug("oldRow = " + oldRow + ", newRow = " + newRow + " ( "
-					+ oldColumn + " > " + newColumn + " )");
-			return "";
-		}
-		if ((oldRow == newRow) && (oldColumn == newColumn)) {
-			return "";
-		}
-
-		StringBuilder sb = new StringBuilder();
-		int currentRow = oldRow;
-		int currentColumn = oldColumn;
-		while (currentRow < newRow) {
-			sb.append("\r\n");
-			currentRow += 1;
-			currentColumn = 1;
-		}
-		while (currentColumn < newColumn) {
-			sb.append(" ");
-			currentColumn += 1;
-		}
 		return sb.toString();
 	}
 
