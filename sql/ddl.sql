@@ -28,7 +28,7 @@ CREATE TABLE `tUser` (
 	, apiurl	VARCHAR(150) COMMENT 'For later use'
 );
 
-INSERT INTO `tUser` VALUES ( 1, 'Administrator', MD5('password') );
+INSERT INTO `tUser` VALUES ( 1, 'Administrator', MD5('password'), NULL );
 
 DROP TABLE IF EXISTS `tRole`;
 CREATE TABLE `tRole` (
@@ -49,6 +49,47 @@ CREATE TABLE `tUserConfig` (
 
 	, FOREIGN KEY ( user ) REFERENCES tUser.username ON DELETE CASCADE
 );
+
+DROP PROCEDURE IF EXISTS p_UserConfigUpdate;
+
+DELIMITER //
+CREATE PROCEDURE p_UserConfigUpdate (
+	  IN c_user VARCHAR(100)
+	, IN c_namespace VARCHAR(100)
+	, IN c_option VARCHAR(100)
+	, IN c_value BLOB )
+BEGIN
+	DECLARE c INT UNSIGNED;
+
+	SELECT COUNT(*) INTO c FROM tUserConfig a
+		WHERE
+		    a.user = c_user
+		AND a.cNameSpace = c_namespace
+		AND a.cOption = c_option
+		AND a.cValue = c_value;
+
+	IF c > 0 THEN
+		# Update
+		UPDATE tUserConfig SET cValue = c_value
+			WHERE user = c_user
+			  AND cNameSpace = c_namespace
+			  AND cOption = c_option;
+	ELSE
+		# Insert
+		INSERT INTO tUserConfig (
+				  user
+				, cNamespace
+				, cOption
+				, cValue
+			) VALUES (
+				  c_user
+				, c_namespace
+				, c_option
+				, c_value
+			);
+	END IF;
+END//
+DELIMITER ;
 
 DROP TABLE IF EXISTS `tPayload`;
 CREATE TABLE `tPayload` (

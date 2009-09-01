@@ -77,5 +77,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jsr311-api-0.11-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/jsr311-api-0.11-SNAPSHOT-javadoc.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/c3p0-0.9.1.2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/sojo-1.0.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

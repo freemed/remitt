@@ -53,6 +53,17 @@
 		<url-pattern>/TestHarness</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<description></description>
+		<display-name>UserConfigurationServlet</display-name>
+		<servlet-name>UserConfigurationServlet</servlet-name>
+		<servlet-class>org.remitt.server.UserConfigurationServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UserConfigurationServlet</servlet-name>
+		<url-pattern>/UserConfiguration</url-pattern>
+	</servlet-mapping>
+
 	<!--  Web services -->
 
 	<display-name>Auth Manager</display-name>
