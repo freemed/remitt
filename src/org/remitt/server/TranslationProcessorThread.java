@@ -30,7 +30,8 @@ import org.remitt.prototype.ProcessorThread;
 
 public class TranslationProcessorThread extends ProcessorThread {
 
-	static final Logger log = Logger.getLogger(TranslationProcessorThread.class);
+	static final Logger log = Logger
+			.getLogger(TranslationProcessorThread.class);
 
 	@Override
 	public ThreadType getThreadType() {
@@ -58,7 +59,7 @@ public class TranslationProcessorThread extends ProcessorThread {
 		// TODO: fetch option and input from table tPayload
 		String input = "";
 
-		String output = null;
+		byte[] output = null;
 		try {
 			output = p.render(jobId, input, null);
 		} catch (Exception e) {

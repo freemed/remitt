@@ -376,7 +376,8 @@ public class ControlThread extends Thread {
 			cStmt = c
 					.prepareStatement("{ SELECT a.id AS id FROM tPayload AS a "
 							+ " WHERE a.id NOT IN "
-							+ " ( SELECT b.payloadId FROM tProcessor ) " + " }");
+							+ " ( SELECT b.payloadId FROM tProcessor AS b ) "
+							+ " }");
 
 			boolean hadResults = cStmt.execute();
 			while (hadResults) {

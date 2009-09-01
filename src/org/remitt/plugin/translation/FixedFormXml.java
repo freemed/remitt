@@ -75,7 +75,7 @@ public class FixedFormXml implements PluginInterface {
 	}
 
 	@Override
-	public String render(Integer jobId, String input, String option)
+	public byte[] render(Integer jobId, String input, String option)
 			throws Exception {
 		log.info("Entered Translate for job #" + jobId.toString());
 
@@ -101,7 +101,7 @@ public class FixedFormXml implements PluginInterface {
 			sb.append(TranslatePageFromNode(nodeList.item(iter)));
 		}
 
-		return sb.toString();
+		return sb.toString().getBytes();
 	}
 
 	private String TranslatePageFromNode(Node page) {

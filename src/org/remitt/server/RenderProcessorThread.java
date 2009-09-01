@@ -24,6 +24,7 @@
 
 package org.remitt.server;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -71,7 +72,7 @@ public class RenderProcessorThread extends ProcessorThread {
 			return false;
 		}
 
-		String output = null;
+		byte[] output = null;
 		try {
 			output = p.render(jobId, input, option);
 			tsEnd.setTime(System.currentTimeMillis());
@@ -87,8 +88,18 @@ public class RenderProcessorThread extends ProcessorThread {
 		}
 
 		// Store output
-		Configuration.getControlThread().commitPayloadRun(jobId, output,
-				getThreadType(), tsEnd);
+		try {
+			Configuration.getControlThread().commitPayloadRun(jobId,
+					new String(output, "UTF-8"), getThreadType(), tsEnd);
+		} catch (UnsupportedEncodingException e) {
+			log.error(e);
+			// Clear the thread, since we can't process any further.
+			Configuration.getControlThread().clearProcessorForThread(
+					(int) getId());
+			// TODO: Update with error status so that frontend can inform
+			// "client"
+			return false;
+		}
 
 		// Clear thread
 		Configuration.getControlThread().clearProcessorForThread((int) getId());

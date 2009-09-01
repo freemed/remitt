@@ -25,7 +25,6 @@
 package org.remitt.server;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -82,21 +81,27 @@ public class TestHarnessServlet extends HttpServlet {
 			log.error(e);
 		} finally {
 			try {
-				String output = p.render(0, input, option);
-				if (output.startsWith("<?xml ")) {
+				byte[] output = p.render(0, input, option);
+				if (new String(output, "UTF-8").startsWith("<?xml ")) {
 					// Handle XML output properly
 					response.setContentType("text/xml");
-				} else if (output.startsWith("PDF")) {
+					response.setContentLength(output.length);
+				} else if (new String(output, "UTF-8").startsWith("%PDF-")) {
 					// Return PDF
 					response.setContentType("application/pdf");
+					response.setContentLength(output.length);
+					response.addHeader("Content-disposition",
+							"attachment; filename=remitt-"
+									+ System.currentTimeMillis() + ".pdf");
 				} else {
 					// Assume plain text
 					response.setContentType("text/plain");
 				}
-				PrintWriter pw = new PrintWriter(response.getOutputStream());
-				pw.print(output);
-				pw.flush();
-				pw.close();
+
+				// Push byte array of output to servlet output
+				response.getOutputStream().write(output);
+				response.getOutputStream().flush();
+				response.getOutputStream().close();
 			} catch (Exception e) {
 				log.error(e);
 				throw new ServletException(e);

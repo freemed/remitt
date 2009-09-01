@@ -73,7 +73,7 @@ public class XsltPlugin implements PluginInterface {
 	}
 
 	@Override
-	public String render(Integer jobId, String input, String option)
+	public byte[] render(Integer jobId, String input, String option)
 			throws Exception {
 		log.info("Entered Render for job #" + jobId.toString());
 
@@ -101,7 +101,7 @@ public class XsltPlugin implements PluginInterface {
 		transformer.transform(xmlInput, xmlOutput);
 
 		// Push stream to output
-		return xmlOutput.getOutputStream().toString();
+		return xmlOutput.getOutputStream().toString().getBytes("UTF-8");
 	}
 
 	@Override

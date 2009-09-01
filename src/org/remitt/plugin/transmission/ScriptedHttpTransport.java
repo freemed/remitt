@@ -74,7 +74,7 @@ public class ScriptedHttpTransport implements PluginInterface {
 	}
 
 	@Override
-	public String render(Integer jobId, String input, String option)
+	public byte[] render(Integer jobId, String input, String option)
 			throws Exception {
 		// TODO: get username
 		String userName = "FIXME";
@@ -111,7 +111,7 @@ public class ScriptedHttpTransport implements PluginInterface {
 		Context.exit();
 
 		// Return the output from the script.
-		return output;
+		return output.getBytes();
 	}
 
 	/**

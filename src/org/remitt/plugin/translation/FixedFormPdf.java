@@ -86,7 +86,7 @@ public class FixedFormPdf implements PluginInterface {
 	}
 
 	@Override
-	public String render(Integer jobId, String input, String option)
+	public byte[] render(Integer jobId, String input, String option)
 			throws Exception {
 		log.info("Entered Translate for job #" + jobId.toString());
 
@@ -136,18 +136,17 @@ public class FixedFormPdf implements PluginInterface {
 			newDocument = new Document(srcPageRectangle, 0, 0, 0, 0);
 		}
 
-		PdfWriter writer = PdfWriter.getInstance(newDocument,
-				new ByteArrayOutputStream());
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		PdfWriter writer = PdfWriter.getInstance(newDocument, outputStream);
 		newDocument.open();
 
 		// Loop through all page elements
 		int pageCount = 0;
 		for (int iter = 0; iter < nodeList.getLength(); iter++) {
+			log.debug("Iterating through page node #" + iter + ", pageCount = "
+					+ pageCount);
 			Node page = nodeList.item(iter);
-			if (pageCount > 0) {
-				// Skip to next page
-				newDocument.newPage();
-			}
+			newDocument.newPage();
 
 			// Append page translation
 			translatePageFromNode(newDocument, writer, page);
@@ -158,7 +157,9 @@ public class FixedFormPdf implements PluginInterface {
 
 		// Close document
 		newDocument.close();
-		return "";
+		outputStream.flush();
+		outputStream.close();
+		return outputStream.toByteArray();
 	}
 
 	private void translatePageFromNode(Document doc, PdfWriter writer, Node page) {
@@ -173,6 +174,17 @@ public class FixedFormPdf implements PluginInterface {
 			log.trace(ex.toString());
 			pdfTemplate = "";
 			pdfPageNumber = 1;
+		}
+
+		// Get font size
+		int fontSize = 10;
+		try {
+			fontSize = Integer.parseInt(xpath.evaluate(
+					"./format/pdf/font/@size", page));
+		} catch (Exception ex) {
+			log.trace(ex.toString());
+			log.debug("Defaulting to 10pt font");
+			fontSize = 10;
 		}
 
 		// -------- Calculate offsets --------
@@ -222,11 +234,14 @@ public class FixedFormPdf implements PluginInterface {
 		} else {
 			// Use template
 			try {
-				String templateFqdn = Configuration.getInstallLocation()
-						+ "/pdf/" + pdfTemplate + ".pdf";
+				String templateFqdn = Configuration.getServletContext()
+						.getServletContext().getRealPath(
+								"/WEB-INF/pdf/" + pdfTemplate + ".pdf");
+				log.info("Using template " + templateFqdn);
 				PdfReader srcDocument = new PdfReader(templateFqdn);
 				Rectangle srcPageRectangle = srcDocument
 						.getPageSizeWithRotation(pdfPageNumber);
+
 				vSize = (int) srcPageRectangle.getHeight();
 				log.debug("vertical size = " + vSize);
 				PdfImportedPage tp = writer.getImportedPage(srcDocument,
@@ -239,7 +254,6 @@ public class FixedFormPdf implements PluginInterface {
 		}
 
 		// Begin text
-		cb.beginText();
 		BaseFont bf = null;
 		try {
 			bf = BaseFont.createFont(BaseFont.COURIER, BaseFont.CP1252,
@@ -249,7 +263,6 @@ public class FixedFormPdf implements PluginInterface {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		cb.setFontAndSize(bf, 10); // FIXME
 
 		// Get elements ...
 		NodeList elementNodes = null;
@@ -281,6 +294,9 @@ public class FixedFormPdf implements PluginInterface {
 			}
 
 			if ((elementRow > 0) && (elementColumn > 0)) {
+				cb.beginText();
+				cb.setFontAndSize(bf, fontSize);
+
 				// Calculate positions
 				int colPos = (int) ((elementColumn * hScaling) + hOffset);
 				int rowPos = (int) ((vSize - (elementRow * vScaling)) - vOffset);
@@ -289,16 +305,19 @@ public class FixedFormPdf implements PluginInterface {
 				String elementContents = ProcessElement(element);
 
 				// Reposition and display
-				cb.setTextMatrix(colPos, rowPos);
-				cb.showText(elementContents);
+				log.trace("Render '" + elementContents + "' @ " + colPos + ","
+						+ rowPos);
+				// cb.setTextMatrix(colPos, rowPos);
+				// cb.showText(elementContents);
+
+				cb.showTextAligned(PdfContentByte.ALIGN_LEFT, elementContents,
+						colPos, rowPos, 0);
+
+				cb.endText();
 			} else {
 				log.debug("Found null element, skipping.");
 			}
-
 		}
-
-		// Close out text block on page
-		cb.endText();
 	}
 
 	private String ProcessElement(Node element) {

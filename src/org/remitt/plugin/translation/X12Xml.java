@@ -75,7 +75,7 @@ public class X12Xml implements PluginInterface {
 	}
 
 	@Override
-	public String render(Integer jobId, String input, String option)
+	public byte[] render(Integer jobId, String input, String option)
 			throws Exception {
 		log.info("Entered Translate for job #" + jobId.toString());
 
@@ -107,7 +107,7 @@ public class X12Xml implements PluginInterface {
 			sb.append("\n");
 		}
 
-		return sb.toString();
+		return sb.toString().getBytes();
 	}
 
 	private String TranslateSegmentFromNode(Node segment, String elementEnd,

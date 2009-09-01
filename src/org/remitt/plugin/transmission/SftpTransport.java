@@ -69,7 +69,7 @@ public class SftpTransport implements PluginInterface {
 	}
 
 	@Override
-	public String render(Integer jobId, String input, String option)
+	public byte[] render(Integer jobId, String input, String option)
 			throws Exception {
 		// TODO: get username
 		String userName = "FIXME";
@@ -118,6 +118,6 @@ public class SftpTransport implements PluginInterface {
 		client.quit();
 		ssh.disconnect();
 
-		return "";
+		return new String("").getBytes();
 	}
 }
