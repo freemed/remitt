@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!-- $Id$ -->
 <project name="RemittServer" default="build" basedir=".">
 
   <path id="project.class.path">
@@ -24,21 +25,10 @@
     </copy>
   </target>
 
-  <target name="eclipse.generate" description="Generate eclipse project">
-    <java failonerror="true" fork="true" classname="com.google.gwt.user.tools.WebAppCreator">
-      <classpath>
-        <path refid="project.class.path"/>
-      </classpath>
-      <arg value="-XonlyEclipse"/>
-      <arg value="-ignore"/>
-      <arg value="net.raveu.gwt.client.SalesDisplay" />
-    </java>
-  </target>
-
   <target name="build" depends="javac" description="Build this project" />
 
   <target name="war" depends="build" description="Create a war file">
-    <zip destfile="RemittServer.war" basedir="war"/>
+    <zip destfile="remitt.war" basedir="war"/>
   </target>
 
   <target name="clean" description="Cleans this project">
