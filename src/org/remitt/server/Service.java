@@ -69,7 +69,7 @@ public class Service implements IServiceInterface {
 		PreparedStatement cStmt = null;
 		try {
 			cStmt = c
-					.prepareCall("{ UPDATE tUser SET passhash = MD5( ? ) WHERE username = ? }");
+					.prepareCall("UPDATE tUser SET passhash = MD5( ? ) WHERE username = ?;");
 
 			cStmt.setString(1, newPassword);
 			cStmt.setString(2, userName);
@@ -113,9 +113,9 @@ public class Service implements IServiceInterface {
 		try {
 			cStmt = c
 					.prepareStatement(
-							"{ INSERT INTO tPayload ( "
+							"INSERT INTO tPayload ( "
 									+ "user, payload, renderPlugin, renderOption, transportPlugin "
-									+ " ) VALUES ( ?, ?, ?, ?, ? ); }",
+									+ " ) VALUES ( ?, ?, ?, ?, ? );",
 							PreparedStatement.RETURN_GENERATED_KEYS);
 
 			cStmt.setString(1, userName);

@@ -113,6 +113,10 @@ public class ScriptedHttpTransport implements PluginInterface {
 		engine.put("jobId", jobId);
 		engine.put("input", input);
 		engine.put("webClient", webClient);
+		engine.put("username", Configuration.getPluginOption(this, userName,
+				"username"));
+		engine.put("password", Configuration.getPluginOption(this, userName,
+				"password"));
 
 		InputStream is = new FileInputStream(realScriptPath);
 		try {
