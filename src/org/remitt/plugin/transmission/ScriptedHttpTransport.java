@@ -24,13 +24,15 @@
 
 package org.remitt.plugin.transmission;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.HashMap;
 
-import net.sourceforge.htmlunit.corejs.javascript.Context;
-import net.sourceforge.htmlunit.corejs.javascript.Scriptable;
-import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
 import org.remitt.prototype.PluginInterface;
@@ -76,61 +78,51 @@ public class ScriptedHttpTransport implements PluginInterface {
 	@Override
 	public byte[] render(Integer jobId, String input, String option)
 			throws Exception {
-		// TODO: get username
-		String userName = "FIXME";
+		String userName = null;
+		if (jobId == 0 || jobId == null) {
+			// No job id, no user name
+			userName = "";
+		} else {
+			userName = Configuration.getControlThread().getPayloadById(jobId)
+					.getUserName();
+		}
 
 		// Get configuration
-		String scriptName = Configuration.getPluginOption(this, userName,
-				"script");
+		String scriptName = null;
+		if (option == null) {
+			scriptName = Configuration
+					.getPluginOption(this, userName, "script");
+		} else {
+			scriptName = option;
+		}
 
-		// Initialize javascript VM
-		Context cx = Context.enter();
-		cx.setLanguageVersion(Context.VERSION_1_2);
-		Scriptable scope = cx.initStandardObjects();
-
-		WebClient webClient = new WebClient(BrowserVersion.FIREFOX_3);
-
-		// Inject into global namespace for execution
-		ScriptableObject
-				.putProperty(scope, "log", Context.javaToJS(log, scope));
-		ScriptableObject.putProperty(scope, "jobId", Context.javaToJS(jobId,
-				scope));
-		ScriptableObject.putProperty(scope, "input", Context.javaToJS(input,
-				scope));
-		ScriptableObject.putProperty(scope, "webClient", Context.javaToJS(
-				webClient, scope));
+		ScriptEngineManager engineMgr = new ScriptEngineManager();
+		ScriptEngine engine = engineMgr.getEngineByName("JavaScript");
 
 		// Fetch and execute script.
-		String script = readFileAsString(Configuration.getServletContext()
-				.getServletContext().getRealPath(
-						"/WEB-INF/scripts/" + scriptName));
-		Object result = cx.evaluateString(scope, script, "webScript", 1, null);
-		String output = Context.toString(result);
+		String scriptPath = "/WEB-INF/scripts/" + scriptName + ".js";
+		String realScriptPath = Configuration.getServletContext()
+				.getServletContext().getRealPath(scriptPath);
 
-		// Close up shop.
-		Context.exit();
+		// Instantiate web client (htmlunit)
+		WebClient webClient = new WebClient(BrowserVersion.FIREFOX_3);
+		webClient.setJavaScriptEnabled(true);
 
-		// Return the output from the script.
-		return output.getBytes();
-	}
+		// Inject objects
+		engine.put("log", log);
+		engine.put("jobId", jobId);
+		engine.put("input", input);
+		engine.put("webClient", webClient);
 
-	/**
-	 * Read a file into a string.
-	 * 
-	 * @param filePath
-	 * @return
-	 * @throws java.io.IOException
-	 */
-	private static String readFileAsString(String filePath)
-			throws java.io.IOException {
-		StringBuffer fileData = new StringBuffer(1000);
-		BufferedReader reader = new BufferedReader(new FileReader(filePath));
-		char[] buf = new char[1024];
-		int numRead = 0;
-		while ((numRead = reader.read(buf)) != -1) {
-			fileData.append(buf, 0, numRead);
+		InputStream is = new FileInputStream(realScriptPath);
+		try {
+			Reader reader = new InputStreamReader(is);
+			Object output = engine.eval(reader);
+			return output.toString().getBytes();
+		} catch (ScriptException ex) {
+			log.error(ex);
+			return new String("").getBytes();
 		}
-		reader.close();
-		return fileData.toString();
 	}
+
 }

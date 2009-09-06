@@ -3,8 +3,8 @@
  * 
  * Authors: Jeff Buchbinder <jeff@freemedsoftware.org>
  * 
- * REMITT Electronic Medical Information Translation and Transmission Copyright
- * (C) 1999-2009 FreeMED Software Foundation
+ * REMITT Electronic Medical Information Translation and Transmission
+ * Copyright (C) 1999-2009 FreeMED Software Foundation
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -25,3 +25,4 @@ log.info("Executing FreeClaims.js");
 log.info("Loading login page");
 loginPage = webClient
 		.getPage("https://sfreeclaims.anvicare.com/docs/member_login.asp");
+log.info("Ending FreeClaims.js script");
