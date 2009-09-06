@@ -31,6 +31,7 @@ public class PayloadDto {
 	private String renderOption;
 	private String transmissionPlugin;
 	private String payload;
+	private String userName;
 
 	public void setId(Integer i) {
 		id = i;
@@ -52,6 +53,10 @@ public class PayloadDto {
 		payload = p;
 	}
 
+	public void setUserName(String u) {
+		userName = u;
+	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -70,6 +75,10 @@ public class PayloadDto {
 
 	public String getPayload() {
 		return payload;
+	}
+
+	public String getUserName() {
+		return userName;
 	}
 
 }

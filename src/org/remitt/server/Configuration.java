@@ -189,12 +189,28 @@ public class Configuration {
 			boolean hasResult = cStmt.execute();
 			if (hasResult) {
 				ResultSet r = cStmt.getResultSet();
-				return r.getString(1);
+				String ret = r.getString(1);
+				c.close();
+				return ret;
 			}
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
 		}
 
 		return "";

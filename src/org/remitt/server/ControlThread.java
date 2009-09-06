@@ -51,7 +51,7 @@ public class ControlThread extends Thread {
 	 * Exception thrown when there are no free threads available in the
 	 * processor thread pool to take a new processing job.
 	 * 
-	 * @author jbuchbinder
+	 * @author jeff@freemedsoftware.org
 	 * 
 	 */
 	public class FreeThreadNotFoundException extends Exception {
@@ -129,12 +129,12 @@ public class ControlThread extends Thread {
 
 		PreparedStatement cStmt = null;
 		try {
-			cStmt = c
-					.prepareStatement("{ SELECT * FROM tPayload WHERE id = ? }");
+			cStmt = c.prepareStatement("SELECT * FROM tPayload WHERE id = ?;");
 			cStmt.setInt(1, payloadId);
 
 			cStmt.execute();
 			ResultSet rs = cStmt.getResultSet();
+			rs.next();
 
 			PayloadDto payload = new PayloadDto();
 			payload.setId(rs.getInt("id"));
@@ -142,11 +142,29 @@ public class ControlThread extends Thread {
 			payload.setRenderPlugin(rs.getString("renderPlugin"));
 			payload.setRenderOption(rs.getString("renderOption"));
 			payload.setTransmissionPlugin(rs.getString("transmissionPlugin"));
+			payload.setUserName(rs.getString("user"));
+
+			rs.close();
+			c.close();
 			return payload;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
 		}
 
 		return null;
@@ -164,17 +182,34 @@ public class ControlThread extends Thread {
 		try {
 			// TODO : FIXME: Put in a query here to get these
 			cStmt = c
-					.prepareStatement("{ SELECT payloadId FROM tProcessor WHERE id = ? }");
+					.prepareStatement("SELECT payloadId FROM tProcessor WHERE id = ?;");
 			cStmt.setInt(1, processorId);
 
 			cStmt.execute();
 			ResultSet rs = cStmt.getResultSet();
+			rs.next();
 			Integer payloadId = rs.getInt(1);
+			rs.close();
+			c.close();
 			return getPayloadById(payloadId);
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
 		}
 
 		return null;
@@ -200,9 +235,9 @@ public class ControlThread extends Thread {
 
 		PreparedStatement cStmt = null;
 		try {
-			cStmt = c.prepareStatement("{ INSERT INTO tProcessor ( "
+			cStmt = c.prepareStatement("INSERT INTO tProcessor ( "
 					+ " threadId, payloadId, stage, plugin, tsStart, pInput "
-					+ " ) VALUES ( " + "?, ?, ?, ?, ?, ?, ? " + " ) }",
+					+ " ) VALUES ( " + "?, ?, ?, ?, ?, ?, ? " + " );",
 					PreparedStatement.RETURN_GENERATED_KEYS);
 
 			cStmt.setInt(1, threadId);
@@ -215,12 +250,28 @@ public class ControlThread extends Thread {
 			@SuppressWarnings("unused")
 			boolean hadResults = cStmt.execute();
 			ResultSet newKey = cStmt.getGeneratedKeys();
-			return newKey.getInt("id");
+			Integer ret = newKey.getInt("id");
+			c.close();
+			return ret;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
 			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
 			return null;
 		}
 	}
@@ -235,15 +286,15 @@ public class ControlThread extends Thread {
 
 		PreparedStatement cStmt = null;
 		try {
-			cStmt = c.prepareStatement("{ UPDATE tProcessor SET "
+			cStmt = c.prepareStatement("UPDATE tProcessor SET "
 					+ " tsEnd = ?, " + "pOutput = ? " + " WHERE id = ? "
-					+ " ) }");
+					+ " );");
 
 			cStmt.setTimestamp(1, new Timestamp(tsEnd.getTime()));
 			cStmt.setString(2, output);
 			cStmt.setInt(3, processorId);
 
-			cStmt.execute();
+			cStmt.executeUpdate();
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
 		} catch (SQLException e) {
@@ -373,22 +424,38 @@ public class ControlThread extends Thread {
 
 		PreparedStatement cStmt = null;
 		try {
-			cStmt = c
-					.prepareStatement("{ SELECT a.id AS id FROM tPayload AS a "
-							+ " WHERE a.id NOT IN "
-							+ " ( SELECT b.payloadId FROM tProcessor AS b ) "
-							+ " }");
+			cStmt = c.prepareStatement("SELECT a.id AS id FROM tPayload AS a "
+					+ " WHERE a.id NOT IN "
+					+ " ( SELECT b.payloadId FROM tProcessor AS b ) " + ";");
 
 			boolean hadResults = cStmt.execute();
-			while (hadResults) {
+			if (hadResults) {
 				ResultSet rs = cStmt.getResultSet();
-				r.add(rs.getInt("id"));
-				hadResults = cStmt.getMoreResults();
+				while (!rs.isAfterLast()) {
+					rs.next();
+					r.add(rs.getInt("id"));
+				}
+				rs.close();
 			}
+			c.close();
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
 		}
 
 		return (Integer[]) r.toArray(new Integer[0]);
