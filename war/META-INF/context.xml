@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!-- 
+		$Id$
+	-->
+<Context path="/">
+	<!--
+		<Realm className="org.apache.catalina.realm.DataSourceRealm"
+		debug="99" dataSourceName="jdbc/remitt" digest="MD5" userTable="tUser"
+		userNameCol="username" userCredCol="passhash" userRoleTable="tRole"
+		roleNameCol="rolename" />
+	-->
+	<Realm className="org.apache.catalina.realm.UserDatabaseRealm"
+		resourceName="UserDatabase" />
+</Context>

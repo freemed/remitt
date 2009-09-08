@@ -30,6 +30,10 @@
 	border="0" /></a> REMITT Electronic Medical Information Translation and
 Transmission</h1>
 
+<div class="usernamePanel">
+<b>Username:</b> <%= request.getUserPrincipal().getName() %>
+</div>
+
 <ul>
 	<u>Servlet Resources</u>
 	<li><a href="services/">Web Services</a> - SOAP and REST services</li>
