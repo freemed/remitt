@@ -448,13 +448,11 @@ public class ControlThread extends Thread {
 				}
 			}
 		} catch (SQLException e) {
-			log.error("Caught SQLException", e);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
+			// Attempt to close, no error logging since this would be an empty
+			// set.
+			try {
+				c.close();
+			} catch (SQLException e1) {
 			}
 		}
 

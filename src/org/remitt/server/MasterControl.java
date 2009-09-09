@@ -45,7 +45,7 @@ public class MasterControl extends HttpServlet {
 
 	private static final long serialVersionUID = 2009072801000L;
 
-	static final Logger logger = Logger.getLogger(MasterControl.class);
+	static final Logger log = Logger.getLogger(MasterControl.class);
 
 	/**
 	 * Default constructor.
@@ -54,7 +54,7 @@ public class MasterControl extends HttpServlet {
 	}
 
 	public void init() throws ServletException {
-		logger.info("MasterControl servlet initializing");
+		log.info("MasterControl servlet initializing");
 		Configuration.setServletContext(this);
 		Configuration.loadConfiguration();
 
@@ -62,19 +62,19 @@ public class MasterControl extends HttpServlet {
 		String jdbcDriver = null;
 		try {
 			jdbcUrl = Configuration.getConfiguration().getString("db.url");
-			logger.debug("Found db.url string = " + jdbcUrl);
+			log.debug("Found db.url string = " + jdbcUrl);
 			jdbcDriver = Configuration.getConfiguration()
 					.getString("db.driver");
-			logger.debug("Found db.driver string = " + jdbcDriver);
+			log.debug("Found db.driver string = " + jdbcDriver);
 		} catch (Exception ex) {
-			logger.error("Could not get db.url", ex);
+			log.error("Could not get db.url", ex);
 			throw new ServletException();
 		}
 
 		try {
 			Class.forName(jdbcDriver).newInstance();
 		} catch (Exception ex) {
-			logger.error("Unable to load driver.", ex);
+			log.error("Unable to load driver.", ex);
 			throw new ServletException();
 		}
 
@@ -83,10 +83,11 @@ public class MasterControl extends HttpServlet {
 		try {
 			cpds.setDriverClass(jdbcDriver);
 		} catch (PropertyVetoException e) {
-			logger.error(e);
+			log.error(e);
 			throw new ServletException();
 		}
 		cpds.setJdbcUrl(jdbcUrl);
+		cpds.setDataSourceName("jdbc/remitt");
 
 		// Set settings from configuration file
 		cpds.setMaxStatements(Configuration.getConfiguration().getInt(
