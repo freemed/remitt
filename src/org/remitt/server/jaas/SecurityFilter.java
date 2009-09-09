@@ -30,6 +30,8 @@ import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
+import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.TextOutputCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
@@ -43,38 +45,68 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.codec.binary.Base64;
 
 public class SecurityFilter implements Filter {
 
 	class HttpAuthCallbackHandler implements CallbackHandler {
 
-		final Logger innerLog = Logger.getLogger(HttpAuthCallbackHandler.class);
-
 		private String userName;
+		private String password;
 
 		public HttpAuthCallbackHandler(HttpServletRequest request) {
 			userName = request.getRemoteUser();
-			innerLog.debug("Remote user is: " + request.getRemoteUser());
+
+			String authheader = request.getHeader("Authorization");
+			if (authheader != null) {
+				password = (getDecodedCredentials(authheader.substring(6))
+						.split(":"))[1];
+			}
+
+			System.out.println("SecurityFilter::HttpAuthCallbackHander: "
+					+ "Remote user is: " + request.getRemoteUser());
+			// System.out.println("Password is: " + password);
 		}
 
-		public void handle(Callback[] cb) throws IOException,
+		public void handle(Callback[] callbacks) throws IOException,
 				UnsupportedCallbackException {
-
-			for (int i = 0; i < cb.length; i++) {
-				if (cb[i] instanceof NameCallback) {
-					NameCallback nc = (NameCallback) cb[i];
+			for (int i = 0; i < callbacks.length; i++) {
+				if (callbacks[i] instanceof TextOutputCallback) {
+					// display a message according to a specified type
+				} else if (callbacks[i] instanceof NameCallback) {
+					NameCallback nc = (NameCallback) callbacks[i];
 					nc.setName(userName);
-				} else
-					throw new UnsupportedCallbackException(cb[i],
-							"HttpAuthCallbackHandler");
+				} else if (callbacks[i] instanceof PasswordCallback) {
+					PasswordCallback nc = (PasswordCallback) callbacks[i];
+					nc.setPassword(password.toCharArray());
+				} else {
+					throw new UnsupportedCallbackException(callbacks[i],
+							"Unrecognized Callback");
+				}
 			}
 		}
+
+		/**
+		 * @param credentials
+		 *            to be decoded
+		 * @return String decoded credentials <b>name:password </b>
+		 */
+		private String getDecodedCredentials(String credentials) {
+			return (new String(Base64.decodeBase64(credentials.getBytes())));
+		}
+
 	}
 
-	static final Logger log = Logger.getLogger(SecurityFilter.class);
+	public static FilterConfig filterConfig = null;
+
+	public static FilterConfig getFilterConfig() {
+		return filterConfig;
+	}
 
 	public void init(FilterConfig config) throws ServletException {
+		filterConfig = config;
+		System.setProperty("java.security.auth.login.config", config
+				.getServletContext().getRealPath("/WEB-INF/login.conf"));
 	}
 
 	public void destroy() {
@@ -83,7 +115,7 @@ public class SecurityFilter implements Filter {
 
 	public void doFilter(ServletRequest sreq, ServletResponse sres,
 			FilterChain chain) throws IOException, ServletException {
-		log.trace("Starting SecurityFilter.doFilter");
+		System.out.println("Starting SecurityFilter.doFilter");
 
 		HttpServletResponse response = (HttpServletResponse) sres;
 		HttpServletRequest request = (HttpServletRequest) sreq;
@@ -102,7 +134,7 @@ public class SecurityFilter implements Filter {
 		try {
 			lc = new LoginContext("Jaas", subject, new HttpAuthCallbackHandler(
 					request));
-			System.out.println("established new logincontext");
+			// System.out.println("established new logincontext");
 		} catch (LoginException le) {
 			le.printStackTrace();
 			response.sendError(HttpServletResponse.SC_FORBIDDEN, request
@@ -121,7 +153,7 @@ public class SecurityFilter implements Filter {
 		}
 
 		try {
-			System.out.println("Subject is " + lc.getSubject());
+			// System.out.println("Subject is " + lc.getSubject());
 			chain.doFilter(request, response);
 		} catch (SecurityException se) {
 			response.sendError(HttpServletResponse.SC_FORBIDDEN, request
