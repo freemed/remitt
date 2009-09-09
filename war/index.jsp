@@ -23,16 +23,38 @@
  -->
 <html>
 <head>
-<title>REMITT Server</title>
+<title>REMITT Server v<%@ include file="about.jsp"%></title>
+<%@ page import="java.util.*"%>
+<%@ page import="org.remitt.server.Configuration"%>
 </head>
 <body>
 <h1><a href="http://remitt.org/"><img src="img/remitt.jpg"
 	border="0" /></a> REMITT Electronic Medical Information Translation and
 Transmission</h1>
 
-<div class="usernamePanel">
-<b>Username:</b> <%= request.getUserPrincipal().getName() %>
-</div>
+<table border="1" cellpadding="7">
+	<tbody>
+		<tr>
+			<th>REMITT Version</th>
+			<td><%@ include file="about.jsp"%></td>
+		</tr>
+		<tr>
+			<th>Username</th>
+			<td><%=request.getUserPrincipal().getName()%></td>
+		</tr>
+		<tr>
+			<th>Server</th>
+			<td><%=request.getLocalAddr()%>:<%=request.getLocalPort()%>
+			connecting from <%=request.getRemoteAddr()%></td>
+		</tr>
+		<tr>
+			<th>C3P0 Pool Status</th>
+			<td><%=Configuration.getComboPooledDataSource()
+							.getNumBusyConnections()%> / <%=Configuration.getComboPooledDataSource()
+									.getMaxPoolSize()%> connections</td>
+		</tr>
+	</tbody>
+</table>
 
 <ul>
 	<u>Servlet Resources</u>
@@ -42,6 +64,9 @@ Transmission</h1>
 	<li><a href="configurationDisplay.jsp">Configuration</a> - Edit
 	per-user configuration</li>
 </ul>
+
+<div align="center"><i>&copy; 1999-<%=new Date().getYear() + 1900%>
+by the FreeMED Software Foundation</i></div>
 
 </body>
 </html>

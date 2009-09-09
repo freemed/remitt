@@ -23,7 +23,8 @@
  -->
 <html>
 <head>
-<title>REMITT Server: Configuration</title>
+<title>REMITT Server v<%@ include file="about.jsp"%>:
+Configuration</title>
 <%@ page import="java.sql.*"%>
 <%@ page import="org.remitt.server.Configuration"%>
 <%@ page import="org.apache.log4j.Logger"%>
@@ -53,36 +54,45 @@ Transmission</h1>
 				PreparedStatement p = c
 						.prepareStatement("SELECT * FROM tUserConfig "
 								+ " WHERE user = ?");
-				p.setString(0, username);
+				p.setString(1, username);
 				p.execute();
 				ResultSet rs = p.getResultSet();
 				while (rs.next()) {
-					System.out
+					out
 							.println("<tr><form method=\"post\" action=\"configurationCommit.jsp\">");
-					System.out
-							.println("<input type=\"hidden\" name=\"id\" value=\""
-									+ rs.getString("id") + "\" />");
-					System.out
+					out
 							.println("<td><input type=\"text\" name=\"namespace\" value=\""
 									+ rs.getString("cNamespace")
-									+ "\" disabled=\"disabled\" /></td>");
-					System.out
+									+ "\" disabled=\"disabled\" size=\"50\" /></td>");
+					out
 							.println("<td><input type=\"text\" name=\"option\" value=\""
 									+ rs.getString("cOption")
 									+ "\" disabled=\"disabled\" /></td>");
-					System.out
+					out
 							.println("<td><input type=\"text\" name=\"value\" value=\""
 									+ rs.getString("cValue") + "\"></td>");
-					System.out.println("<td><input type=\"submit\" value=\""
-							+ "Save Value" + "\" /></td>");
-					System.out.println("</form></tr>");
+					out
+							.println("<td><input type=\"submit\" name=\"action\" value=\""
+									+ "save"
+									+ "\" />"
+									+ "<input type=\"submit\" name=\"action\" value=\""
+									+ "delete" + "\" /></td>");
+					out.println("</form></tr>");
 				}
 				c.close();
 			} catch (SQLException se) {
-				System.out.println("<tr><td colspan=\"4\"><b>Exception: "
+				out.println("<tr><td colspan=\"4\"><b>Exception: "
 						+ se.toString() + "</b></tr></tr>");
 			}
 		%>
+		<tr>
+			<form method="post" action="configurationCommit.jsp">
+			<td><input type="text" name="namespace" size="50" value="" /></td>
+			<td><input type="text" name="option" value="" /></td>
+			<td><input type="text" name="value" value="" /></td>
+			<td><input type="submit" name="action" value="add" /></td>
+			</form>
+		</tr>
 	</tbody>
 </table>
 
