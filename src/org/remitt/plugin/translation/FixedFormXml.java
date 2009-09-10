@@ -50,6 +50,8 @@ public class FixedFormXml implements PluginInterface {
 
 	protected XPath xpath = null;
 
+	protected String defaultUsername = "";
+
 	@Override
 	public String getInputFormat() {
 		return "fixedformxml";
@@ -340,6 +342,11 @@ public class FixedFormXml implements PluginInterface {
 	@Override
 	public String[] getPluginConfigurationOptions() {
 		return null;
+	}
+
+	@Override
+	public void setDefaultUsername(String username) {
+		defaultUsername = username;
 	}
 
 }

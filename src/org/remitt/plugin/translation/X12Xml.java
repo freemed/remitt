@@ -48,6 +48,8 @@ public class X12Xml implements PluginInterface {
 
 	protected XPath xpath = null;
 
+	protected String defaultUsername = "";
+
 	protected HashMap<String, Integer> hlcount = new HashMap<String, Integer>();
 
 	@Override
@@ -208,6 +210,11 @@ public class X12Xml implements PluginInterface {
 	@Override
 	public String[] getPluginConfigurationOptions() {
 		return null;
+	}
+
+	@Override
+	public void setDefaultUsername(String username) {
+		defaultUsername = username;
 	}
 
 }

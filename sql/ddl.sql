@@ -56,6 +56,8 @@ INSERT INTO `tUserConfig` VALUES
 	, ( 'Administrator', 'org.remitt.plugin.transmission.SftpTransport', 'sftpPort', '22' )
 	, ( 'Administrator', 'org.remitt.plugin.transmission.SftpTransport', 'sftpUsername', '' )
 	, ( 'Administrator', 'org.remitt.plugin.transmission.SftpTransport', 'sftpPassword', '' )
+	, ( 'Administrator', 'org.remitt.plugin.transmission.ScriptedHttpTransport', 'username', 'user' )
+	, ( 'Administrator', 'org.remitt.plugin.transmission.ScriptedHttpTransport', 'password', 'pass' )
 ;
 
 DROP PROCEDURE IF EXISTS p_UserConfigUpdate;

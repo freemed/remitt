@@ -43,4 +43,6 @@ public interface PluginInterface {
 
 	public String[] getPluginConfigurationOptions();
 
+	public void setDefaultUsername(String username);
+
 }

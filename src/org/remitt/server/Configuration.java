@@ -179,9 +179,8 @@ public class Configuration {
 
 		PreparedStatement cStmt = null;
 		try {
-			cStmt = c
-					.prepareStatement("{ SELECT cValue FROM tUserConfig WHERE "
-							+ " cNamespace=? AND user=? AND cOption=? }");
+			cStmt = c.prepareStatement("SELECT cValue FROM tUserConfig WHERE "
+					+ " cNamespace=? AND user=? AND cOption=?;");
 
 			cStmt.setString(1, className);
 			cStmt.setString(2, userName);
@@ -189,6 +188,7 @@ public class Configuration {
 			boolean hasResult = cStmt.execute();
 			if (hasResult) {
 				ResultSet r = cStmt.getResultSet();
+				r.next();
 				String ret = r.getString(1);
 				c.close();
 				return ret;
@@ -204,6 +204,9 @@ public class Configuration {
 			}
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+			log.info("Statement: SELECT cValue FROM tUserConfig WHERE "
+					+ "cNameSpace = '" + className + "' AND user = '"
+					+ userName + "' AND cOption = " + option);
 			if (c != null) {
 				try {
 					c.close();

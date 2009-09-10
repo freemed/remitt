@@ -47,6 +47,8 @@ public class XsltPlugin implements PluginInterface {
 
 	static final Logger log = Logger.getLogger(XsltPlugin.class);
 
+	protected String defaultUsername = "";
+
 	@Override
 	public String getInputFormat() {
 		return "remittxml";
@@ -128,6 +130,11 @@ public class XsltPlugin implements PluginInterface {
 		}
 
 		return (String[]) options.toArray(new String[0]);
+	}
+
+	@Override
+	public void setDefaultUsername(String username) {
+		defaultUsername = username;
 	}
 
 }

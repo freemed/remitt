@@ -58,7 +58,9 @@ public class FixedFormPdf implements PluginInterface {
 
 	static final Logger log = Logger.getLogger(FixedFormPdf.class);
 
-	XPath xpath = null;
+	protected String defaultUsername = "";
+
+	protected XPath xpath = null;
 
 	@Override
 	public String getInputFormat() {
@@ -368,6 +370,11 @@ public class FixedFormPdf implements PluginInterface {
 	@Override
 	public String[] getPluginConfigurationOptions() {
 		return null;
+	}
+
+	@Override
+	public void setDefaultUsername(String username) {
+		defaultUsername = username;
 	}
 
 }

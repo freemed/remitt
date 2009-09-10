@@ -45,6 +45,8 @@ public class ScriptedHttpTransport implements PluginInterface {
 
 	static final Logger log = Logger.getLogger(ScriptedHttpTransport.class);
 
+	protected String defaultUsername = "";
+
 	@Override
 	public String getInputFormat() {
 		return "text";
@@ -81,7 +83,7 @@ public class ScriptedHttpTransport implements PluginInterface {
 		String userName = null;
 		if (jobId == 0 || jobId == null) {
 			// No job id, no user name
-			userName = "";
+			userName = defaultUsername;
 		} else {
 			userName = Configuration.getControlThread().getPayloadById(jobId)
 					.getUserName();
@@ -127,6 +129,11 @@ public class ScriptedHttpTransport implements PluginInterface {
 			log.error(ex);
 			return new String("").getBytes();
 		}
+	}
+
+	@Override
+	public void setDefaultUsername(String username) {
+		defaultUsername = username;
 	}
 
 }

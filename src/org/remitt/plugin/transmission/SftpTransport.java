@@ -37,6 +37,8 @@ import com.sshtools.j2ssh.authentication.PasswordAuthenticationClient;
 
 public class SftpTransport implements PluginInterface {
 
+	protected String defaultUsername = "";
+
 	@Override
 	public String getInputFormat() {
 		return "text";
@@ -71,11 +73,25 @@ public class SftpTransport implements PluginInterface {
 	@Override
 	public byte[] render(Integer jobId, String input, String option)
 			throws Exception {
-		// TODO: get username
-		String userName = "FIXME";
+		String userName = null;
+		if (jobId == 0) {
+			userName = defaultUsername;
+		} else {
+			userName = Configuration.getControlThread().getPayloadById(jobId)
+					.getUserName();
+		}
 
-		// TODO: create destination file path
-		String tempPathName = "FIXME";
+		String outputType = "";
+		if (input.startsWith("%PDF")) {
+			outputType = "pdf";
+		} else if (input.startsWith("<?xml ")) {
+			outputType = ".xml";
+		} else {
+			outputType = ".txt";
+		}
+
+		String tempPathName = new Long(System.currentTimeMillis()).toString()
+				+ outputType;
 
 		SshClient ssh = new SshClient();
 
@@ -119,5 +135,10 @@ public class SftpTransport implements PluginInterface {
 		ssh.disconnect();
 
 		return new String("").getBytes();
+	}
+
+	@Override
+	public void setDefaultUsername(String username) {
+		defaultUsername = username;
 	}
 }
