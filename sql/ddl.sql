@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `tUser`;
 CREATE TABLE `tUser` (
 	  id		SERIAL
 	, username	VARCHAR(50) NOT NULL UNIQUE KEY
-	, passhash	CHAR(16) NOT NULL
+	, passhash	CHAR(32) NOT NULL
 	, apiurl	VARCHAR(150) COMMENT 'For later use'
 );
 
@@ -38,7 +38,8 @@ CREATE TABLE `tRole` (
 	, PRIMARY KEY ( username, rolename )
 );
 
-INSERT INTO `tRole` VALUES ( 1, 'Administrator', 'admin' );
+INSERT INTO `tRole` VALUES ( NULL, 'Administrator', 'admin' );
+INSERT INTO `tRole` VALUES ( NULL, 'Administrator', 'default' );
 
 DROP TABLE IF EXISTS `tUserConfig`;
 CREATE TABLE `tUserConfig` (
@@ -49,6 +50,13 @@ CREATE TABLE `tUserConfig` (
 
 	, FOREIGN KEY ( user ) REFERENCES tUser.username ON DELETE CASCADE
 );
+
+INSERT INTO `tUserConfig` VALUES
+	  ( 'Administrator', 'org.remitt.plugin.transmission.SftpTransport', 'sftpHost', '' )
+	, ( 'Administrator', 'org.remitt.plugin.transmission.SftpTransport', 'sftpPort', '22' )
+	, ( 'Administrator', 'org.remitt.plugin.transmission.SftpTransport', 'sftpUsername', '' )
+	, ( 'Administrator', 'org.remitt.plugin.transmission.SftpTransport', 'sftpPassword', '' )
+;
 
 DROP PROCEDURE IF EXISTS p_UserConfigUpdate;
 
