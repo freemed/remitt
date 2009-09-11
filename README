@@ -10,14 +10,18 @@ REMITT Electronic Medical Information Translation and Transmission
 It is a system for translating documents from one format to another,
 then transmitting them. It was designed to be used for medical billing
 and claim submission using XML files. It uses XSLT and XML, and is
-written in Perl.
+written in Java as a J2EE application.
 
-To generate documentation using the NaturalDocs format (available at
-http://www.naturaldocs.org/), go to the root of the REMITT distribution
-and run
+This application should be able to be dropped into a Servlet container
+like Apache Tomcat and run with little to no configuration. The
+system property "properties" can point at a configuration file to
+override default config properties which are defined inside the war
+file.
 
-	./doc/naturaldocs/src/generate.sh
+The only prerequisite for installing this software is importing the
+database definitions from sql/*.sql into your working database server.
 
-with NaturalDocs installed in /usr/share/naturaldocs.
+At the moment, MySQL is the supported / preferred database server.
 
-- Jeff (jeff@ourexchange.net)
+- Jeff (jeff@freemedsoftware.org)
+
