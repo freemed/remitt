@@ -1,39 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
+	<!-- $Id$ -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
-	xmlns:jaxrs="http://cxf.apache.org/jaxrs" xmlns:util="http://www.springframework.org/schema/util"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
- 					http://www.springframework.org/schema/beans/spring-beans.xsd
- 					http://cxf.apache.org/jaxws
- 					http://cxf.apache.org/schemas/jaxws.xsd
- 					http://cxf.apache.org/jaxrs
- 					http://cxf.apache.org/schemas/jaxrs.xsd
- 					http://www.springframework.org/schema/util
- 					http://www.springframework.org/schema/util/spring-util-2.0.xsd"
-	default-lazy-init="false">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cxf="http://cxf.apache.org/core"
+	xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://cxf.apache.org/core
+       http://cxf.apache.org/schemas/core.xsd
+       http://cxf.apache.org/jaxws
+       http://cxf.apache.org/schemas/jaxws.xsd
+       http://cxf.apache.org/jaxrs
+       http://cxf.apache.org/schemas/jaxrs.xsd"
+	default-autowire="byName">
 
 	<import resource="classpath:META-INF/cxf/cxf.xml" />
 	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
 	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 	<import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
-	<jaxws:endpoint id="service" implementor="org.remitt.server.Service"
+
+	<cxf:bus>
+		<cxf:features>
+			<cxf:logging />
+		</cxf:features>
+	</cxf:bus>
+
+	<!-- Service bean -->
+	<bean id="service" class="org.remitt.server.Service" autowire="autodetect" />
+
+	<!-- REST service definition -->
+	<jaxrs:server id="restServer" address="/rest/">
+		<jaxrs:serviceBeans>
+			<ref bean="service" />
+		</jaxrs:serviceBeans>
+		<jaxrs:extensionMappings>
+			<entry key="feed" value="application/atom+xml" />
+			<entry key="json" value="application/json" />
+			<entry key="xml" value="application/xml" />
+			<entry key="html" value="text/html" />
+		</jaxrs:extensionMappings>
+	</jaxrs:server>
+
+	<!-- SOAP service definition -->
+	<bean id="jaxbBean" class="org.apache.cxf.jaxb.JAXBDataBinding"
+		scope="prototype" />
+
+	<bean id="jaxws-and-aegis-service-factory" class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean"
+		scope="prototype">
+		<property name="dataBinding" ref="jaxbBean" />
+		<property name="serviceConfigurations">
+			<list>
+				<bean class="org.apache.cxf.jaxws.support.JaxWsServiceConfiguration" />
+				<bean class="org.apache.cxf.aegis.databinding.AegisServiceConfiguration" />
+				<bean class="org.apache.cxf.service.factory.DefaultServiceConfiguration" />
+			</list>
+		</property>
+	</bean>
+
+	<jaxws:endpoint id="serviceEndpoint" implementor="org.remitt.server.Service"
 		address="/interface">
 		<jaxws:serviceFactory>
-			<bean class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean">
-				<property name="wrapped" value="true" />
-			</bean>
+			<ref bean="jaxws-and-aegis-service-factory" />
 		</jaxws:serviceFactory>
 	</jaxws:endpoint>
-	<bean id="serviceProvider" class="org.remitt.server.Service" />
-	<jaxrs:server id="remittService" address="/rest">
-		<jaxrs:serviceBeans>
-			<bean class="org.remitt.server.Service" />
-		</jaxrs:serviceBeans>
-		<jaxrs:providers>
-			<ref bean="serviceProvider" />
-			<!--
-				<ref bean="jaxbProvider" /> <ref bean="jsonProvider" />
-			-->
-		</jaxrs:providers>
-	</jaxrs:server>
+
 </beans>
