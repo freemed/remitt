@@ -41,7 +41,6 @@ import javax.xml.ws.WebServiceContext;
 
 import org.apache.log4j.Logger;
 
-@Path("/service/")
 @WebService(endpointInterface = "org.remitt.server.IServiceInterface", serviceName = "remittService")
 public class Service implements IServiceInterface {
 	@Resource
@@ -50,14 +49,14 @@ public class Service implements IServiceInterface {
 	static final Logger log = Logger.getLogger(Service.class);
 
 	@GET
-	@Path("/rest/protocolversion")
+	@Path("protocolversion")
 	@Produces("application/json")
 	public String getProtocolVersion() {
 		return "2.0";
 	}
 
 	@POST
-	@Path("/rest/changepassword/{pw}")
+	@Path("changepassword/{pw}")
 	@Produces("application/json")
 	public Boolean changePassword(
 			@PathParam("pw") @WebParam(name = "pw") String newPassword) {
@@ -87,14 +86,14 @@ public class Service implements IServiceInterface {
 	}
 
 	@GET
-	@Path("/rest/username")
+	@Path("username")
 	@Produces("application/json")
 	public String getCurrentUserName() {
 		return context.getUserPrincipal().getName();
 	}
 
 	@POST
-	@Path("/rest/submit")
+	@Path("submit")
 	@Produces("application/json")
 	public Integer insertPayload(
 			@PathParam("inputPayload") @WebParam(name = "inputPayload") String inputPayload,
@@ -138,7 +137,7 @@ public class Service implements IServiceInterface {
 	}
 
 	@POST
-	@Path("/rest/setoption/{namespace}/{option}/{value}")
+	@Path("setoption/{namespace}/{option}/{value}")
 	@Produces("application/json")
 	public Boolean setConfigValue(
 			@PathParam("namespace") @WebParam(name = "namespace") String namespace,

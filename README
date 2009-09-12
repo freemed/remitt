@@ -23,5 +23,10 @@ database definitions from sql/*.sql into your working database server.
 
 At the moment, MySQL is the supported / preferred database server.
 
+Remote Services Information:
+REST services are exposed at /remitt/services/rest/service/(functionname)
+and SOAP services are available through the WSDL at
+/remitt/services/interface?wsdl
+
 - Jeff (jeff@freemedsoftware.org)
 
