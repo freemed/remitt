@@ -25,6 +25,7 @@
 package org.remitt.server;
 
 import java.io.File;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -217,6 +218,37 @@ public class Configuration {
 		}
 
 		return "";
+	}
+
+	/**
+	 * Set the configuration value for an option.
+	 * 
+	 * @param user
+	 * @param namespace
+	 * @param option
+	 * @param value
+	 */
+	public static void setConfigValue(String user, String namespace,
+			String option, String value) {
+		log.info("setConfigValue: " + user + ", " + namespace + ", " + option
+				+ ", " + value);
+
+		Connection c = Configuration.getConnection();
+		CallableStatement cStmt = null;
+		try {
+			cStmt = c.prepareCall("{ CALL p_UserConfigUpdate( ?, ?, ?, ? ); }");
+			cStmt.setString(1, user);
+			cStmt.setString(2, namespace);
+			cStmt.setString(3, option);
+			cStmt.setString(4, value);
+
+			cStmt.execute();
+			cStmt.getResultSet();
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+		} catch (SQLException e) {
+			log.error("Caught SQLException", e);
+		}
 	}
 
 	/**

@@ -27,7 +27,6 @@ package org.remitt.server;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -92,7 +91,7 @@ public class UserConfigurationServlet extends HttpServlet {
 			String namespace = request.getParameter("namespace");
 			String option = request.getParameter("option");
 			String value = request.getParameter("value");
-			setConfigValue(user, namespace, option, value);
+			Configuration.setConfigValue(user, namespace, option, value);
 		} else if (action.compareTo("getAll") == 0) {
 			log.info("getAll action");
 			String user = request.getRemoteUser();
@@ -154,37 +153,6 @@ public class UserConfigurationServlet extends HttpServlet {
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
 			return null;
-		}
-	}
-
-	/**
-	 * Set the configuration value for an option.
-	 * 
-	 * @param user
-	 * @param namespace
-	 * @param option
-	 * @param value
-	 */
-	protected void setConfigValue(String user, String namespace, String option,
-			String value) {
-		log.info("setConfigValue: " + user + ", " + namespace + ", " + option
-				+ ", " + value);
-
-		Connection c = Configuration.getConnection();
-		CallableStatement cStmt = null;
-		try {
-			cStmt = c.prepareCall("{ CALL p_UserConfigUpdate( ?, ?, ?, ? ); }");
-			cStmt.setString(1, user);
-			cStmt.setString(2, namespace);
-			cStmt.setString(3, option);
-			cStmt.setString(4, value);
-
-			cStmt.execute();
-			cStmt.getResultSet();
-		} catch (NullPointerException npe) {
-			log.error("Caught NullPointerException", npe);
-		} catch (SQLException e) {
-			log.error("Caught SQLException", e);
 		}
 	}
 

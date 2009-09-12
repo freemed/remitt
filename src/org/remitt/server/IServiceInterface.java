@@ -29,12 +29,59 @@ import javax.jws.WebService;
 @WebService
 public interface IServiceInterface {
 
+	/**
+	 * Get version number of REMITT protocol being used.
+	 * 
+	 * @return String representation of protocol version.
+	 */
 	public String getProtocolVersion();
 
+	/**
+	 * Change current user's password
+	 * 
+	 * @param newPassword
+	 *            New password
+	 * @return Success
+	 */
 	public Boolean changePassword(String newPassword);
 
+	/**
+	 * Get the currently authenticated user's name.
+	 * 
+	 * @return String representation of the user's name.
+	 */
 	public String getCurrentUserName();
 
+	/**
+	 * Insert payload into the system for processing.
+	 * 
+	 * @param inputPayload
+	 *            XML text payload
+	 * @param renderPlugin
+	 *            Fully qualified Java class name of rendering plugin.
+	 * @param renderOption
+	 *            Optional option for render plugin.
+	 * @param transportPlugin
+	 *            Fully qualified Java class name of transport/transmission
+	 *            plugin
+	 * @param transportOption
+	 *            Optional option for the transport/transmission plugin
+	 * @return tPayload unique identifier for this job.
+	 */
 	public Integer insertPayload(String inputPayload, String renderPlugin,
-			String renderOption, String transportPlugin);
+			String renderOption, String transportPlugin, String transportOption);
+
+	/**
+	 * Set configuration option.
+	 * 
+	 * @param namespace
+	 *            Fully qualified class name of plugin.
+	 * @param option
+	 *            Option key.
+	 * @param value
+	 *            Option value.
+	 * @return Success.
+	 */
+	public Boolean setConfigValue(String namespace, String option, String value);
+
 }

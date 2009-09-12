@@ -24,6 +24,7 @@
 
 package org.remitt.server;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,9 +41,7 @@ import javax.xml.ws.WebServiceContext;
 
 import org.apache.log4j.Logger;
 
-import com.mysql.jdbc.Connection;
-
-@Path("/remittService/")
+@Path("/service/")
 @WebService(endpointInterface = "org.remitt.server.IServiceInterface", serviceName = "remittService")
 public class Service implements IServiceInterface {
 	@Resource
@@ -101,7 +100,8 @@ public class Service implements IServiceInterface {
 			@PathParam("inputPayload") @WebParam(name = "inputPayload") String inputPayload,
 			@PathParam("renderPlugin") @WebParam(name = "renderPlugin") String renderPlugin,
 			@PathParam("renderOption") @WebParam(name = "renderOption") String renderOption,
-			@PathParam("transportPlugin") @WebParam(name = "transportPlugin") String transportPlugin) {
+			@PathParam("transportPlugin") @WebParam(name = "transportPlugin") String transportPlugin,
+			@PathParam("transportOption") @WebParam(name = "transportOption") String transportOption) {
 		Connection c = getConnection();
 
 		String userName = getCurrentUserName();
@@ -111,18 +111,18 @@ public class Service implements IServiceInterface {
 
 		PreparedStatement cStmt = null;
 		try {
-			cStmt = c
-					.prepareStatement(
-							"INSERT INTO tPayload ( "
-									+ "user, payload, renderPlugin, renderOption, transportPlugin "
-									+ " ) VALUES ( ?, ?, ?, ?, ? );",
-							PreparedStatement.RETURN_GENERATED_KEYS);
+			cStmt = c.prepareStatement("INSERT INTO tPayload ( "
+					+ "user, payload, renderPlugin, renderOption, "
+					+ "transportPlugin, transportOption "
+					+ " ) VALUES ( ?, ?, ?, ?, ?, ? );",
+					PreparedStatement.RETURN_GENERATED_KEYS);
 
 			cStmt.setString(1, userName);
 			cStmt.setString(2, inputPayload);
 			cStmt.setString(3, renderPlugin);
 			cStmt.setString(4, renderOption);
 			cStmt.setString(5, transportPlugin);
+			cStmt.setString(6, transportOption);
 
 			@SuppressWarnings("unused")
 			boolean hadResults = cStmt.execute();
@@ -137,10 +137,33 @@ public class Service implements IServiceInterface {
 		}
 	}
 
+	@POST
+	@Path("/rest/setoption/{namespace}/{option}/{value}")
+	@Produces("application/json")
+	public Boolean setConfigValue(
+			@PathParam("namespace") @WebParam(name = "namespace") String namespace,
+			@PathParam("option") @WebParam(name = "option") String option,
+			@PathParam("value") @WebParam(name = "value") String value) {
+		String userName = getCurrentUserName();
+		try {
+			Configuration.setConfigValue(userName, namespace, option, value);
+		} catch (Exception ex) {
+			log.error(ex);
+			return Boolean.FALSE;
+		}
+		return Boolean.TRUE;
+	}
+
+	/**
+	 * Internal method to get a database connection.
+	 * 
+	 * @return
+	 */
 	protected Connection getConnection() {
-		Connection c = (Connection) Configuration.getServletContext()
-				.getServletContext().getAttribute("connection");
-		return c;
+		// Connection c = (Connection) Configuration.getServletContext()
+		// .getServletContext().getAttribute("connection");
+		// return c;
+		return Configuration.getConnection();
 	}
 
 }

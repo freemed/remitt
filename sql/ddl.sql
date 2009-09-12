@@ -110,6 +110,7 @@ CREATE TABLE `tPayload` (
 	, renderPlugin		VARCHAR(100) NOT NULL
 	, renderOption		VARCHAR(100) NOT NULL
 	, transmissionPlugin	VARCHAR(100) NOT NULL
+	, transmissionOption	VARCHAR(100) NOT NULL
 );
 
 ##### Processor Tables #####
