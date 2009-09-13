@@ -22,7 +22,43 @@
  */
 
 log.info("Executing FreeClaims.js");
+
 log.info("Loading login page");
+
+// Disable javascript due to bum login page
+webClient.setJavaScriptEnabled(false);
+
 loginPage = webClient
 		.getPage("https://sfreeclaims.anvicare.com/docs/member_login.asp");
+loginForm = loginPage.getFormByName("loginForm");
+loginForm.getInputByName("username").setValueAttribute(username);
+loginForm.getInputByName("userpassword").setValueAttribute(password);
+loggedInPage = loginPage.getByXPath("//INPUT[@value='Login']").get(0).click();
+validLogin = false;
+
+// Check for nav page for login
+body = loggedInPage.asXml();
+log.info(body);
+if (body.indexOf('/docs/mynav.htm') != -1) {
+	log.info("Successfully logged in with username " + username);
+	validLogin = true;
+}
+
+// TODO: validate form submission
+if (validLogin) {
+	log.info("Loading upload page");
+	uploadPage = webClient
+			.getPage("https://sfreeclaims.anvicare.com/docs/upload.asp");
+	uploadForm = uploadPage.getFormByName("Upload");
+
+	// Assign content to file1 field
+	uploadForm.getInputByName("file1").setData(input.getBytes());
+
+	// Force upload submit
+	uploadedPage = uploadPage.getByXPath("//INPUT[@name='submit1'").get(0).click();
+} else {
+	log.error("Failed to login with username '" + username + "'");
+}
+
 log.info("Ending FreeClaims.js script");
+
