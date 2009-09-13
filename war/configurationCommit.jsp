@@ -50,13 +50,15 @@ Transmission</h1>
 			p.setString(3, request.getParameter("option"));
 			p.setString(4, request.getParameter("value"));
 		} else if (request.getParameter("action").compareTo("save") == 0) {
-			p = c.prepareStatement("UPDATE tUserConfig WHERE "
+			p = c.prepareStatement("UPDATE tUserConfig "
+ 					+ " SET cValue = ? "
+					+ " WHERE "
 					+ " user = ? " + " AND cNamespace = ? "
-					+ " AND cOption = ? " + " SET cValue = ?");
-			p.setString(1, username);
-			p.setString(2, request.getParameter("namespace"));
-			p.setString(3, request.getParameter("option"));
-			p.setString(4, request.getParameter("value"));
+					+ " AND cOption = ? ");
+			p.setString(1, request.getParameter("value"));
+			p.setString(2, username);
+			p.setString(3, request.getParameter("namespace"));
+			p.setString(4, request.getParameter("option"));
 		} else if (request.getParameter("action").compareTo("delete") == 0) {
 			p = c.prepareStatement("DELETE FROM tUserConfig WHERE "
 					+ " user = ? " + " AND cNamespace = ? "

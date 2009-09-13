@@ -61,13 +61,16 @@ Transmission</h1>
 					out
 							.println("<tr><form method=\"post\" action=\"configurationCommit.jsp\">");
 					out
-							.println("<td><input type=\"text\" name=\"namespace\" value=\""
+							.println("<td><input type=\"hidden\" name=\"namespace\" value=\""
 									+ rs.getString("cNamespace")
-									+ "\" disabled=\"disabled\" size=\"50\" /></td>");
+									+ "\" size=\"50\" /><code>"
+									+ rs.getString("cNamespace")
+									+ "</code></td>");
 					out
-							.println("<td><input type=\"text\" name=\"option\" value=\""
+							.println("<td><input type=\"hidden\" name=\"option\" value=\""
 									+ rs.getString("cOption")
-									+ "\" disabled=\"disabled\" /></td>");
+									+ "\" /><code>"
+									+ rs.getString("cOption") + "</code></td>");
 					out
 							.println("<td><input type=\"text\" name=\"value\" value=\""
 									+ rs.getString("cValue") + "\"></td>");
