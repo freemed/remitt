@@ -24,6 +24,14 @@
 
 package org.remitt.server;
 
+import it.sauronsoftware.cron4j.Scheduler;
+import it.sauronsoftware.cron4j.SchedulerListener;
+import it.sauronsoftware.cron4j.SchedulingPattern;
+import it.sauronsoftware.cron4j.Task;
+import it.sauronsoftware.cron4j.TaskCollector;
+import it.sauronsoftware.cron4j.TaskExecutor;
+import it.sauronsoftware.cron4j.TaskTable;
+
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 
@@ -104,6 +112,57 @@ public class MasterControl extends HttpServlet {
 		Configuration.setControlThread(control);
 		control.setServletContext(this);
 		control.start();
+
+		// Start scheduler
+		Scheduler s = new Scheduler();
+		s.addSchedulerListener(new SchedulerListener() {
+			@Override
+			public void taskFailed(TaskExecutor arg0, Throwable arg1) {
+				log.error("Cron task FAILED: " + arg0.getTask().toString()
+						+ " (" + arg1.getMessage() + ")");
+			}
+
+			@Override
+			public void taskLaunching(TaskExecutor arg0) {
+				log.info("Cron task launching: " + arg0.getTask().toString());
+			}
+
+			@Override
+			public void taskSucceeded(TaskExecutor arg0) {
+				log.info("Cron task succeeded: " + arg0.getTask().toString()
+						+ " (" + arg0.getStatusMessage() + ")");
+			}
+		});
+		s.addTaskCollector(new TaskCollector() {
+			@Override
+			public TaskTable getTasks() {
+				TaskTable t = new TaskTable();
+				// TODO: form task table.
+				return t;
+			}
+
+			protected void shoeHornTask(TaskTable tt, String schedule,
+					String className) throws Exception {
+				Task t = null;
+				try {
+					t = (Task) Class.forName(className).newInstance();
+				} catch (ClassNotFoundException x) {
+					log
+							.error("Attempted to instantiate task for non-existant class "
+									+ className);
+					// throw x;
+				} catch (InstantiationException e) {
+					log.error("Failed to instantiate task class " + className);
+					throw e;
+				} catch (IllegalAccessException e) {
+					log.error("No permissions to access class " + className);
+					throw e;
+				} finally {
+					SchedulingPattern s = new SchedulingPattern(schedule);
+					tt.add(s, t);
+				}
+			}
+		});
 	}
 
 	/**

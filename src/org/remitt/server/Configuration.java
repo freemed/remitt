@@ -24,6 +24,8 @@
 
 package org.remitt.server;
 
+import it.sauronsoftware.cron4j.Scheduler;
+
 import java.io.File;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -56,6 +58,8 @@ public class Configuration {
 	protected static ControlThread controlThread = null;
 
 	protected static ComboPooledDataSource comboPooledDataSource = null;
+
+	protected static Scheduler scheduler = null;
 
 	/**
 	 * Get servlet object.
@@ -262,6 +266,24 @@ public class Configuration {
 	public static String getFileName(Integer jobId, String fileExtension) {
 		return jobId.toString() + "-" + System.currentTimeMillis() + "."
 				+ fileExtension;
+	}
+
+	/**
+	 * Get scheduler object.
+	 * 
+	 * @return
+	 */
+	public static Scheduler getScheduler() {
+		return scheduler;
+	}
+
+	/**
+	 * Store scheduler object.
+	 * 
+	 * @param s
+	 */
+	public static void setScheduler(Scheduler s) {
+		scheduler = s;
 	}
 
 }
