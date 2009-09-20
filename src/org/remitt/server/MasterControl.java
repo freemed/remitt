@@ -34,6 +34,10 @@ import it.sauronsoftware.cron4j.TaskTable;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -137,12 +141,51 @@ public class MasterControl extends HttpServlet {
 			@Override
 			public TaskTable getTasks() {
 				TaskTable t = new TaskTable();
+
+				Connection c = Configuration.getConnection();
+
+				PreparedStatement cStmt = null;
+				try {
+					cStmt = c
+							.prepareStatement("SELECT jobSchedule, jobClass FROM tJobs "
+									+ " WHERE jobEnabled = TRUE");
+
+					boolean hasResult = cStmt.execute();
+					if (hasResult) {
+						ResultSet r = cStmt.getResultSet();
+						while (r.next()) {
+							String jobSchedule = r.getString(1);
+							String jobClass = r.getString(2);
+							shoeHornTask(t, jobSchedule, jobClass);
+						}
+						c.close();
+					}
+				} catch (NullPointerException npe) {
+					log.error("Caught NullPointerException", npe);
+					if (c != null) {
+						try {
+							c.close();
+						} catch (SQLException e1) {
+							log.error(e1);
+						}
+					}
+				} catch (SQLException e) {
+					log.error("Caught SQLException", e);
+					if (c != null) {
+						try {
+							c.close();
+						} catch (SQLException e1) {
+							log.error(e1);
+						}
+					}
+				}
+
 				// TODO: form task table.
 				return t;
 			}
 
 			protected void shoeHornTask(TaskTable tt, String schedule,
-					String className) throws Exception {
+					String className) {
 				Task t = null;
 				try {
 					t = (Task) Class.forName(className).newInstance();
@@ -150,13 +193,10 @@ public class MasterControl extends HttpServlet {
 					log
 							.error("Attempted to instantiate task for non-existant class "
 									+ className);
-					// throw x;
 				} catch (InstantiationException e) {
 					log.error("Failed to instantiate task class " + className);
-					throw e;
 				} catch (IllegalAccessException e) {
 					log.error("No permissions to access class " + className);
-					throw e;
 				} finally {
 					SchedulingPattern s = new SchedulingPattern(schedule);
 					tt.add(s, t);

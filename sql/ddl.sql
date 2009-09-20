@@ -161,5 +161,17 @@ CREATE TABLE `tTranslation` (
 INSERT INTO `tTranslation` VALUES
 	  ( 'org.remitt.plugin.translation.FixedFormPdf', 'fixedformxml', 'pdf' )
 	, ( 'org.remitt.plugin.translation.FixedFormXml', 'fixedformxml', 'text' )
+	, ( 'org.remitt.plugin.translation.X12Xml', 'x12xml', 'text' )
 ;
+
+### Job Scheduler ###
+
+DROP TABLE IF EXISTS `tJobs`;
+
+CREATE TABLE `tJobs` (
+	  id		SERIAL
+	, jobSchedule	VARCHAR(50) NOT NULL
+	, jobClass	VARCHAR(100) NOT NULL
+	, jobEnabled	BOOL NOT NULL DEFAULT TRUE
+);
 
