@@ -84,4 +84,14 @@ public interface IServiceInterface {
 	 */
 	public Boolean setConfigValue(String namespace, String option, String value);
 
+	/**
+	 * Retrieve current job status
+	 * 
+	 * @param jobId
+	 * @return Integer indicating current status. 0 = completed, 1 =
+	 *         verification, 2 = rendering, 3 = translation, 4 =
+	 *         transmission/transport, 5 = unknown
+	 */
+	public Integer getStatus(Integer jobId);
+
 }

@@ -130,6 +130,44 @@ CREATE TABLE `tProcessor` (
 	, FOREIGN KEY ( payloadId ) REFERENCES tPayload.id ON DELETE CASCADE
 );
 
+DROP PROCEDURE IF EXISTS p_GetStatus;
+
+DELIMITER //
+CREATE PROCEDURE p_GetStatus (
+	  IN username VARCHAR( 100 )
+	, IN jobId INT UNSIGNED
+	)
+BEGIN
+	DECLARE c ENUM ( 'validation', 'render', 'translation', 'transmission' );
+	DECLARE x INT UNSIGNED;
+
+	SELECT NULL INTO c;
+
+	SELECT
+		stage INTO c
+	FROM tProcessor p
+		LEFT OUTER JOIN tPayload a ON p.payloadId = a.id
+	WHERE ISNULL( tsEnd ) AND a.id = jobId AND a.user = username;
+
+	#--- If we can't find anything...
+	IF ISNULL( c ) THEN
+		#---- Check to see if there's output
+		SELECT COUNT(*) INTO x
+		FROM tOutput o
+			LEFT OUTER JOIN tPayload p ON o.payloadId = p.id
+		WHERE p.id = jobId AND p.user = username;
+		IF x > 0 THEN
+			SELECT 1 AS 'status', 'completed' AS 'stage';
+		ELSE
+			SELECT 0 AS 'status', NULL AS 'stage';
+		END IF;
+	ELSE
+		SELECT 0 AS 'status', c AS 'stage';		
+	END IF;
+END//
+
+DELIMITER ;
+
 DROP TABLE IF EXISTS `tThreadState`;
 CREATE TABLE `tThreadState` (
 	  threadId	INT UNSIGNED NOT NULL UNIQUE

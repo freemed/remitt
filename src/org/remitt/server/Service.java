@@ -24,6 +24,7 @@
 
 package org.remitt.server;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -151,6 +152,52 @@ public class Service implements IServiceInterface {
 			return Boolean.FALSE;
 		}
 		return Boolean.TRUE;
+	}
+
+	@POST
+	@Path("getstatus/{jobid}")
+	@Produces("application/json")
+	public Integer getStatus(
+			@PathParam("jobid") @WebParam(name = "jobid") Integer jobId) {
+		String userName = getCurrentUserName();
+
+		Connection c = getConnection();
+
+		CallableStatement cStmt = null;
+		try {
+			cStmt = c.prepareCall("{ CALL p_GetStatus( ?, ? ); }");
+			cStmt.setString(1, userName);
+			cStmt.setInt(2, jobId);
+
+			boolean hadResults = cStmt.execute();
+			if (hadResults) {
+				ResultSet r = cStmt.getResultSet();
+				String status = r.getString("status");
+				String stage = r.getString("stage");
+
+				if (status.equalsIgnoreCase("incomplete")) {
+					if (status.equalsIgnoreCase("validation")) {
+						return 1; // validation
+					} else if (status.equalsIgnoreCase("render")) {
+						return 2; // render
+					} else if (status.equalsIgnoreCase("translation")) {
+						return 3; // translation
+					} else if (status.equalsIgnoreCase("transmission")) {
+						return 4; // transmission/transport
+					}
+				} else {
+					return 0; // completed
+				}
+			}
+
+			return 5; // unknown
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+			return null;
+		} catch (SQLException e) {
+			log.error("Caught SQLException", e);
+			return null;
+		}
 	}
 
 	/**
