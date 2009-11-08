@@ -280,9 +280,13 @@ public class ControlThread extends Thread {
 	 * Record data from the output of a ProcessorThread to the database table
 	 * tProcessor.
 	 */
-	public void commitPayloadRun(Integer processorId, String output,
+	public void commitPayloadRun(Integer processorId, byte[] output,
 			ThreadType threadType, Date tsEnd) {
 		Connection c = Configuration.getConnection();
+
+		if (tsEnd == null) {
+			tsEnd = new Date();
+		}
 
 		PreparedStatement cStmt = null;
 		try {
@@ -291,7 +295,7 @@ public class ControlThread extends Thread {
 					+ " );");
 
 			cStmt.setTimestamp(1, new Timestamp(tsEnd.getTime()));
-			cStmt.setString(2, output);
+			cStmt.setBytes(2, output);
 			cStmt.setInt(3, processorId);
 
 			cStmt.executeUpdate();
@@ -347,6 +351,22 @@ public class ControlThread extends Thread {
 				e.printStackTrace();
 			}
 		}
+
+		// Spawn TranslationProcessThreads
+		for (int iter = 0; iter < numberOfWorkers; iter++) {
+			log.debug("Spawning TranslationProcessorThread #" + (iter + 1));
+			TranslationProcessorThread t = new TranslationProcessorThread();
+			t.start();
+			workerThreads.add(t);
+
+			// Create a small delay to avoid pig-piling on threads
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 	protected void stopChildren() {

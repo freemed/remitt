@@ -25,6 +25,7 @@
 package org.remitt.server;
 
 import org.apache.log4j.Logger;
+import org.remitt.prototype.PayloadDto;
 import org.remitt.prototype.PluginInterface;
 import org.remitt.prototype.ProcessorThread;
 
@@ -40,8 +41,15 @@ public class TranslationProcessorThread extends ProcessorThread {
 
 	@Override
 	protected boolean work(Integer jobId) {
-		// TODO: Get plugin name
-		String pluginClass = "org.remitt.plugin.render.XsltPlugin";
+		PayloadDto payload = Configuration.getControlThread()
+				.getPayloadFromProcessor(jobId);
+		String pluginClass = Configuration.getControlThread().resolvePlugin(
+				payload, getThreadType());
+
+		//
+
+		//
+
 		PluginInterface p = null;
 		try {
 			p = (PluginInterface) Class.forName(pluginClass).newInstance();
@@ -56,9 +64,7 @@ public class TranslationProcessorThread extends ProcessorThread {
 			return false;
 		}
 
-		// TODO: fetch option and input from table tPayload
-		String input = "";
-
+		String input = payload.getPayload();
 		byte[] output = null;
 		try {
 			output = p.render(jobId, input, null);
@@ -67,7 +73,12 @@ public class TranslationProcessorThread extends ProcessorThread {
 			return false;
 		}
 
-		// TODO: store output
+		// Store output
+		Configuration.getControlThread().commitPayloadRun(jobId, output,
+				getThreadType(), null);
+
+		// Clear thread
+		Configuration.getControlThread().clearProcessorForThread((int) getId());
 
 		return true;
 	}

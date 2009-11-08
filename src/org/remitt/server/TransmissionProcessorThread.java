@@ -24,39 +24,27 @@
 
 package org.remitt.server;
 
-import java.util.Date;
-
 import org.apache.log4j.Logger;
 import org.remitt.prototype.PayloadDto;
 import org.remitt.prototype.PluginInterface;
 import org.remitt.prototype.ProcessorThread;
 
-public class RenderProcessorThread extends ProcessorThread {
+public class TransmissionProcessorThread extends ProcessorThread {
 
-	static final Logger log = Logger.getLogger(RenderProcessorThread.class);
+	static final Logger log = Logger
+			.getLogger(TransmissionProcessorThread.class);
 
 	@Override
 	public ThreadType getThreadType() {
-		return ThreadType.RENDER;
+		return ThreadType.TRANSMISSION;
 	}
 
 	@Override
 	protected boolean work(Integer jobId) {
-		Date tsStart = new Date();
-		Date tsEnd = new Date();
-		tsStart.setTime(System.currentTimeMillis());
-
-		// Pull from tProcessor -> tPayload
 		PayloadDto payload = Configuration.getControlThread()
 				.getPayloadFromProcessor(jobId);
-		String input = payload.getPayload();
-		String option = payload.getRenderOption();
 		String pluginClass = Configuration.getControlThread().resolvePlugin(
-				payload, ThreadType.RENDER);
-
-		log.info("Using pluginClass = " + pluginClass + " with option "
-				+ option);
-
+				payload, getThreadType());
 		PluginInterface p = null;
 		try {
 			p = (PluginInterface) Class.forName(pluginClass).newInstance();
@@ -71,24 +59,18 @@ public class RenderProcessorThread extends ProcessorThread {
 			return false;
 		}
 
+		String input = payload.getPayload();
 		byte[] output = null;
 		try {
-			output = p.render(jobId, input, option);
-			tsEnd.setTime(System.currentTimeMillis());
+			output = p.render(jobId, input, payload.getTransmissionOption());
 		} catch (Exception e) {
 			log.error(e);
-			// Clear the thread, since we can't process any further.
-			Configuration.getControlThread().clearProcessorForThread(
-					(int) getId());
-
-			// TODO: Update with error status so that frontend can inform
-			// "client"
 			return false;
 		}
 
 		// Store output
 		Configuration.getControlThread().commitPayloadRun(jobId, output,
-				getThreadType(), tsEnd);
+				getThreadType(), null);
 
 		// Clear thread
 		Configuration.getControlThread().clearProcessorForThread((int) getId());

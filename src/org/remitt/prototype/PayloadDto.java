@@ -30,6 +30,7 @@ public class PayloadDto {
 	private String renderPlugin;
 	private String renderOption;
 	private String transmissionPlugin;
+	private String transmissionOption;
 	private String payload;
 	private String userName;
 
@@ -47,6 +48,10 @@ public class PayloadDto {
 
 	public void setTransmissionPlugin(String p) {
 		transmissionPlugin = p;
+	}
+
+	public void setTransmissionOption(String o) {
+		transmissionOption = o;
 	}
 
 	public void setPayload(String p) {
@@ -71,6 +76,10 @@ public class PayloadDto {
 
 	public String getTransmissionPlugin() {
 		return transmissionPlugin;
+	}
+
+	public String getTransmissionOption() {
+		return transmissionOption;
 	}
 
 	public String getPayload() {
