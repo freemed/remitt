@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 import org.remitt.prototype.PayloadDto;
 import org.remitt.prototype.PluginInterface;
 import org.remitt.prototype.ProcessorThread;
+import org.remitt.prototype.ProcessorThread.ThreadType;
 
 public class TranslationProcessorThread extends ProcessorThread {
 
@@ -77,9 +78,16 @@ public class TranslationProcessorThread extends ProcessorThread {
 		Configuration.getControlThread().commitPayloadRun(jobId, output,
 				getThreadType(), null);
 
+		// Push to next state
+		Configuration.getControlThread().moveProcessorEntry(
+				getJobThreadState(),
+				ThreadType.TRANSMISSION,
+				Configuration.getControlThread().resolvePlugin(payload,
+						ThreadType.TRANSMISSION));
+
 		// Clear thread
 		Configuration.getControlThread().clearProcessorForThread((int) getId());
-
+		
 		return true;
 	}
 }

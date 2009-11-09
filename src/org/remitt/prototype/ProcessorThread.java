@@ -42,6 +42,8 @@ public abstract class ProcessorThread extends Thread {
 
 	protected static int SLEEP_TIME = 500;
 
+	protected JobThreadState jobThreadState = new JobThreadState();
+
 	public void run() {
 		log.info("Thread [" + getThreadTypeString() + getId()
 				+ "] initializing");
@@ -93,5 +95,13 @@ public abstract class ProcessorThread extends Thread {
 	 * @return Success
 	 */
 	protected abstract boolean work(Integer jobId);
+
+	public JobThreadState getJobThreadState() {
+		return jobThreadState;
+	}
+
+	public void setJobThreadState(JobThreadState s) {
+		jobThreadState = s;
+	}
 
 }

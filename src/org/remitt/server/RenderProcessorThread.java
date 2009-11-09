@@ -90,6 +90,13 @@ public class RenderProcessorThread extends ProcessorThread {
 		Configuration.getControlThread().commitPayloadRun(jobId, output,
 				getThreadType(), tsEnd);
 
+		// Push to next state
+		Configuration.getControlThread().moveProcessorEntry(
+				getJobThreadState(),
+				ThreadType.TRANSLATION,
+				Configuration.getControlThread().resolvePlugin(payload,
+						ThreadType.TRANSLATION));
+
 		// Clear thread
 		Configuration.getControlThread().clearProcessorForThread((int) getId());
 

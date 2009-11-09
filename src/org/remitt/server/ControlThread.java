@@ -37,6 +37,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.remitt.prototype.JobThreadState;
 import org.remitt.prototype.PayloadDto;
+import org.remitt.prototype.ProcessorThread;
 import org.remitt.prototype.ProcessorThread.ThreadType;
 
 /**
@@ -66,7 +67,7 @@ public class ControlThread extends Thread {
 
 	protected MasterControl servletContext = null;
 
-	protected List<Thread> workerThreads = new ArrayList<Thread>();
+	protected List<ProcessorThread> workerThreads = new ArrayList<ProcessorThread>();
 
 	protected List<JobThreadState> threadPool = new ArrayList<JobThreadState>();
 
@@ -328,6 +329,8 @@ public class ControlThread extends Thread {
 		while (iter.hasNext()) {
 			JobThreadState s = iter.next();
 			if (s.getThreadId() == threadId) {
+				((ProcessorThread) workerThreads.get(threadId))
+						.setJobThreadState(s);
 				s.setProcessorId(processorId);
 			}
 		}
@@ -371,7 +374,7 @@ public class ControlThread extends Thread {
 
 	protected void stopChildren() {
 		log.info("Stopping all worker threads");
-		Iterator<Thread> iter = workerThreads.iterator();
+		Iterator<ProcessorThread> iter = workerThreads.iterator();
 		while (iter.hasNext()) {
 			Thread t = iter.next();
 			log.info("Interrupting thread #" + t.getId());
@@ -386,7 +389,7 @@ public class ControlThread extends Thread {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			Iterator<Thread> rIter = workerThreads.iterator();
+			Iterator<ProcessorThread> rIter = workerThreads.iterator();
 			while (rIter.hasNext()) {
 				Thread t = rIter.next();
 				if (!t.isAlive()) {
@@ -551,6 +554,7 @@ public class ControlThread extends Thread {
 		case RENDER:
 			return payload.getRenderPlugin();
 		case TRANSLATION:
+			// TODO: resolve plugin
 			break;
 		case TRANSMISSION:
 			return payload.getTransmissionPlugin();
@@ -560,8 +564,8 @@ public class ControlThread extends Thread {
 		return null;
 	}
 
-	public boolean moveProcessorEntry(JobThreadState tS, ThreadType nextType,
-			String plugin) {
+	public synchronized boolean moveProcessorEntry(JobThreadState tS,
+			ThreadType nextType, String plugin) {
 		Integer availThread = null;
 		boolean done = false;
 		while (!done && !isInterrupted()) {
@@ -578,8 +582,8 @@ public class ControlThread extends Thread {
 				PayloadDto payload = getPayloadById(tS.getProcessorId());
 				Integer processorId = migratePayloadToProcessor(
 						payload.getId(), availThread, payload.getPayload(),
-						nextType, null /* FIXME!!! */, new Date(System
-								.currentTimeMillis()));
+						nextType, resolvePlugin(payload, nextType), new Date(
+								System.currentTimeMillis()));
 
 				// Push processor entry
 				setProcessorForThread(availThread, processorId);

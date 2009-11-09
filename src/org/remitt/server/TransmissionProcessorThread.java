@@ -72,6 +72,8 @@ public class TransmissionProcessorThread extends ProcessorThread {
 		Configuration.getControlThread().commitPayloadRun(jobId, output,
 				getThreadType(), null);
 
+		// TODO: Mark as completed
+
 		// Clear thread
 		Configuration.getControlThread().clearProcessorForThread((int) getId());
 
