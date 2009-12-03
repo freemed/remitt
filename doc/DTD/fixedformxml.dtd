@@ -5,12 +5,12 @@
 	FixedFormXML DTD for XML encapsulated fixed forms
 -->
 <!DOCTYPE fixedformxml [
-	<!ELEMENT render (page+)>
+	<!ELEMENT fixedformxml (page+)>
 	<!ELEMENT page (format, element+)>
 	<!ELEMENT element (row, column, length, content, comment*)>
-	<!ELEMENT row #PCDATA>
-	<!ELEMENT column #PCDATA>
-	<!ELEMENT length #PCDATA>
-	<!ELEMENT content #PCDATA>
-	<!ELEMENT comment #PCDATA>
+	<!ELEMENT row (#PCDATA)>
+	<!ELEMENT column (#PCDATA)>
+	<!ELEMENT length (#PCDATA)>
+	<!ELEMENT content (#PCDATA)>
+	<!ELEMENT comment (#PCDATA)>
 ]>

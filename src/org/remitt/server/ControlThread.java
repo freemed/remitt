@@ -181,7 +181,6 @@ public class ControlThread extends Thread {
 
 		PreparedStatement cStmt = null;
 		try {
-			// TODO : FIXME: Put in a query here to get these
 			cStmt = c
 					.prepareStatement("SELECT payloadId FROM tProcessor WHERE id = ?;");
 			cStmt.setInt(1, processorId);
