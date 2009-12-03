@@ -29,6 +29,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.jws.WebParam;
@@ -41,6 +43,7 @@ import javax.ws.rs.Produces;
 import javax.xml.ws.WebServiceContext;
 
 import org.apache.log4j.Logger;
+import org.remitt.prototype.PluginInterface;
 
 @WebService(endpointInterface = "org.remitt.server.IServiceInterface", serviceName = "remittService")
 public class Service implements IServiceInterface {
@@ -198,6 +201,122 @@ public class Service implements IServiceInterface {
 			log.error("Caught SQLException", e);
 			return null;
 		}
+	}
+
+	@POST
+	@Path("plugins/{category}")
+	@Produces("application/json")
+	@Override
+	public String[] getPlugins(
+			@PathParam("category") @WebParam(name = "category") String category) {
+		if (category.equalsIgnoreCase("validation")) {
+			category = "validation"; // validation
+		} else if (category.equalsIgnoreCase("render")) {
+			category = "render"; // render
+		} else if (category.equalsIgnoreCase("translation")) {
+			category = "translation"; // translation
+		} else if (category.equalsIgnoreCase("transmission")) {
+			category = "transmission"; // transmission/transport
+		} else {
+			// No plugins for dud categories.
+			return null;
+		}
+
+		Connection c = getConnection();
+
+		String userName = getCurrentUserName();
+
+		log.debug("Plugin list for " + userName + " [category = " + category
+				+ "]");
+
+		PreparedStatement cStmt = null;
+		try {
+			cStmt = c.prepareStatement("SELECT * FROM tPlugins "
+					+ "WHERE category = ?");
+
+			cStmt.setString(1, category);
+
+			boolean hadResults = cStmt.execute();
+			List<String> results = new ArrayList<String>();
+			if (hadResults) {
+				ResultSet rs = cStmt.getResultSet();
+				while (rs.next()) {
+					results.add(rs.getString("plugin"));
+				}
+			}
+			return results.toArray(new String[0]);
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+			return null;
+		} catch (SQLException e) {
+			log.error("Caught SQLException", e);
+			return null;
+		}
+	}
+
+	@POST
+	@Path("file/{category}/{filename}")
+	@Produces("application/json")
+	@Override
+	public byte[] getFile(
+			@PathParam("category") @WebParam(name = "category") String category,
+			@PathParam("filename") @WebParam(name = "filename") String fileName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@POST
+	@Path("pluginoptions/{pluginclass}/{qualifyingoption}")
+	@Produces("application/json")
+	@Override
+	public String[] getPluginOptions(
+			@PathParam("pluginclass") @WebParam(name = "pluginclass") String pluginClass,
+			@PathParam("qualifyingoption") @WebParam(name = "qualifyingoption") String qualifyingOption) {
+		PluginInterface p = null;
+		try {
+			p = (PluginInterface) Class.forName(pluginClass).newInstance();
+		} catch (InstantiationException e) {
+			log.error(e);
+			return null;
+		} catch (IllegalAccessException e) {
+			log.error(e);
+			return null;
+		} catch (ClassNotFoundException e) {
+			log.error(e);
+			return null;
+		}
+		return p.getPluginConfigurationOptions();
+	}
+
+	@POST
+	@Path("filelist/{category}/{criteria}/{value}")
+	@Produces("application/json")
+	@Override
+	public String[] getFileList(
+			@PathParam("category") @WebParam(name = "category") String category,
+			@PathParam("criteria") @WebParam(name = "criteria") String criteria,
+			@PathParam("value") @WebParam(name = "value") String value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@POST
+	@Path("outputmonths/{targetyear}")
+	@Produces("application/json")
+	@Override
+	public String[] getOutputMonths(
+			@PathParam("targetyear") @WebParam(name = "targetyear") Integer targetYear) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@POST
+	@Path("outputyears")
+	@Produces("application/json")
+	@Override
+	public Integer[] getOutputYears() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**

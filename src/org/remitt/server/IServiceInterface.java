@@ -94,4 +94,59 @@ public interface IServiceInterface {
 	 */
 	public Integer getStatus(Integer jobId);
 
+	/**
+	 * Retrieve list of file names that match the provided criteria.
+	 * 
+	 * @param category
+	 * @param criteria
+	 * @param value
+	 * @return
+	 */
+	public String[] getFileList(String category, String criteria, String value);
+
+	/**
+	 * Get list of plugins for a specified category.
+	 * 
+	 * @param category
+	 * @return
+	 */
+	public String[] getPlugins(String category);
+
+	/**
+	 * Retrieve output file.
+	 * 
+	 * @param category
+	 *            Output file category.
+	 * @param fileName
+	 *            Name of file to be retrieved.
+	 * @return Contents of target file as byte array.
+	 */
+	public byte[] getFile(String category, String fileName);
+
+	/**
+	 * Get list of years for which the system has output files.
+	 * 
+	 * @return
+	 */
+	public Integer[] getOutputYears();
+
+	/**
+	 * Get list of months in a target year for which the system has output
+	 * files.
+	 * 
+	 * @param targetYear
+	 * @return
+	 */
+	public String[] getOutputMonths(Integer targetYear);
+
+	/**
+	 * Get list of plugin options.
+	 * 
+	 * @param pluginClass
+	 *            Fully qualified class name of target plugin.
+	 * @param qualifyingOption
+	 *            Optional qualifier, required by render plugin.
+	 * @return
+	 */
+	public String[] getPluginOptions(String pluginClass, String qualifyingOption);
 }
