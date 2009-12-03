@@ -187,6 +187,30 @@ CREATE TABLE `tOutput` (
 	, FOREIGN KEY ( processorId ) REFERENCES tProcessor.id ON DELETE CASCADE
 );
 
+### Plugin Lookup ###
+
+DROP TABLE IF EXISTS `tPlugins`;
+CREATE TABLE `tPlugins` (
+	  plugin	VARCHAR( 100 ) NOT NULL
+	, version	VARCHAR( 30 ) NOT NULL
+	, author	VARCHAR( 100 ) NOT NULL
+	, category	ENUM ( 'validation', 'render', 'translation', 'transmission' ) NOT NULL
+	, inputFormat	VARCHAR( 100 )
+	, outputFormat	VARCHAR( 100 )
+);
+
+INSERT INTO `tPlugins` VALUES
+		### Render plugins ###
+	  ( 'org.remitt.plugin.render.XsltPlugin', '0.1', 'jeff@freemedsoftware.org', 'render', NULL, 'various' )
+		### Translation plugins ###
+	, ( 'org.remitt.plugin.translation.FixedFormPdf', '0.1', 'jeff@freemedsoftware.org', 'translation', 'fixedformxml', 'pdf' )
+	, ( 'org.remitt.plugin.translation.FixedFormXml', '0.1', 'jeff@freemedsoftware.org', 'translation', 'fixedformxml', 'text' )
+	, ( 'org.remitt.plugin.translation.X12Xml', '0.1', 'jeff@freemedsoftware.org', 'translation', 'x12xml', 'text' )
+		### Transmission plugins ###
+	, ( 'org.remitt.plugin.transmission.ScriptedHttpTransport', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'text', NULL )
+	, ( 'org.remitt.plugin.transmission.SftpTransport', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'text', NULL )
+;
+
 ### Translation Lookup ###
 
 DROP TABLE IF EXISTS `tTranslation`;
