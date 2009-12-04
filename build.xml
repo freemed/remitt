@@ -23,6 +23,8 @@
         <exclude name="**/.svn/**"/>
       </fileset>
     </copy>
+    <!-- Copy c3p0 default properties into classpath -->
+    <copy file="war/WEB-INF/c3p0.properties" todir="war/WEB-INF/classes" />
   </target>
 
   <target name="build" depends="javac" description="Build this project" />

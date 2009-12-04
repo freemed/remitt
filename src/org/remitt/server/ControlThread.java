@@ -469,7 +469,7 @@ public class ControlThread extends Thread {
 					log.error(e1);
 				}
 			}
-		} catch (SQLException e) {
+		} catch (Throwable e) {
 			// Attempt to close, no error logging since this would be an empty
 			// set.
 			try {

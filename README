@@ -18,6 +18,14 @@ system property "properties" can point at a configuration file to
 override default config properties which are defined inside the war
 file.
 
+Currently the user authentication is done from conf/tomcat-users.xml in
+Tomcat, so the following items would have to be added in the <tomcat-users>
+element for the default authentication to work:
+
+  <role rolename="default"/>
+  <role rolename="admin"/>
+  <user username="Administrator" password="password" roles="admin,default"/>
+
 The only prerequisite for installing this software is importing the
 database definitions from sql/*.sql into your working database server.
 
