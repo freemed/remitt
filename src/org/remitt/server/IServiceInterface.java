@@ -24,6 +24,7 @@
 
 package org.remitt.server;
 
+import javax.jws.WebParam;
 import javax.jws.WebService;
 
 @WebService
@@ -43,7 +44,7 @@ public interface IServiceInterface {
 	 *            New password
 	 * @return Success
 	 */
-	public Boolean changePassword(String newPassword);
+	public Boolean changePassword(@WebParam(name = "pw") String newPassword);
 
 	/**
 	 * Get the currently authenticated user's name.
@@ -68,8 +69,12 @@ public interface IServiceInterface {
 	 *            Optional option for the transport/transmission plugin
 	 * @return tPayload unique identifier for this job.
 	 */
-	public Integer insertPayload(String inputPayload, String renderPlugin,
-			String renderOption, String transportPlugin, String transportOption);
+	public Integer insertPayload(
+			@WebParam(name = "inputPayload") String inputPayload,
+			@WebParam(name = "renderPlugin") String renderPlugin,
+			@WebParam(name = "renderOption") String renderOption,
+			@WebParam(name = "transportPlugin") String transportPlugin,
+			@WebParam(name = "transportOption") String transportOption);
 
 	/**
 	 * Set configuration option.
@@ -82,7 +87,10 @@ public interface IServiceInterface {
 	 *            Option value.
 	 * @return Success.
 	 */
-	public Boolean setConfigValue(String namespace, String option, String value);
+	public Boolean setConfigValue(
+			@WebParam(name = "namespace") String namespace,
+			@WebParam(name = "option") String option,
+			@WebParam(name = "value") String value);
 
 	/**
 	 * Retrieve current job status
@@ -92,7 +100,7 @@ public interface IServiceInterface {
 	 *         verification, 2 = rendering, 3 = translation, 4 =
 	 *         transmission/transport, 5 = unknown
 	 */
-	public Integer getStatus(Integer jobId);
+	public Integer getStatus(@WebParam(name = "jobid") Integer jobId);
 
 	/**
 	 * Retrieve list of file names that match the provided criteria.
@@ -102,7 +110,9 @@ public interface IServiceInterface {
 	 * @param value
 	 * @return
 	 */
-	public String[] getFileList(String category, String criteria, String value);
+	public String[] getFileList(@WebParam(name = "category") String category,
+			@WebParam(name = "criteria") String criteria,
+			@WebParam(name = "value") String value);
 
 	/**
 	 * Get list of plugins for a specified category.
@@ -110,7 +120,7 @@ public interface IServiceInterface {
 	 * @param category
 	 * @return
 	 */
-	public String[] getPlugins(String category);
+	public String[] getPlugins(@WebParam(name = "category") String category);
 
 	/**
 	 * Retrieve output file.
@@ -121,7 +131,8 @@ public interface IServiceInterface {
 	 *            Name of file to be retrieved.
 	 * @return Contents of target file as byte array.
 	 */
-	public byte[] getFile(String category, String fileName);
+	public byte[] getFile(@WebParam(name = "category") String category,
+			@WebParam(name = "filename") String fileName);
 
 	/**
 	 * Get list of years for which the system has output files.
@@ -137,7 +148,8 @@ public interface IServiceInterface {
 	 * @param targetYear
 	 * @return
 	 */
-	public String[] getOutputMonths(Integer targetYear);
+	public String[] getOutputMonths(
+			@WebParam(name = "targetyear") Integer targetYear);
 
 	/**
 	 * Get list of plugin options.
@@ -148,5 +160,8 @@ public interface IServiceInterface {
 	 *            Optional qualifier, required by render plugin.
 	 * @return
 	 */
-	public String[] getPluginOptions(String pluginClass, String qualifyingOption);
+	public String[] getPluginOptions(
+			@WebParam(name = "pluginclass") String pluginClass,
+			@WebParam(name = "qualifyingoption") String qualifyingOption);
+
 }

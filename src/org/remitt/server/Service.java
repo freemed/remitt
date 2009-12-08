@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -62,8 +61,7 @@ public class Service implements IServiceInterface {
 	@POST
 	@Path("changepassword/{pw}")
 	@Produces("application/json")
-	public Boolean changePassword(
-			@PathParam("pw") @WebParam(name = "pw") String newPassword) {
+	public Boolean changePassword(@PathParam("pw") String newPassword) {
 		Connection c = getConnection();
 
 		String userName = getCurrentUserName();
@@ -100,11 +98,11 @@ public class Service implements IServiceInterface {
 	@Path("submit")
 	@Produces("application/json")
 	public Integer insertPayload(
-			@PathParam("inputPayload") @WebParam(name = "inputPayload") String inputPayload,
-			@PathParam("renderPlugin") @WebParam(name = "renderPlugin") String renderPlugin,
-			@PathParam("renderOption") @WebParam(name = "renderOption") String renderOption,
-			@PathParam("transportPlugin") @WebParam(name = "transportPlugin") String transportPlugin,
-			@PathParam("transportOption") @WebParam(name = "transportOption") String transportOption) {
+			@PathParam("inputPayload") String inputPayload,
+			@PathParam("renderPlugin") String renderPlugin,
+			@PathParam("renderOption") String renderOption,
+			@PathParam("transportPlugin") String transportPlugin,
+			@PathParam("transportOption") String transportOption) {
 		Connection c = getConnection();
 
 		String userName = getCurrentUserName();
@@ -143,10 +141,8 @@ public class Service implements IServiceInterface {
 	@POST
 	@Path("setoption/{namespace}/{option}/{value}")
 	@Produces("application/json")
-	public Boolean setConfigValue(
-			@PathParam("namespace") @WebParam(name = "namespace") String namespace,
-			@PathParam("option") @WebParam(name = "option") String option,
-			@PathParam("value") @WebParam(name = "value") String value) {
+	public Boolean setConfigValue(@PathParam("namespace") String namespace,
+			@PathParam("option") String option, @PathParam("value") String value) {
 		String userName = getCurrentUserName();
 		try {
 			Configuration.setConfigValue(userName, namespace, option, value);
@@ -160,8 +156,7 @@ public class Service implements IServiceInterface {
 	@POST
 	@Path("getstatus/{jobid}")
 	@Produces("application/json")
-	public Integer getStatus(
-			@PathParam("jobid") @WebParam(name = "jobid") Integer jobId) {
+	public Integer getStatus(@PathParam("jobid") Integer jobId) {
 		String userName = getCurrentUserName();
 
 		Connection c = getConnection();
@@ -207,8 +202,7 @@ public class Service implements IServiceInterface {
 	@Path("plugins/{category}")
 	@Produces("application/json")
 	@Override
-	public String[] getPlugins(
-			@PathParam("category") @WebParam(name = "category") String category) {
+	public String[] getPlugins(@PathParam("category") String category) {
 		if (category.equalsIgnoreCase("validation")) {
 			category = "validation"; // validation
 		} else if (category.equalsIgnoreCase("render")) {
@@ -258,9 +252,8 @@ public class Service implements IServiceInterface {
 	@Path("file/{category}/{filename}")
 	@Produces("application/json")
 	@Override
-	public byte[] getFile(
-			@PathParam("category") @WebParam(name = "category") String category,
-			@PathParam("filename") @WebParam(name = "filename") String fileName) {
+	public byte[] getFile(@PathParam("category") String category,
+			@PathParam("filename") String fileName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -270,8 +263,8 @@ public class Service implements IServiceInterface {
 	@Produces("application/json")
 	@Override
 	public String[] getPluginOptions(
-			@PathParam("pluginclass") @WebParam(name = "pluginclass") String pluginClass,
-			@PathParam("qualifyingoption") @WebParam(name = "qualifyingoption") String qualifyingOption) {
+			@PathParam("pluginclass") String pluginClass,
+			@PathParam("qualifyingoption") String qualifyingOption) {
 		PluginInterface p = null;
 		try {
 			p = (PluginInterface) Class.forName(pluginClass).newInstance();
@@ -292,10 +285,9 @@ public class Service implements IServiceInterface {
 	@Path("filelist/{category}/{criteria}/{value}")
 	@Produces("application/json")
 	@Override
-	public String[] getFileList(
-			@PathParam("category") @WebParam(name = "category") String category,
-			@PathParam("criteria") @WebParam(name = "criteria") String criteria,
-			@PathParam("value") @WebParam(name = "value") String value) {
+	public String[] getFileList(@PathParam("category") String category,
+			@PathParam("criteria") String criteria,
+			@PathParam("value") String value) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -304,8 +296,7 @@ public class Service implements IServiceInterface {
 	@Path("outputmonths/{targetyear}")
 	@Produces("application/json")
 	@Override
-	public String[] getOutputMonths(
-			@PathParam("targetyear") @WebParam(name = "targetyear") Integer targetYear) {
+	public String[] getOutputMonths(@PathParam("targetyear") Integer targetYear) {
 		// TODO Auto-generated method stub
 		return null;
 	}
