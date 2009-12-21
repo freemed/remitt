@@ -23,7 +23,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/core-3.1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/cxf-manifest.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/iText-2.1.7.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxen-1.1-beta-9.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxws-api-2.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jettison-1.1.jar"/>
@@ -84,6 +83,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xercesImpl-2.9.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/cron4j-2.1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/mysql-connector-java-5.1.10-bin.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/iText-5.0.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
