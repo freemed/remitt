@@ -50,7 +50,11 @@ public class X12Xml implements PluginInterface {
 
 	protected String defaultUsername = "";
 
+	protected HashMap<String, Integer> segmentcount = new HashMap<String, Integer>();
+
 	protected HashMap<String, Integer> hlcount = new HashMap<String, Integer>();
+
+	protected Integer hlcounter = 0;
 
 	@Override
 	public String getInputFormat() {
@@ -102,6 +106,7 @@ public class X12Xml implements PluginInterface {
 		String sEnd = xpath.evaluate("/render/x12format/endofline", root);
 
 		// Loop through all segment elements
+		hlcounter = 0;
 		for (int iter = 0; iter < nodeList.getLength(); iter++) {
 			String segment = TranslateSegmentFromNode(nodeList.item(iter),
 					eEnd, sEnd, iter);
@@ -135,15 +140,13 @@ public class X12Xml implements PluginInterface {
 
 			String content = "";
 			String hl = "";
-
-			// Check for segmentcounter
+			// Check for segmentcount
 			try {
-				@SuppressWarnings("unused")
 				Node segmentCounter = ((Element) element).getElementsByTagName(
-						"segmentcounter").item(0);
+						"segmentcount").item(0);
 				if (segmentCounter != null) {
 					log
-							.info("Found segmentcounter element, using that for content at index "
+							.info("Found segmentcount element, using that for content at index "
 									+ segmentCount);
 					l.add(new Integer(segmentCount - 2).toString());
 					continue;
@@ -151,11 +154,53 @@ public class X12Xml implements PluginInterface {
 			} catch (Exception ex) {
 				if (ex.toString().length() > 1) {
 				}
-				log.debug("No segmentcounter element, moving on to next check");
+				log.debug("No segmentcount element, moving on to next check");
+			}
+
+			// Check for resetcounter element
+			try {
+				Node resetCounter = ((Element) element).getElementsByTagName(
+						"resetcounter").item(0);
+				if (resetCounter != null) {
+					log
+							.info("Found resetcounter element, using that for content at index "
+									+ segmentCount);
+					segmentcount.put(resetCounter.getAttributes().getNamedItem(
+							"name").toString(), 0);
+					continue;
+				}
+			} catch (Exception ex) {
+				if (ex.toString().length() > 1) {
+				}
+				log.debug("No resetcounter element, moving on to next check");
+			}
+
+			// Check for resetcounter element
+			try {
+				Node counter = ((Element) element).getElementsByTagName(
+						"counter").item(0);
+				if (counter != null) {
+					log
+							.info("Found counter element, using that for content at index "
+									+ segmentCount);
+					Integer value = segmentcount.get(counter.getAttributes()
+							.getNamedItem("name").toString());
+					if (value == null || value == 0) {
+						value = 1;
+					} else {
+						value++;
+					}
+					segmentcount.put(counter.getAttributes().getNamedItem(
+							"name").toString(), value);
+					continue;
+				}
+			} catch (Exception ex) {
+				if (ex.toString().length() > 1) {
+				}
+				log.debug("No counter element, moving on to next check");
 			}
 
 			// Check for "hl" element, which is a counter
-			// TODO: make this stuff actually work
 			try {
 				hl = ((Element) element).getElementsByTagName("hl").item(0)
 						.getTextContent();
@@ -165,25 +210,38 @@ public class X12Xml implements PluginInterface {
 				hl = "";
 			}
 
-			// Process content tag
-			try {
-				content = ((Element) element).getElementsByTagName("content")
-						.item(0).getTextContent();
-			} catch (Exception ex) {
-				if (ex.toString().length() > 1) {
+			if (!hl.equals("")) {
+				// Try hl element first
+				if (hlcount.get(hl) == null) {
+					// Haven't seen this before
+					hlcounter++;
+					hlcount.put(hl, hlcounter);
+					content = hlcount.get(hl).toString();
+				} else {
+					// Have seen this before
+					content = hlcount.get(hl).toString();
 				}
-				content = "";
-			}
-			// If there's no content tag content, try text attribute
-			if (content.length() == 0) {
+			} else {
+				// Process content tag
 				try {
 					content = ((Element) element).getElementsByTagName(
-							"content").item(0).getAttributes().getNamedItem(
-							"text").getTextContent();
+							"content").item(0).getTextContent();
 				} catch (Exception ex) {
 					if (ex.toString().length() > 1) {
 					}
 					content = "";
+				}
+				// If there's no content tag content, try text attribute
+				if (content.length() == 0) {
+					try {
+						content = ((Element) element).getElementsByTagName(
+								"content").item(0).getAttributes()
+								.getNamedItem("text").getTextContent();
+					} catch (Exception ex) {
+						if (ex.toString().length() > 1) {
+						}
+						content = "";
+					}
 				}
 			}
 			l.add(content);
