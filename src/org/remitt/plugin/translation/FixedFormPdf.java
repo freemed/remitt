@@ -58,6 +58,8 @@ public class FixedFormPdf implements PluginInterface {
 
 	static final Logger log = Logger.getLogger(FixedFormPdf.class);
 
+	public static final int LETTER_HEIGHT = 792;
+	
 	protected String defaultUsername = "";
 
 	protected XPath xpath = null;
@@ -230,9 +232,9 @@ public class FixedFormPdf implements PluginInterface {
 		// Prep ContentByte
 		PdfContentByte cb = writer.getDirectContent();
 
-		int vSize = 792;
+		int vSize = LETTER_HEIGHT;
 		if (pdfTemplate.length() == 0) {
-			vSize = 792;
+			vSize = LETTER_HEIGHT;
 		} else {
 			// Use template
 			try {
@@ -251,7 +253,7 @@ public class FixedFormPdf implements PluginInterface {
 				cb.addTemplate(tp, 0, 0);
 			} catch (Exception ex) {
 				log.trace(ex.toString());
-				vSize = 792;
+				vSize = LETTER_HEIGHT;
 			}
 		}
 
