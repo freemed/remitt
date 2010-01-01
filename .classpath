@@ -81,11 +81,12 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/htmlunit-core-js-2.6.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/nekohtml-1.9.13.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xercesImpl-2.9.1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/cron4j-2.1.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/cron4j-2.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/mysql-connector-java-5.1.10-bin.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/iText-5.0.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/axis-1.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxrpc-1.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/X12-0.6.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
