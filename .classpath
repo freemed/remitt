@@ -23,7 +23,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/core-3.1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/cxf-manifest.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxen-1.1-beta-9.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxen-1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxws-api-2.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jettison-1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jmock-1.0.1.jar"/>
@@ -35,7 +35,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/neethi-2.0.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/opensaml-1.0.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/saaj-api-1.3.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/saaj-impl-1.3.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/saaj-impl-1.3.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-2.5.6.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-beans-2.5.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-context-2.5.5.jar"/>
@@ -46,8 +46,8 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-web-2.5.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/stax-utils-20040917.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/wsdl4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/wstx-asl-3.2.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/wsdl4j-1.6.2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/wstx-asl-3.2.9.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xbean-2.2.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xbean-spring-2.8.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/XmlSchema-1.4.5.jar"/>
@@ -64,7 +64,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/c3p0-0.9.1.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/sojo-1.0.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/bcprov-jdk15-1.43.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/cxf-2.2.3.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/cxf-2.2.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/FastInfoset-1.2.7.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-api-2.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-impl-2.1.12.jar"/>

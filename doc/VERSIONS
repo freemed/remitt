@@ -3,7 +3,7 @@ Versions of dependent software for REMITT build
 ------------------------------------------------------------------------------
 
 Apache Commons Configuration [http://commons.apache.org/configuration/] v1.6
-Apache CXF [http://cxf.apache.org/] v2.2.3
+Apache CXF [http://cxf.apache.org/] v2.2.5
 Apache Log4j [http://logging.apache.org/log4j/] v1.2.15
 C3P0 [http://sourceforge.net/projects/c3p0/] v0.9.1.2
 Cron4j [http://www.sauronsoftware.it/projects/cron4j/] v2.2
