@@ -145,13 +145,22 @@ public class UserConfigurationServlet extends HttpServlet {
 				done = !rs.next();
 			}
 			rs.close();
+			cStmt.close();
 
 			return results.toArray(new UserConfig[0]);
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
 			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
 			return null;
 		}
 	}

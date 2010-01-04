@@ -251,6 +251,7 @@ public class ControlThread extends Thread {
 			boolean hadResults = cStmt.execute();
 			ResultSet newKey = cStmt.getGeneratedKeys();
 			Integer ret = newKey.getInt("id");
+			newKey.close();
 			c.close();
 			return ret;
 		} catch (NullPointerException npe) {
@@ -299,10 +300,19 @@ public class ControlThread extends Thread {
 			cStmt.setInt(3, processorId);
 
 			cStmt.executeUpdate();
+			cStmt.close();
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
 		}
 	}
 
@@ -462,6 +472,10 @@ public class ControlThread extends Thread {
 			c.close();
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
 			if (c != null) {
 				try {
 					c.close();
@@ -472,6 +486,10 @@ public class ControlThread extends Thread {
 		} catch (Throwable e) {
 			// Attempt to close, no error logging since this would be an empty
 			// set.
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
 			try {
 				c.close();
 			} catch (SQLException e1) {

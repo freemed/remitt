@@ -28,7 +28,6 @@ import org.apache.log4j.Logger;
 import org.remitt.prototype.PayloadDto;
 import org.remitt.prototype.PluginInterface;
 import org.remitt.prototype.ProcessorThread;
-import org.remitt.prototype.ProcessorThread.ThreadType;
 
 public class TranslationProcessorThread extends ProcessorThread {
 

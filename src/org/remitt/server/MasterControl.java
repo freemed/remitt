@@ -158,6 +158,7 @@ public class MasterControl extends HttpServlet {
 							String jobClass = r.getString(2);
 							shoeHornTask(t, jobSchedule, jobClass);
 						}
+						r.close();
 						c.close();
 					}
 				} catch (NullPointerException npe) {

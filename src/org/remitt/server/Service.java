@@ -77,12 +77,25 @@ public class Service implements IServiceInterface {
 			@SuppressWarnings("unused")
 			boolean hadResults = cStmt.execute();
 
-			return (cStmt.getUpdateCount() == 1);
+			Boolean returnValue = (cStmt.getUpdateCount() == 1);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			return returnValue;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
 			return false;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
 			return false;
 		}
 	}
@@ -128,12 +141,26 @@ public class Service implements IServiceInterface {
 			@SuppressWarnings("unused")
 			boolean hadResults = cStmt.execute();
 			ResultSet newKey = cStmt.getGeneratedKeys();
-			return newKey.getInt("id");
+			Integer returnValue = newKey.getInt("id");
+			newKey.close();
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			return returnValue;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
 			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
 			return null;
 		}
 	}
@@ -168,6 +195,7 @@ public class Service implements IServiceInterface {
 			cStmt.setInt(2, jobId);
 
 			boolean hadResults = cStmt.execute();
+			int returnValue = 5;
 			if (hadResults) {
 				ResultSet r = cStmt.getResultSet();
 				String status = r.getString("status");
@@ -175,25 +203,42 @@ public class Service implements IServiceInterface {
 
 				if (status.equalsIgnoreCase("incomplete")) {
 					if (status.equalsIgnoreCase("validation")) {
-						return 1; // validation
+						returnValue = 1; // validation
 					} else if (status.equalsIgnoreCase("render")) {
-						return 2; // render
+						returnValue = 2; // render
 					} else if (status.equalsIgnoreCase("translation")) {
-						return 3; // translation
+						returnValue = 3; // translation
 					} else if (status.equalsIgnoreCase("transmission")) {
-						return 4; // transmission/transport
+						returnValue = 4; // transmission/transport
 					}
 				} else {
-					return 0; // completed
+					returnValue = 0; // completed
 				}
+
+				r.close();
+			} else {
+				returnValue = 5; // unknown
 			}
 
-			return 5; // unknown
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+
+			return returnValue;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
 			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
 			return null;
 		}
 	}
@@ -223,6 +268,7 @@ public class Service implements IServiceInterface {
 		log.debug("Plugin list for " + userName + " [category = " + category
 				+ "]");
 
+		String[] returnValue = null;
 		PreparedStatement cStmt = null;
 		try {
 			cStmt = c.prepareStatement("SELECT * FROM tPlugins "
@@ -237,13 +283,27 @@ public class Service implements IServiceInterface {
 				while (rs.next()) {
 					results.add(rs.getString("plugin"));
 				}
+				rs.close();
 			}
-			return results.toArray(new String[0]);
+			returnValue = results.toArray(new String[0]);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			return returnValue;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
 			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
 			return null;
 		}
 	}
