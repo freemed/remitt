@@ -192,6 +192,7 @@ public class X12Xml implements PluginInterface {
 					}
 					segmentcount.put(counter.getAttributes().getNamedItem(
 							"name").toString(), value);
+					l.add(value.toString());
 					continue;
 				}
 			} catch (Exception ex) {

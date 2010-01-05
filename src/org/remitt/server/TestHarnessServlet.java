@@ -85,7 +85,7 @@ public class TestHarnessServlet extends HttpServlet {
 				byte[] output = p.render(0, input, option);
 				if (new String(output, "UTF-8").startsWith("<?xml ")) {
 					// Handle XML output properly
-					response.setContentType("text/xml");
+					response.setContentType("text/plain");
 					response.setContentLength(output.length);
 				} else if (new String(output, "UTF-8").startsWith("%PDF-")) {
 					// Return PDF
