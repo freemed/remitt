@@ -1,0 +1,18 @@
+$Id$
+
+REMITT ROADMAP
+
+0.3.x	Legacy Perl + SQLite series, discontinued support.
+	XML-RPC API
+
+0.4.x	Legacy Perl + MySQL series, works with FreeMED 0.8.x
+
+0.5.x	Rewrite as J2EE application, compatible with FreeMED 0.9.x+
+	SOAP/REST API
+	Web-based configuration interface
+	Insurance Eligibility abstraction API
+
+0.6.x	Process and return data for claims from clearinghouses
+	Support all X12 837x formats
+	
+
