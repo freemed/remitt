@@ -32,7 +32,11 @@
 		xmlns:date="http://exslt.org/dates-and-times"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-	<xsl:output method="xml" />
+	<xsl:output method="xml" indent="yes" />
+
+	<!-- Parameters -->
+	<xsl:param name="currentTime" />
+	<xsl:param name="jobId" />
 
 <!--
 		PROCESSING ARCHITECTURE:

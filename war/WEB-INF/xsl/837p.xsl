@@ -34,10 +34,8 @@
         <xsl:output method="xml" indent="yes" />
 
 	<!-- Parameters -->
-	<!-- FIXME: enable -->
-	<!--
-		<xsl:param name="batchId" />
-	-->
+	<xsl:param name="currentTime" />
+	<xsl:param name="jobId" />
 
 	<!--
 		NOTES:
@@ -62,6 +60,8 @@
 		<!-- Calculate HL offsets -->
 	<xsl:variable name="insuredoffset" select="1" />
 	<xsl:variable name="patientoffset" select="count($insuredall)+$insuredoffset" />
+		<!-- Interchange Control Number -->
+	<xsl:variable name="interchangeControlNumber" select="format-number($jobId, '000000000')" />
 
 	<!--
 		Master template for document root
@@ -138,8 +138,7 @@
 			<element>
 				<!-- ISA13: Interchange Control Number -->
 				<!-- Identical to IEA02 -->
-				<!-- FIXME: needs to come from REMITT -->
-				<content>000000001</content>
+				<content><xsl:value-of select="$interchangeControlNumber" /></content>
 			</element>
 			<element>
 				<!-- ISA14: ACK Requested -->
@@ -488,7 +487,7 @@
 			<element>
 				<!-- IEA02: Interchange Control Number -->
 				<!-- Identical to ISA13 -->
-				<content>000000001</content>
+				<content><xsl:value-of select="$interchangeControlNumber" /></content>
 			</element>
 		</x12segment>
 

@@ -97,6 +97,11 @@ public class XsltPlugin implements PluginInterface {
 			throw new Exception(e);
 		}
 
+		log.debug("Passing parameters to transform");
+		transformer.setParameter("currentTime", new Long(System
+				.currentTimeMillis()).toString());
+		transformer.setParameter("jobId", jobId.toString());
+
 		StreamResult xmlOutput = new StreamResult(new ByteArrayOutputStream());
 
 		log.debug("Performing transformation");
