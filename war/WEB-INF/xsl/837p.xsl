@@ -31,7 +31,13 @@
 		exclude-result-prefixes="set"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-        <xsl:output method="xml" />
+        <xsl:output method="xml" indent="yes" />
+
+	<!-- Parameters -->
+	<!-- FIXME: enable -->
+	<!--
+		<xsl:param name="batchId" />
+	-->
 
 	<!--
 		NOTES:
@@ -76,57 +82,77 @@
 		<x12segment sid="ISA">
 			<comment>ISA Interchange Control Header #0</comment>
 			<element>
+				<!-- ISA01: Auth Info Qualifier -->
 				<content>00</content>
 			</element>
 			<element>
+				<!-- ISA02: Authorization Info -->
 				<comment>10 spaces</comment>
 				<content text="REMITT837P" />
 			</element>
 			<element>
+				<!-- ISA03: Security Info Qualifier -->
 				<content>00</content>
 			</element>
 			<element>
+				<!-- ISA04: Security Information -->
 				<comment>10 spaces</comment>
 				<content text="SECURITY01" />
 			</element>
 			<element>
+				<!-- ISA05: Interchange ID Qualifier -->
+				<!-- ZZ = mutually defined -->
 				<content>ZZ</content>
 			</element>
 			<element>
-				<content>000000000012345</content>
+				<!-- ISA06: Interchange Sender ID -->
+				<!-- Identical to GS02 -->
+				<content><xsl:value-of select="//clearinghouse/x12gssenderid" /></content>
 			</element>
 			<element>
+				<!-- ISA07: Interchange ID Qualifier -->
 				<content>ZZ</content>
 			</element>
 			<element>
+				<!-- ISA08: Interchange Rec ID -->
 				<!-- has to be 15 characters -->
 				<content text="00000000000048M"/>
 			</element>
 			<element>
-				<content>030911</content>
+				<!-- ISA09: Interchange Date, YYMMDD -->
+                                <content><xsl:value-of select="concat(substring(//global/currentdate/year,3,2),//global/currentdate/month,//global/currentdate/day)" /></content>
 			</element>
 			<element>
-				<content>1630</content>
+				<!-- ISA10: Interchange Time, HHMM -->
+				<content><xsl:value-of select="concat(//global/currenttime/hour,//global/currenttime/minute)" /></content>
 			</element>
 			<element>
+				<!-- ISA11: Interchange Control Standards Identifier -->
+				<!-- U - US EDI Community of ASC X12, TDCC and UCS -->
 				<content>U</content>
 			</element>
 			<element>
+				<!-- ISA12: Interchange Control Version Number -->
 				<content>00401</content>
 			</element>
 			<element>
+				<!-- ISA13: Interchange Control Number -->
+				<!-- Identical to IEA02 -->
+				<!-- FIXME: needs to come from REMITT -->
 				<content>000000001</content>
 			</element>
 			<element>
+				<!-- ISA14: ACK Requested -->
 				<!-- ACK requested 0 = no, 1 = yes -->
 				<content>1</content>
 			</element>
 			<element>
+				<!-- ISA15: Usage Indicator -->
 				<!-- T = test data, P = patient data -->
 				<content>P</content>
 			</element>
 			<element>
-				<!-- Element split character -->
+				<!-- ISA16: Component Element Separator -->
 				<content>:</content>
 			</element>
 		</x12segment>
@@ -134,29 +160,41 @@
 		<x12segment sid="GS">
 			<comment>GS Functional Group Header Segment</comment>
 			<element>
+				<!-- GS01: Functional Identifier Code -->
+				<!-- HC = Health Care Claim (837) -->
 				<content>HC</content>
 			</element>
 			<element>
+				<!-- GS02: Application Sender Code -->
+				<!-- Identical to ISA06 -->
 				<content><xsl:value-of select="//clearinghouse/x12gssenderid" /></content>
 			</element>
 			<element>
+				<!-- GS03: Application Receiver Code -->
 				<content><xsl:value-of select="//clearinghouse/x12gsreceiverid" /></content>
 			</element>
 			<element>
+				<!-- GS04: Date (CCYYMMDD) -->
 				<comment>Current date YYYYMMDD</comment>
 				<content><xsl:value-of select="concat(//global/currentdate/year,//global/currentdate/month,//global/currentdate/day)" /></content>
 			</element>
 			<element>
+				<!-- GS05: Time (HHMM) -->
 				<comment>Current date hour + minute FIXME</comment>
 				<content><xsl:value-of select="concat(//global/currenttime/hour,//global/currenttime/minute)" /></content>
 			</element>
 			<element>
+				<!-- GS06: Control Group Number -->
+				<!-- Identical to GE02 -->
 				<content>1</content>
 			</element>
 			<element>
+				<!-- GS07: Responsible Agency Code -->
+				<!-- X = Accredited Standards Committee X12 -->
 				<content>X</content>
 			</element>
 			<element>
+				<!-- GS08: Version/Release/Industry Identifier Code -->
 				<!-- Transmission code for addendum 1 -->
 				<content>004010X098A1</content>
 			</element>
@@ -391,7 +429,14 @@
 			</element>
 		</x12segment>
 
-		<!-- FreeB has a REF here ... FIXME FIXME! -->
+		<xsl:if test="boolean(string(//billingservice/etin))">
+		<x12segment sid="REF">
+			<comment>REF - Billing Provider (p??)</comment>
+			<element>
+				<content><xsl:value-of select="//billingservice/etin" /></content>
+			</element>
+		</x12segment>
+		</xsl:if>
 
 		<xsl:comment>Loop 2000B: Patient/Insured Loop</xsl:comment>
 
@@ -420,9 +465,14 @@
 		<x12segment sid="GE">
 			<comment>GE - Functional Group Trailer</comment>
 			<element>
+				<!-- GE01: Number of transaction sets included -->
+				<!-- FIXME -->
 				<content>1</content>
 			</element>
 			<element>
+				<!-- GE02: Group Control Number -->
+				<!-- Identical to GS06 -->
+				<!-- FIXME -->
 				<content>1</content>
 			</element>
 		</x12segment>
@@ -431,9 +481,13 @@
 		<x12segment sid="IEA">
 			<comment>IEA - Interchange Control Trailer</comment>
 			<element>
+				<!-- IEA01: Number of Included Functional Groups -->
+				<!-- Number of GS/GE pairs in exchange -->
 				<content>1</content>
 			</element>
 			<element>
+				<!-- IEA02: Interchange Control Number -->
+				<!-- Identical to ISA13 -->
 				<content>000000001</content>
 			</element>
 		</x12segment>
@@ -447,6 +501,7 @@
 		<!-- Generate loop header -->
 		<xsl:variable name="thispractice" select="//practice[@id=$practice]" />
 
+		<xsl:if test="0 = 1">
 		<x12segment sid="REF">
 			<!-- Should this be in this loop ? -->
 			<comment>REF segment for 2000B</comment>
@@ -457,6 +512,7 @@
 				<content><xsl:value-of select="$thispractice/x12id" /></content>
 			</element>
 		</x12segment>
+		</xsl:if>
 
 		<xsl:comment>2010AB Loop (p99)</xsl:comment>
 
@@ -488,12 +544,12 @@
 				<content />
 			</element>
 			<element>
-				<!-- EIN -->
-				<content>24</content>
+				<!-- EIN=24, NPI=XX -->
+				<content>XX</content>
 			</element>
 			<element>
-				<!-- Supposed to be EIN number -->
-				<content><xsl:value-of select="$thispractice/ein" /></content>
+				<!-- Supposed to be NPI number -->
+				<content><xsl:value-of select="$thispractice/npi" /></content>
 			</element>
 		</x12segment>
 
@@ -1132,14 +1188,17 @@
 		<!-- 2300 Loop: REF Prior Auth or Referral (p227) FIXME -->
 
 		<!-- 2300 Loop: REF Medical Record Num (p241) -->
+		<xsl:if test="boolean(string(//patient[@id=$patient]/account))">
 		<x12segment sid="REF">
 			<element>
 				<content>EA</content>
 			</element>
 			<element>
-				<content><xsl:value-of select="$patient" /></content>
+				<!-- Use "account number" for externally visible med record number -->
+				<content><xsl:value-of select="//patient[@id=$patient]/account" /></content>
 			</element>
 		</x12segment>
+		</xsl:if>
 
 		<!-- Set diagnoses is distinct set ... -->
 		<xsl:variable name="diags" select="set:distinct(exsl:node-set($procs/diagnosiskey))" />
@@ -1191,12 +1250,12 @@
 				<content />
 			</element>
 			<element>
-				<!-- ID Code qualifier ( 24 = EIN, 34 = SSN, XX = HCFA ID ) -->
-				<content>34</content>
+				<!-- ID Code qualifier ( 24 = EIN, 34 = SSN, XX = HCFA ID/NPI ) -->
+				<content>XX</content>
 			</element>
 			<element>
-				<!-- ID Code -->
-				<content><xsl:value-of select="$firstprov/socialsecuritynumber" /></content>
+				<!-- Provider NPI -->
+				<content><xsl:value-of select="$firstprov/npi" /></content>
 			</element>
 		</x12segment>
 
