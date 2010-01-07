@@ -202,9 +202,11 @@
 		<x12segment sid="ST">
 			<comment>ST Transaction Set Header #1</comment>
 			<element>
+				<!-- ST01: -->
 				<content>837</content>
 			</element>
 			<element>
+				<!-- ST02: -->
 				<content>0021</content>
 			</element>
 		</x12segment>
@@ -212,25 +214,34 @@
 		<x12segment sid="BHT">
 			<comment>BHT Beginning of Heirachical Transaction</comment>
 			<element>
+				<!-- BHT01: -->
 				<content>0019</content>
 			</element>
 			<element>
-				<!-- Original (not reissue) -->
+				<!-- BHT02: Original (not reissue) -->
 				<content>00</content>
 			</element>
 			<element>
-				<!-- FIXME: This should be the billkey -->
-				<content>0123</content>
+				<!-- BHT03: Reference Identification -->
+			<xsl:choose>
+				<xsl:when test="boolean(string(//global/billinguid))">
+					<content><xsl:value-of select="//global/billinguid" /></content>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$jobId" />
+				</xsl:otherwise>
+			</xsl:choose>
 			</element>
 			<element>
-				<!-- Creation date (YYYYMMDD) -->
+				<!-- BHT04: Creation date (YYYYMMDD) -->
 				<content><xsl:value-of select="concat(//global/currentdate/year,//global/currentdate/month,//global/currentdate/day)" /></content>
 			</element>
 			<element>
-				<!-- Creation time (HHMM) -->
+				<!-- BHT05: Creation time (HHMM) -->
 				<content><xsl:value-of select="concat(//global/currenttime/hour,//global/currenttime/minute)" /></content>
 			</element>
 			<element>
+				<!-- BHT06: -->
 				<content>RP</content>
 			</element>
 		</x12segment>
@@ -238,10 +249,11 @@
 		<x12segment sid="REF">
 			<comment>REF Generates REF line #3</comment>
 			<element>
+				<!-- REF01: -->
 				<content>87</content>
 			</element>
 			<element>
-				<!-- Transmission type code (is this right?) -->
+				<!-- REF02: Transmission type code (is this right?) -->
 				<content>004010X098A1</content>
 			</element>
 		</x12segment>
@@ -343,19 +355,20 @@
 		<x12segment sid="HL">
 			<comment>HL Pay-to provider (p77)</comment>
 			<element>
+				<!-- 2000A HL01: Counter -->
 				<!-- Set current HL counter -->
-				<!-- <content>1</content> -->
 				<hl>STARTING</hl>
 			</element>
 			<element>
+				<!-- 2000A HL02: -->
 				<content></content>
 			</element>
 			<element>
-				<!-- Heirarchical level code -->
+				<!-- 2000A HL03: Heirarchical level code -->
 				<content>20</content>
 			</element>
 			<element>
-				<!-- Heirarchical child code -->
+				<!-- 2000A HL04: Heirarchical child code -->
 				<content>1</content>
 			</element>
 		</x12segment>
@@ -363,7 +376,7 @@
 		<!-- CUR - Currency information (p82) optional -->
 		<x12segment sid="CUR">
 			<element>
-				<!-- Set Entity ID as Billing Provider -->
+				<!-- Entity ID = Billing Provider -->
 				<content>85</content>
 			</element>
 			<element>
@@ -380,30 +393,40 @@
 		<x12segment sid="NM1">
 			<comment>NM1 Billing Service</comment>
 			<element>
+				<!-- 2010A NM101: -->
 				<content>85</content>
 			</element>
 			<element>
+				<!-- 2010A NM102: -->
 				<content>2</content>
 			</element>
 			<element>
+				<!-- 2010A NM103: -->
 				<content><xsl:value-of select="translate(//billingservice/name, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
+				<!-- 2010A NM104: -->
 				<content></content>
 			</element>
 			<element>
+				<!-- 2010A NM105: -->
 				<content></content>
 			</element>
 			<element>
+				<!-- 2010A NM106: -->
 				<content></content>
 			</element>
 			<element>
+				<!-- 2010A NM107: -->
 				<content></content>
 			</element>
 			<element>
+				<!-- 2010A NM108: Identification Code Qualifier -->
+				<!-- XX = NPI, 24 = EIN -->
 				<content>24</content>
 			</element>
 			<element>
+				<!-- 2010A NM109: Billing Provider Primary Identification -->
 				<content><xsl:value-of select="//billingservice/tin" /></content>
 			</element>
 		</x12segment>
@@ -430,8 +453,14 @@
 
 		<xsl:if test="boolean(string(//billingservice/etin))">
 		<x12segment sid="REF">
-			<comment>REF - Billing Provider (p??)</comment>
+			<comment>2010AB REF - Billing Provider (p??)</comment>
 			<element>
+				<!-- 2010AB REF01: Id type -->
+				<!-- EI = employer identification, SY = ssn -->
+				<content>EI</content>
+			</element>
+			<element>
+				<!-- 2010AB REF02: Identification number -->
 				<content><xsl:value-of select="//billingservice/etin" /></content>
 			</element>
 		</x12segment>
@@ -1064,22 +1093,25 @@
 		<!-- 2300 Loop: Claim Information (p170) -->
 		<x12segment sid="CLM">
 			<element>
-				<!-- CLM01 - Claim Identifier -->
+				<!-- 2300 CLM01: Claim Identifier -->
 				<!-- According to 837P documents, this should be the patient id -->
 				<!-- Should be unique identifier for set of procedures -->
 				<content><xsl:value-of select="$patient" /></content>
 			</element>
 			<element>
-				<!-- Total charges for all these procedures -->
+				<!-- 2300 CLM02: Total charges -->
 				<content><xsl:value-of select="format-number(sum($procs[facilitykey=$facility]/cptcharges), '####.00')" /></content>
 			</element>
 			<element>
+				<!-- 2300 CLM03: Total charges -->
 				<content></content>
 			</element>
 			<element>
+				<!-- 2300 CLM04: Total charges -->
 				<content></content>
 			</element>
 			<element>
+				<!-- 2300 CLM05: Total charges -->
 				<!-- Place of Service Code -->
 				<!--	1:	Facility type code -->
 				<!--	2:	Not used -->
@@ -1087,28 +1119,29 @@
 				<content><xsl:value-of select="//facility[@id=$facility]/x12code"/>::1</content>
 			</element>
 			<element>
-				<!-- Provider signature on file Y/N -->
+				<!-- 2300 CLM06: Provider Signature on File -->
+				<!-- Y/N -->
 				<content>Y</content>
 			</element>
 			<element>
-				<!-- Provider accept assignment code -->
+				<!-- 2300 CLM07: Provider accept assignment code -->
 				<content>A</content>
 			</element>
 			<element>
-				<!-- Assignment of benefits indicator -->
+				<!-- 2300 CLM08: Assignment of benefits indicator -->
 				<content>Y</content>
 			</element>
 			<element>
-				<!-- Release of information code -->
+				<!-- 2300 CLM09: Release of information code -->
 				<content>Y</content>
 			</element>
 			<element>
-				<!-- Patient signature source code -->
+				<!-- 2300 CLM10: Patient signature source code -->
 				<content>B</content>
 			</element>
 			<xsl:if test="0 &gt; 1"><!-- FIXME!!!!!!!!!! -->
 			<element>
-				<!-- Health causes code -->
+				<!-- 2300 CLM11: Health causes code -->
 				<!-- FIXME p176 need xsl:choose for this -->
 				<content></content>
 			</element>
@@ -1163,23 +1196,24 @@
 		<!-- 2300 Loop: AMT Patient Amount Paid (p220) -->
 		<x12segment sid="AMT">
 			<element>
-				<!-- Amount qualifier (F5 = patient amt paid) -->
+				<!-- 2300 AMT01: Amount qualifier -->
+				<!-- F5 = patient amt paid -->
 				<content>F5</content>
 			</element>
 			<element>
-				<!-- Monetary amount -->
-				<content><xsl:value-of select="format-number(sum($procs[facilitykey=$facility]/amountpaid), '#.00')" /></content>
+				<!-- 2300 AMT02: Monetary amount -->
+				<content><xsl:value-of select="format-number(sum($procs[facilitykey=$facility]/amountpaid), '0.00')" /></content>
 			</element>
 		</x12segment>
 
 		<!-- 2300 Loop: AMT Total Purchased Service Amount (p221) -->
 		<x12segment sid="AMT">
 			<element>
-				<!-- Amount qualifier (NE = net billed) -->
+				<!-- 2300 AMT01: Amount qualifier (NE = net billed) -->
 				<content>NE</content>
 			</element>
 			<element>
-				<!-- Monetary amount -->
+				<!-- 2300 AMT02: Monetary amount -->
 				<content><xsl:value-of select="format-number(sum($procs[facilitykey=$facility]/cptcharges), '#.00')" /></content>
 			</element>
 		</x12segment>
@@ -1207,7 +1241,7 @@
 			<!-- Loop for codes, but can't have more than 12 -->
 			<xsl:for-each select="$diags">
 				<element>
-					<!-- Actual ICD code -->
+					<!-- 2300 HI01: Diagnosis Code -->
 					<!-- <content><xsl:choose><xsl:when test="position() = 1">BK</xsl:when><xsl:otherwise>BF</xsl:otherwise></xsl:choose>:<xsl:value-of select="//diagnosis[@id=$code]/icd9code" /> (<xsl:value-of select="$code" />)</content> -->
 					<content><xsl:choose><xsl:when test="position() = 1">BK</xsl:when><xsl:otherwise>BF</xsl:otherwise></xsl:choose>:<xsl:call-template name="display-diagnosis">
 						<xsl:with-param name="diag" select="." />
@@ -1218,42 +1252,46 @@
 
 		<!-- 2310A Loop: NM1 Referring Provider Name (p282) -->
 
-		<!-- Get TIN from procedure 1 -->
+		<!-- Get TIN/NPI from procedure 1 -->
 		<xsl:variable name="firstprov" select="//provider[@id = $procs[1]/providerkey]" />
 
 		<!-- 2310B Loop: Rendering Provider -->
 		<x12segment sid="NM1">
 			<element>
-				<!-- Rendering provider -->
+				<!-- 2310B NM101: Rendering provider -->
 				<content>82</content>
 			</element>
 			<element>
-				<!-- Person -->
+				<!-- 2310B NM102: Person -->
 				<content>1</content>
 			</element>
 			<element>
+				<!-- 2310B NM103: Name, Last -->
 				<content><xsl:value-of select="translate($firstprov/name/last, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
+				<!-- 2310B NM104: Name, First -->
 				<content><xsl:value-of select="translate($firstprov/name/first, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
+				<!-- 2310B NM105: Name, Middle -->
 				<content><xsl:value-of select="translate($firstprov/name/middle, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
-				<!-- Prefix -->
+				<!-- 2310B NM106: Prefix -->
 				<content />
 			</element>
 			<element>
-				<!-- Suffix -->
+				<!-- 2310B NM107: Suffix -->
 				<content />
 			</element>
 			<element>
-				<!-- ID Code qualifier ( 24 = EIN, 34 = SSN, XX = HCFA ID/NPI ) -->
+				<!-- 2310B NM108: ID Code qualifier -->
+				<!-- ( 24 = EIN, 34 = SSN, XX = HCFA ID/NPI ) -->
 				<content>XX</content>
 			</element>
 			<element>
-				<!-- Provider NPI -->
+				<!-- 2310B NM109: Provider NPI -->
 				<content><xsl:value-of select="$firstprov/npi" /></content>
 			</element>
 		</x12segment>
@@ -1261,15 +1299,15 @@
 		<!-- 2310D Loop: NM1 Service Facility Location (p303) -->
 		<x12segment sid="NM1">
 			<element>
-				<!-- Entity identifier (FA = facility) -->
+				<!-- 2310A NM101: Entity identifier (FA = facility) -->
 				<content>FA</content>
 			</element>
 			<element>
-				<!-- Non-person entity -->
+				<!-- 2310A NM102: Non-person entity -->
 				<content>2</content>
 			</element>
 			<element>
-				<!-- Location/facility name -->
+				<!-- 2310A NM103: Location/facility name -->
 				<content><xsl:value-of select="translate(//facility[@id=$facility]/name, $lowercase, $uppercase)"/></content>
 			</element>
 			<element>
@@ -1285,17 +1323,17 @@
 				<content/>
 			</element>
 			<element>
-				<content>24</content>
+				<content>XX</content>
 			</element>
 			<element>
-				<!-- HACK: Provider TIN -->
-				<content><xsl:value-of select="$firstprov/tin" /></content>
+				<content><xsl:value-of select="$firstprov/npi" /></content>
 			</element>
 		</x12segment>
 
 		<!-- 2310D Loop: N3 Service Facility Location (p???) -->
 		<x12segment sid="N3">
 			<element>
+				<!-- 2310D N301: Facility Street Address -->
 				<content><xsl:value-of select="translate(//facility[@id=$facility]/address/streetaddress, $lowercase, $uppercase)"/></content>
 			</element>
 		</x12segment>
@@ -1303,6 +1341,7 @@
 		<!-- 2310D Loop: N4 Service Facility Location (p???) -->
 		<x12segment sid="N4">
 			<element>
+				<!-- 2310D N401: Facility CSZ -->
 				<content><xsl:value-of select="translate(//facility[@id=$facility]/address/city, $lowercase, $uppercase)"/></content>
 			</element>
 			<element>
@@ -1354,7 +1393,7 @@
 		<!-- 2400 Loop: LX Service Line Counter (p399) -->
 		<x12segment sid="LX">
 			<element>
-				<!-- Counter, individual for line items -->
+				<!-- 2400 LX01: Counter, individual for line items -->
 				<xsl:element name="counter">
 					<xsl:attribute name="name">LX<xsl:value-of select="concat($procobj/patientkey, 'X', $procobj/facilitykey)" /></xsl:attribute>
 				</xsl:element>
@@ -1364,31 +1403,31 @@
 		<!-- 2400 Loop: SV1 Professional Service (p446) -->
 		<x12segment sid="SV1">
 			<element>
-				<!-- Procedure code [ and modifier ] -->
+				<!-- 2400 SV101: Procedure code [ and modifier ] -->
 				<content><xsl:value-of select="concat('HC:', $procobj/cpt4code)" /><xsl:if test="boolean(string($procobj/cptmodifier))"><xsl:value-of select="concat(':', $procobj/cptmodifier)" /></xsl:if></content>
 			</element>
 			<element>
-				<!-- Monetary amount -->
-				<content><xsl:value-of select="format-number($procobj/cptcharges, '#.00')" /></content>
+				<!-- 2400 SV102: Monetary amount -->
+				<content><xsl:value-of select="format-number($procobj/cptcharges, '0.00')" /></content>
 			</element>
 			<element>
-				<!-- Units of measurement -->
+				<!-- 2400 SV103: Units of measurement -->
 				<content>UN</content>
 			</element>
 			<element>
-				<!-- Quantity -->
+				<!-- 2400 SV103: Quantity -->
 				<content><xsl:value-of select="$procobj/cptunits" /></content>
 			</element>
 			<element>
-				<!-- Facility X12 code -->
+				<!-- 2400 SV104: Facility X12 code -->
 				<content><xsl:value-of select="//facility[@id=$procobj/facilitykey]/x12code" /></content>
 			</element>
 			<element>
-				<!-- Service type code (NOT USED) -->
+				<!-- 2400 SV105: Service type code (NOT USED) -->
 				<content></content>
 			</element>
 			<element>
-				<!-- Diagnosis code references -->
+				<!-- 2400 SV106: Diagnosis code references -->
 				<content><xsl:call-template name="lookup-diagnoses">
 					<xsl:with-param name="diags" select="$procobj/diagnosiskey" />
 					<xsl:with-param name="set" select="$diags" />
@@ -1399,15 +1438,15 @@
 		<!-- 2400 Loop: DTP Service Dates (p435) -->
 		<x12segment sid="DTP">
 			<element>
-				<!-- Date/Time Qualifier -->
+				<!-- 2400 DTP01: Date/Time Qualifier -->
 				<content>472</content>
 			</element>
 			<element>
-				<!-- Date Time Period Format Qualifier -->
+				<!-- 2400 DTP02: Date Time Period Format Qualifier -->
 				<content>D8</content>
 			</element>
 			<element>
-				<!-- Date/Time Period -->
+				<!-- 2400 DTP03: Date/Time Period -->
 				<content><xsl:value-of select="concat($procobj/dateofservicestart/year, $procobj/dateofservicestart/month, $procobj/dateofservicestart/day)" /></content>
 			</element>
 		</x12segment>
@@ -1432,42 +1471,41 @@
 		<xsl:variable name="provobj" select="//provider[@id=$procobj/providerkey]" />
 		<x12segment sid="NM1">
 			<element>
-				<!-- Entity Identifier: rending provider -->
+				<!-- 2420A NM101: Entity Identifier: rending provider -->
 				<content>82</content>
 			</element>
 			<element>
-				<!-- Entity Type Qualifier -->
+				<!-- 2420A NM102: Entity Type Qualifier -->
 				<content>1</content>
 			</element>
 			<element>
-				<!-- Last name -->
+				<!-- 2420A NM103: Last name -->
 				<content><xsl:value-of select="translate($provobj/name/last, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
-				<!-- First name -->
+				<!-- 2420A NM104: First name -->
 				<content><xsl:value-of select="translate($provobj/name/first, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
-				<!-- Middle name -->
+				<!-- 2420A NM105: Middle name -->
 				<content><xsl:value-of select="translate($provobj/name/middle, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
-				<!-- Name Prefix -->
+				<!-- 2420A NM106: Name Prefix -->
 				<content />
 			</element>
 			<element>
-				<!-- Name Suffix -->
+				<!-- 2420A NM107: Name Suffix -->
 				<content />
 			</element>
 			<element>
-				<!-- Identification Code Qualifier -->
-				<!-- 24 = EIN, 34 = SSN, XX = HCFA Pin -->
-				<!-- FIXME: 34 cannot be used with Medicare -->
-				<content>34</content>
+				<!-- 2420A NM108: Identification Code Qualifier -->
+				<!-- 24 = EIN, 34 = SSN, XX = HCFA Pin/NPI -->
+				<content>XX</content>
 			</element>
 			<element>
 				<!-- Identification code -->
-				<content><xsl:value-of select="$provobj/socialsecuritynumber" /></content>
+				<content><xsl:value-of select="$provobj/npi" /></content>
 			</element>
 		</x12segment>
 
@@ -1523,30 +1561,6 @@
 			<xsl:if test="current()=$diag"><xsl:value-of select="position()" /></xsl:if>
 		</xsl:for-each>
 	</xsl:template>
-
-	<!-- 
-		EXSLT functions
-
-		Please note that only function which are not included in
-		the libxslt library are included here, since that is the
-		XSLT compiler we are using. EXSLT functions for anything
-		else can be found at http://exslt.org/.
-	-->
-
-	<!--
-	<exsl:function name="set:distinct">
-		<xsl:param name="nodes" select="/.."/>
-		<xsl:choose>
-			<xsl:when test="not($nodes)">
-				<exsl:result select="/.." />
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:variable name="distinct" select="set:distinct($nodes[position() &gt; 1])"/>
-				<exsl:result select="$distinct | $nodes[1][. != $distinct]"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</exsl:function>
-	-->
 
 	<xsl:template name="sequence-location">
 		<xsl:param name="id"    />
