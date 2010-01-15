@@ -40,7 +40,7 @@ use Remitt::DataStore::Log;
 use Sys::Syslog;
 use POSIX qw(setsid);
 
-my $version = "0.3.3";
+my $version = "0.4.0";
 my $protocolversion = 0.2;
 my $quiet = 0;
 
