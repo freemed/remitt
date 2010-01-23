@@ -145,7 +145,7 @@ public class Configuration {
 
 	public static String getInstallLocation() {
 		String home = System.getenv("REMITT_HOME");
-		return (home == "") ? "." : home;
+		return (home == "") ? System.getProperty("catalina.home") : home;
 	}
 
 	public static Connection getConnection() {
