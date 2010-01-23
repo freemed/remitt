@@ -25,9 +25,11 @@
 package org.remitt.plugin.transmission;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URL;
 import java.util.HashMap;
 
 import javax.script.ScriptEngine;
@@ -39,6 +41,8 @@ import org.remitt.prototype.PluginInterface;
 import org.remitt.server.Configuration;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.RefreshHandler;
 import com.gargoylesoftware.htmlunit.WebClient;
 
 public class ScriptedHttpTransport implements PluginInterface {
@@ -109,11 +113,18 @@ public class ScriptedHttpTransport implements PluginInterface {
 		// Instantiate web client (htmlunit)
 		WebClient webClient = new WebClient(BrowserVersion.FIREFOX_3);
 		webClient.setJavaScriptEnabled(true);
+		webClient.setRefreshHandler(new RefreshHandler() {
+			@Override
+			public void handleRefresh(Page arg0, URL arg1, int arg2)
+					throws IOException {
+				log.info("Attempted refresh to " + arg1.getPath());
+			}
+		});
 
 		// Inject objects
 		engine.put("log", log);
 		engine.put("jobId", jobId);
-		engine.put("input", input);
+		engine.put("input", input.getBytes());
 		engine.put("webClient", webClient);
 		engine.put("username", Configuration.getPluginOption(this, userName,
 				"username"));

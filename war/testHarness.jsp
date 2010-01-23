@@ -117,6 +117,7 @@ function populateFieldFromFrame(f) {
 				<tr>
 					<td>Option :</td>
 					<td><select name="option">
+						<option value="ClaimLogic">ClaimLogic</option>
 						<option value="FreeClaims">FreeClaims</option>
 					</select></td>
 				</tr>

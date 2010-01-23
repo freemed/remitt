@@ -52,7 +52,7 @@ if (validLogin) {
 	uploadForm = uploadPage.getFormByName("Upload");
 
 	// Assign content to file1 field
-	uploadForm.getInputByName("file1").setData(input.getBytes());
+	uploadForm.getInputByName("file1").setData(input);
 
 	// Force upload submit
 	uploadedPage = uploadPage.getByXPath("//INPUT[@name='submit1'").get(0).click();
