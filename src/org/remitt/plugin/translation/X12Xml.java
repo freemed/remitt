@@ -36,6 +36,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.remitt.prototype.PluginInterface;
 import org.w3c.dom.Element;
@@ -111,7 +112,7 @@ public class X12Xml implements PluginInterface {
 			String segment = TranslateSegmentFromNode(nodeList.item(iter),
 					eEnd, sEnd, iter);
 			sb.append(segment);
-			sb.append("\n");
+			// sb.append("\n");
 		}
 
 		return sb.toString().getBytes();
@@ -223,6 +224,9 @@ public class X12Xml implements PluginInterface {
 					content = hlcount.get(hl).toString();
 				}
 			} else {
+				int fixedLength = 0;
+				int zeroPrepended = 0;
+
 				// Process content tag
 				try {
 					content = ((Element) element).getElementsByTagName(
@@ -244,6 +248,38 @@ public class X12Xml implements PluginInterface {
 						content = "";
 					}
 				}
+
+				try {
+					fixedLength = Integer.parseInt(((Element) element)
+							.getElementsByTagName("content").item(0)
+							.getAttributes().getNamedItem("fixedlength")
+							.getTextContent());
+					if (content.length() > fixedLength) {
+						content = content.substring(0, fixedLength);
+					} else if (content.length() < fixedLength) {
+						content = StringUtils.rightPad(content, fixedLength);
+					}
+				} catch (Exception ex) {
+					if (ex.toString().length() > 1) {
+					}
+				}
+
+				try {
+					zeroPrepended = Integer.parseInt(((Element) element)
+							.getElementsByTagName("content").item(0)
+							.getAttributes().getNamedItem("zeroprepend")
+							.getTextContent());
+					if (content.length() > zeroPrepended) {
+						content = content.substring(0, zeroPrepended);
+					} else if (content.length() < zeroPrepended) {
+						content = StringUtils.leftPad(content, zeroPrepended,
+								'0');
+					}
+				} catch (Exception ex) {
+					if (ex.toString().length() > 1) {
+					}
+				}
+
 			}
 			l.add(content);
 		}

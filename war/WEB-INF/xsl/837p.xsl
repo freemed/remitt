@@ -32,6 +32,7 @@
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
         <xsl:output method="xml" indent="yes" />
+	<xsl:preserve-space elements="*" />
 
 	<!-- Parameters -->
 	<xsl:param name="currentTime" />
@@ -74,7 +75,7 @@
         <render>
 		<x12format>
 			<delimiter>*</delimiter>
-			<endofline></endofline>
+			<endofline><xsl:text>~&#x0A;&#x0D;</xsl:text></endofline>
 		</x12format>
 
 		<!-- Generate static segments -->
@@ -107,7 +108,7 @@
 			<element>
 				<!-- ISA06: Interchange Sender ID -->
 				<!-- Identical to GS02 -->
-				<content><xsl:value-of select="//clearinghouse/x12gssenderid" /></content>
+				<content fixedlength="15"><xsl:value-of select="//clearinghouse/x12gssenderid" /></content>
 			</element>
 			<element>
 				<!-- ISA07: Interchange ID Qualifier -->
@@ -138,7 +139,7 @@
 			<element>
 				<!-- ISA13: Interchange Control Number -->
 				<!-- Identical to IEA02 -->
-				<content><xsl:value-of select="$interchangeControlNumber" /></content>
+				<content zeroprepend="9"><xsl:value-of select="$interchangeControlNumber" /></content>
 			</element>
 			<element>
 				<!-- ISA14: ACK Requested -->
@@ -166,7 +167,7 @@
 			<element>
 				<!-- GS02: Application Sender Code -->
 				<!-- Identical to ISA06 -->
-				<content><xsl:value-of select="//clearinghouse/x12gssenderid" /></content>
+				<content fixedlength="15"><xsl:value-of select="//clearinghouse/x12gssenderid" /></content>
 			</element>
 			<element>
 				<!-- GS03: Application Receiver Code -->
@@ -185,7 +186,8 @@
 			<element>
 				<!-- GS06: Control Group Number -->
 				<!-- Identical to GE02 -->
-				<content>1</content>
+				<!-- <content>1</content> -->
+				<content zeroprepend="9"><xsl:value-of select="$interchangeControlNumber" /></content>
 			</element>
 			<element>
 				<!-- GS07: Responsible Agency Code -->
@@ -207,7 +209,8 @@
 			</element>
 			<element>
 				<!-- ST02: -->
-				<content>0021</content>
+				<!-- <content>0021</content> -->
+				<content><xsl:value-of select="$interchangeControlNumber" /></content>
 			</element>
 		</x12segment>
 
@@ -350,6 +353,66 @@
 			</element>
 		</x12segment>
 
+		<xsl:variable name="practices" select="set:distinct(exsl:node-set(//procedure/practicekey))" />
+
+		<xsl:for-each select="$practices">
+			<xsl:call-template name="process-practice">
+				<xsl:with-param name="practice">
+					<xsl:value-of select="."/>
+				</xsl:with-param>	
+			</xsl:call-template>
+		</xsl:for-each>
+
+		<xsl:comment>SE - Transaction Set Trailer</xsl:comment>
+		<x12segment sid="SE">
+			<comment>SE - Transaction Set Trailer</comment>
+			<element>
+				<segmentcount />
+			</element>
+			<element>
+				<!-- <content>0021</content> -->
+				<content><xsl:value-of select="$interchangeControlNumber" /></content>
+			</element>
+		</x12segment>
+
+		<xsl:comment>GE Loop End #100</xsl:comment>
+		<x12segment sid="GE">
+			<comment>GE - Functional Group Trailer</comment>
+			<element>
+				<!-- GE01: Number of transaction sets included -->
+				<!-- FIXME -->
+				<content>1</content>
+			</element>
+			<element>
+				<!-- GE02: Group Control Number -->
+				<!-- Identical to GS06 -->
+				<!-- FIXME -->
+				<!-- <content>1</content> -->
+				<content zeroprepend="9"><xsl:value-of select="$interchangeControlNumber" /></content>
+			</element>
+		</x12segment>
+
+		<xsl:comment>IEA Trailer #101</xsl:comment>
+		<x12segment sid="IEA">
+			<comment>IEA - Interchange Control Trailer</comment>
+			<element>
+				<!-- IEA01: Number of Included Functional Groups -->
+				<!-- Number of GS/GE pairs in exchange -->
+				<content>1</content>
+			</element>
+			<element>
+				<!-- IEA02: Interchange Control Number -->
+				<!-- Identical to ISA13 -->
+				<content zeroprepend="9"><xsl:value-of select="$interchangeControlNumber" /></content>
+			</element>
+		</x12segment>
+
+        </render>
+	</xsl:template>
+
+	<xsl:template name="process-practice">
+		<xsl:param name="practice" />
+
 		<xsl:comment>Loop 2000A: Pay-to Provider</xsl:comment>
 
 		<x12segment sid="HL">
@@ -423,7 +486,7 @@
 			<element>
 				<!-- 2010A NM108: Identification Code Qualifier -->
 				<!-- XX = NPI, 24 = EIN -->
-				<content>24</content>
+				<content>XX</content>
 			</element>
 			<element>
 				<!-- 2010A NM109: Billing Provider Primary Identification -->
@@ -467,64 +530,6 @@
 		</xsl:if>
 
 		<xsl:comment>Loop 2000B: Patient/Insured Loop</xsl:comment>
-
-		<xsl:variable name="practices" select="set:distinct(exsl:node-set(//procedure/practicekey))" />
-
-		<xsl:for-each select="$practices">
-			<xsl:call-template name="process-practice">
-				<xsl:with-param name="practice">
-					<xsl:value-of select="."/>
-				</xsl:with-param>	
-			</xsl:call-template>
-		</xsl:for-each>
-
-		<xsl:comment>SE - Transaction Set Trailer</xsl:comment>
-		<x12segment sid="SE">
-			<comment>SE - Transaction Set Trailer</comment>
-			<element>
-				<segmentcount />
-			</element>
-			<element>
-				<content>0021</content>
-			</element>
-		</x12segment>
-
-		<xsl:comment>GE Loop End #100</xsl:comment>
-		<x12segment sid="GE">
-			<comment>GE - Functional Group Trailer</comment>
-			<element>
-				<!-- GE01: Number of transaction sets included -->
-				<!-- FIXME -->
-				<content>1</content>
-			</element>
-			<element>
-				<!-- GE02: Group Control Number -->
-				<!-- Identical to GS06 -->
-				<!-- FIXME -->
-				<content>1</content>
-			</element>
-		</x12segment>
-
-		<xsl:comment>IEA Trailer #101</xsl:comment>
-		<x12segment sid="IEA">
-			<comment>IEA - Interchange Control Trailer</comment>
-			<element>
-				<!-- IEA01: Number of Included Functional Groups -->
-				<!-- Number of GS/GE pairs in exchange -->
-				<content>1</content>
-			</element>
-			<element>
-				<!-- IEA02: Interchange Control Number -->
-				<!-- Identical to ISA13 -->
-				<content><xsl:value-of select="$interchangeControlNumber" /></content>
-			</element>
-		</x12segment>
-
-        </render>
-	</xsl:template>
-
-	<xsl:template name="process-practice">
-		<xsl:param name="practice" />
 
 		<!-- Generate loop header -->
 		<xsl:variable name="thispractice" select="//practice[@id=$practice]" />
@@ -687,20 +692,20 @@
 		<x12segment sid="HL">
 			<comment>HL - Subscriber Heirarchical Level 2000B (p108)</comment>
 			<element>
-				<!-- Insured HL -->
+				<!-- HL01: Insured HL -->
 				<!-- <content><xsl:value-of select="$insuredhl" /></content> -->
 				<hl><xsl:value-of select="concat($insuredhl, 'x', $practice)" /></hl>
 			</element>
 			<element>
-				<!-- Parent HL code ... -->
+				<!-- HL02: Parent HL code ... -->
 				<content>1</content>
 			</element>
 			<element>
-				<!-- Heirarchical level code (22 = subscriber) -->
+				<!-- HL03: Heirarchical level code (22 = subscriber) -->
 				<content>22</content>
 			</element>
 			<element>
-				<!-- 0 = subscriber level is patient level, 1 = extra patient level -->
+				<!-- HL04: 0 = subscriber level is patient level, 1 = extra patient level -->
 				<content><xsl:value-of select="$hlpatient" /></content>
 			</element>
 		</x12segment>
