@@ -75,7 +75,7 @@
         <render>
 		<x12format>
 			<delimiter>*</delimiter>
-			<endofline><xsl:text>~&#x0A;&#x0D;</xsl:text></endofline>
+			<endofline><xsl:text>~&#x0D;&#x0A;</xsl:text></endofline>
 		</x12format>
 
 		<!-- Generate static segments -->
@@ -115,9 +115,8 @@
 				<content>ZZ</content>
 			</element>
 			<element>
-				<!-- ISA08: Interchange Rec ID -->
-				<!-- has to be 15 characters -->
-				<content text="00000000000048M"/>
+				<!-- ISA08: Interchange Reciever ID -->
+				<content fixedlength="15"><xsl:value-of select="//clearinghouse/x12gsreceiverid" /></content>
 			</element>
 			<element>
 				<!-- ISA09: Interchange Date, YYMMDD -->
