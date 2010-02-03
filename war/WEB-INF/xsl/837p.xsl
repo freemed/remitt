@@ -659,7 +659,7 @@
 		<xsl:variable name="patientobj" select="//patient[@id=$patient]" />
 		<!-- Extract payer by insured -->
 		<xsl:variable name="payer" select="//procedure[insuredkey=$insured]/payerkey" />
-		<xsl:variable name="payerobj" select="//payer[@id=$payer[1]]" />
+		<xsl:variable name="payerobj" select="//payer[@id=$payer]" />
 
 		<!-- determine HLpatient status 0 or 1 
 			if relationship = S, status = 0 -->
@@ -835,35 +835,39 @@
 		<!-- 2010BB: Payer Name (p???) required -->
 		<x12segment sid="NM1">
 			<element>
-				<!-- Payer -->
+				<!-- 2010BB NM101: Payer -->
 				<content>PR</content>
 			</element>
 			<element>
-				<!-- 2 = non-person entity -->
+				<!-- 2010BB NM102: 2 = non-person entity -->
 				<content>2</content>
 			</element>
 			<element>
-				<!-- NM103: Payer Name -->
+				<!-- 2010BB NM103: Payer Name -->
 				<content><xsl:value-of select="translate($payerobj/name, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
+				<!-- 2010BB NM104: -->
 				<content/>
 			</element>
 			<element>
+				<!-- 2010BB NM104: -->
 				<content/>
 			</element>
 			<element>
+				<!-- 2010BB NM104: -->
 				<content/>
 			</element>
 			<element>
+				<!-- 2010BB NM104: -->
 				<content/>
 			</element>
 			<element>
-				<!-- NM108: ID Code Qualifier ( PI = payor id, XV = HCFA PIN ) -->
+				<!-- 2010BB NM108: ID Code Qualifier ( PI = payor id, XV = HCFA PIN ) -->
 				<content>PI</content>
 			</element>
 			<element>
-				<!-- NM109: Identification Code -->
+				<!-- 2010BB NM109: Identification Code -->
 				<content><xsl:value-of select="$payerobj/x12id" /></content>
 			</element>
 		</x12segment>
