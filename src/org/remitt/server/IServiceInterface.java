@@ -149,7 +149,7 @@ public interface IServiceInterface {
 	 * @return
 	 */
 	public String[] getOutputMonths(
-			@WebParam(name = "targetyear") Integer targetYear);
+			@WebParam(name = "targetYear") Integer targetYear);
 
 	/**
 	 * Get list of plugin options.
