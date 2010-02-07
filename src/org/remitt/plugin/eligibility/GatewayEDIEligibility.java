@@ -31,8 +31,11 @@ import java.util.List;
 
 import javax.xml.rpc.ServiceException;
 
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Stub;
 import org.apache.log4j.Logger;
 import org.remitt.prototype.EligibilityInterface;
+import org.remitt.server.Configuration;
 
 import WebServices.GatewayEDI.Eligibility;
 import WebServices.GatewayEDI.EligibilityLocator;
@@ -58,8 +61,8 @@ public class GatewayEDIEligibility implements EligibilityInterface {
 	}
 
 	@Override
-	public EligibilityResponse checkEligibility(HashMap<String, String> values)
-			throws Exception {
+	public EligibilityResponse checkEligibility(String userName,
+			HashMap<String, String> values) throws Exception {
 		// Make a service
 		Eligibility service = new EligibilityLocator();
 
@@ -94,7 +97,11 @@ public class GatewayEDIEligibility implements EligibilityInterface {
 		addNameValue(params, values, "cardIssueDate", "CardIssueDate");
 		addNameValue(params, values, "groupId", "GroupNumber");
 
-		// FIXME: TODO: basic authentication for request
+		// Set HTTP Authentication:
+		((Stub) service)._setProperty(Call.USERNAME_PROPERTY, Configuration
+				.getPluginOption(this, userName, "gatewayEdiUsername"));
+		((Stub) service)._setProperty(Call.PASSWORD_PROPERTY, Configuration
+				.getPluginOption(this, userName, "gatewayEdiPassword"));
 
 		WSEligibilityInquiry inq = new WSEligibilityInquiry();
 		inq.setParameters(params.toArray(new MyNameValue[0]));

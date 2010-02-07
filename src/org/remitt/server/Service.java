@@ -381,6 +381,8 @@ public class Service implements IServiceInterface {
 	@Override
 	public EligibilityResponse getEligibility(String plugin,
 			HashMap<String, String> parameters) {
+		String userName = getCurrentUserName();
+
 		EligibilityInterface p = null;
 		try {
 			p = (EligibilityInterface) Class.forName(plugin).newInstance();
@@ -395,7 +397,7 @@ public class Service implements IServiceInterface {
 			return null;
 		}
 		try {
-			return p.checkEligibility(parameters);
+			return p.checkEligibility(userName, parameters);
 		} catch (Exception e) {
 			log.error(e);
 			return null;

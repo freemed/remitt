@@ -40,6 +40,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.log4j.Logger;
+import org.remitt.prototype.EligibilityInterface;
 import org.remitt.prototype.PluginInterface;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -177,10 +178,16 @@ public class Configuration {
 	 *            Option string name.
 	 * @return
 	 */
-	public static String getPluginOption(PluginInterface plugin,
-			String userName, String option) {
+	public static String getPluginOption(Object plugin, String userName,
+			String option) {
 		Connection c = getConnection();
 		String className = plugin.getClass().getName();
+
+		if (!(plugin instanceof PluginInterface)
+				&& !(plugin instanceof EligibilityInterface)) {
+			log.error("Could not resolve plugin");
+			return null;
+		}
 
 		PreparedStatement cStmt = null;
 		try {

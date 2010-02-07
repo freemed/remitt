@@ -68,8 +68,8 @@ public interface EligibilityInterface {
 
 	public Double getPluginVersion();
 
-	public EligibilityResponse checkEligibility(HashMap<String, String> values)
-			throws Exception;
+	public EligibilityResponse checkEligibility(String userName,
+			HashMap<String, String> values) throws Exception;
 
 	public String[] getPluginConfigurationOptions();
 
