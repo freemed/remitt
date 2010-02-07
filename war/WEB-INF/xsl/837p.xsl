@@ -412,6 +412,9 @@
 	<xsl:template name="process-practice">
 		<xsl:param name="practice" />
 
+		<!-- Generate loop header -->
+		<xsl:variable name="thispractice" select="//practice[@id=$practice]" />
+
 		<xsl:comment>Loop 2000A: Pay-to Provider</xsl:comment>
 
 		<x12segment sid="HL">
@@ -447,91 +450,96 @@
 			</element>
 		</x12segment>
 
-		<xsl:comment>Loop 2010AA: Billing Service Loop (p84)</xsl:comment>
+		<xsl:comment>Loop 2010AA: Billing/Pay-to Provider</xsl:comment>
 
 		<!-- This is a horrible misnomer; it's actually billing
 			services ... -->
 
 		<x12segment sid="NM1">
-			<comment>NM1 Billing Service</comment>
+			<comment>2010AA NM1: Billing Provider Name</comment>
 			<element>
 				<!-- 2010A NM101: -->
 				<content>85</content>
 			</element>
 			<element>
-				<!-- 2010A NM102: -->
+				<!-- 2010A NM102: Entity Type Qualifier (1=person, 2=nonperson) -->
 				<content>2</content>
 			</element>
 			<element>
-				<!-- 2010A NM103: -->
-				<content><xsl:value-of select="translate(//billingservice/name, $lowercase, $uppercase)" /></content>
+				<!-- 2010A NM103: Billing Provider Last Or Organizational Name -->
+				<content><xsl:value-of select="translate($thispractice/name, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
-				<!-- 2010A NM104: -->
+				<!-- 2010A NM104: Billing Provider First Name -->
 				<content></content>
 			</element>
 			<element>
-				<!-- 2010A NM105: -->
+				<!-- 2010A NM105: Billing Provider Middle Name -->
 				<content></content>
 			</element>
 			<element>
-				<!-- 2010A NM106: -->
+				<!-- 2010A NM106: Unused -->
 				<content></content>
 			</element>
 			<element>
-				<!-- 2010A NM107: -->
+				<!-- 2010A NM107: Billing Provider Name Suffix -->
 				<content></content>
 			</element>
 			<element>
 				<!-- 2010A NM108: Identification Code Qualifier -->
-				<!-- XX = NPI, 24 = EIN -->
+				<!-- XX = NPI, 24 = EIN, 34 = SSN -->
 				<content>XX</content>
 			</element>
 			<element>
 				<!-- 2010A NM109: Billing Provider Primary Identification -->
-				<content><xsl:value-of select="//billingservice/tin" /></content>
+				<content><xsl:value-of select="$thispractice/npi" /></content>
 			</element>
 		</x12segment>
 
 		<x12segment sid="N3">
-			<comment>N3 - Billing Provider (p88)</comment>
+			<comment>2010AA N3 - Billing Provider Address</comment>
 			<element>
-				<content><xsl:value-of select="translate(//billingservice/address/streetaddress, $lowercase, $uppercase)" /></content>
+				<!-- 2010A NM301: Billing Provider Address Line 1 -->
+				<content><xsl:value-of select="translate($thispractice/address/streetaddress, $lowercase, $uppercase)" /></content>
+			</element>
+			<element>
+				<!-- 2010A NM302: Billing Provider Address Line 1 -->
+				<content></content>
 			</element>
 		</x12segment>
 
 		<x12segment sid="N4">
-			<comment>N4 - Billing Provider (p89)</comment>
+			<comment>2010AA N4 - Billing Provider City State Zip Code</comment>
 			<element>
-				<content><xsl:value-of select="translate(//billingservice/address/city, $lowercase, $uppercase)" /></content>
+				<!-- 2010A NM401: Billing Provider City Name -->
+				<content><xsl:value-of select="translate($thispractice/address/city, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
-				<content><xsl:value-of select="//billingservice/address/state" /></content>
+				<!-- 2010A NM402: Billing Provider State Code (2 letters) -->
+				<content><xsl:value-of select="$thispractice/address/state" /></content>
 			</element>
 			<element>
-				<content><xsl:value-of select="//billingservice/address/zipcode" /></content>
+				<!-- 2010A NM403: Billing Provider Postal Code -->
+				<content><xsl:value-of select="$thispractice/address/zipcode" /></content>
 			</element>
 		</x12segment>
 
-		<xsl:if test="boolean(string(//billingservice/etin))">
+		<xsl:if test="boolean(string($thispractice/ein))">
 		<x12segment sid="REF">
-			<comment>2010AB REF - Billing Provider (p??)</comment>
+			<comment>2010AA REF - Billing Provider Secondary Identification</comment>
 			<element>
-				<!-- 2010AB REF01: Id type -->
+				<!-- 2010AA REF01: Reference Identification Qualifier -->
 				<!-- EI = employer identification, SY = ssn -->
 				<content>EI</content>
 			</element>
 			<element>
-				<!-- 2010AB REF02: Identification number -->
-				<content><xsl:value-of select="//billingservice/etin" /></content>
+				<!-- 2010AA REF02: Identification number -->
+				<content><xsl:value-of select="$thispractice/ein" /></content>
 			</element>
 		</x12segment>
 		</xsl:if>
 
-		<xsl:comment>Loop 2000B: Patient/Insured Loop</xsl:comment>
-
-		<!-- Generate loop header -->
-		<xsl:variable name="thispractice" select="//practice[@id=$practice]" />
+		<xsl:comment>Loop 2000B: Patient/Insured Loop, jumping to patient loop</xsl:comment>
 
 		<xsl:if test="0 = 1">
 		<x12segment sid="REF">
@@ -548,63 +556,7 @@
 
 		<xsl:comment>2010AB Loop (p99)</xsl:comment>
 
-		<!-- Disable for now -->
-		<xsl:if test="0 = 1">
-		<x12segment sid="NM1">
-			<comment>NM1 (p99)</comment>
-			<element>
-				<!-- Pay-to provider = 87 -->
-				<content>87</content>
-			</element>
-			<element>
-				<content>2</content>
-			</element>
-			<element>
-				<!-- Practice name -->
-				<content><xsl:value-of select="translate($thispractice/name, $lowercase, $uppercase)" /></content>
-			</element>
-			<element>
-				<content />
-			</element>
-			<element>
-				<content />
-			</element>
-			<element>
-				<content />
-			</element>
-			<element>
-				<content />
-			</element>
-			<element>
-				<!-- EIN=24, NPI=XX -->
-				<content>XX</content>
-			</element>
-			<element>
-				<!-- Supposed to be NPI number -->
-				<content><xsl:value-of select="$thispractice/npi" /></content>
-			</element>
-		</x12segment>
-
-		<x12segment sid="N3">
-			<element>
-				<content><xsl:value-of select="translate($thispractice/address/streetaddress, $lowercase, $uppercase)" /></content>
-			</element>
-		</x12segment>
-
-		<x12segment sid="N4">
-			<element>
-				<content><xsl:value-of select="translate($thispractice/address/city, $lowercase, $uppercase)" /></content>
-			</element>
-			<element>
-				<content><xsl:value-of select="$thispractice/address/state" /></content>
-			</element>
-			<element>
-				<content><xsl:value-of select="$thispractice/address/zipcode" /></content>
-			</element>
-		</x12segment>
-		</xsl:if>
-
-		-- selecting patients for <xsl:value-of select="$practice" /> --
+		<xsl:comment>Patients for <xsl:value-of select="$practice" /></xsl:comment>
 
 		<!--
 			Need to get distinct patient/insured pairs.
@@ -613,8 +565,7 @@
 		-->
 		<xsl:variable name="patients" select="set:distinct(exsl:node-set(//procedure[practicekey=$practice]/patientkey))" />
 		<xsl:for-each select="$patients">
-			--
-			Patient <xsl:value-of select="." />
+			<xsl:comment>Patient <xsl:value-of select="." /></xsl:comment>
 			<xsl:call-template name="process-patient">
 				<xsl:with-param name="practice" select="$practice" />
 				<xsl:with-param name="patient" select="." />
@@ -692,7 +643,6 @@
 			<comment>HL - Subscriber Heirarchical Level 2000B (p108)</comment>
 			<element>
 				<!-- HL01: Insured HL -->
-				<!-- <content><xsl:value-of select="$insuredhl" /></content> -->
 				<hl><xsl:value-of select="concat($insuredhl, 'x', $practice)" /></hl>
 			</element>
 			<element>
@@ -712,34 +662,42 @@
 		<!-- Loop 2000B: SBR Subscriber Information (p110) -->
 		<x12segment sid="SBR">
 			<element>
+				<!-- 2000B SBR01: Payer Responsibility Sequence Number Code -->
 				<!-- FIXME: Primary=P, Secondary=S, Tertiary=T -->
 				<content>P</content>
 			</element>
 			<element>
+				<!-- 2000B SBR02: Individual Relationship Code -->
 				<!-- If self, this is 18 -->
 				<content><xsl:if test="$insuredobj/relationship = 'S'">18</xsl:if></content>
 			</element>
 			<element>
+				<!-- 2000B SBR03: Insured Group Or Policy Number -->
 				<content><xsl:value-of select="$insuredobj/groupnumber" /></content>
 			</element>
 			<element>
+				<!-- 2000B SBR04: Insured Group Name  -->
 				<content><xsl:value-of select="translate($insuredobj/groupname, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
-				<!-- FIXME: SBR05 special instance, medicare only -->
+				<!-- 2000B SBR05: Insurance Type Code -->
+				<!-- FIXME: special instance, medicare only -->
 				<content><!-- 47 --></content>
 			</element>
 			<element>
+				<!-- 2000B SBR06: -->
 				<content></content>
 			</element>
 			<element>
+				<!-- 2000B SBR07: -->
 				<content></content>
 			</element>
 			<element>
+				<!-- 2000B SBR08: -->
 				<content></content>
 			</element>
 			<element>
-				<!-- X12 Claim Type from Payer -->
+				<!-- 2000B SBR09: Claim Filing Indicator Code (X12) -->
 				<content><xsl:value-of select="translate($payerobj/x12claimtype, $lowercase, $uppercase)" /></content>
 			</element>
 		</x12segment>
@@ -749,68 +707,81 @@
 		<!-- 2010BA: Subscriber Name (p117) required -->
 		<x12segment sid="NM1">
 			<element>
-				<!-- Insured or subscriber -->
+				<!-- 2010BA NM101: Entity Subscriber Code -->
 				<content>IL</content>
 			</element>
 			<element>
+				<!-- 2010BA NM102: Entity Type Qualifier -->
 				<!-- 1 = person -->
 				<content>1</content>
 			</element>
 			<element>
+				<!-- 2010BA NM103: Subscriber Last -->
 				<content><xsl:choose>
 					<xsl:when test="$insuredobj/relationship = 'S'"><xsl:value-of select="translate($patientobj/name/last, $lowercase, $uppercase)" /></xsl:when>
 					<xsl:otherwise><xsl:value-of select="translate($insuredobj/name/last, $lowercase, $uppercase)" /></xsl:otherwise>
 				</xsl:choose></content>
 			</element>
 			<element>
+				<!-- 2010BA NM104: Subscriber First -->
 				<content><xsl:choose>
 					<xsl:when test="$insuredobj/relationship = 'S'"><xsl:value-of select="translate($patientobj/name/first, $lowercase, $uppercase)" /></xsl:when>
 					<xsl:otherwise><xsl:value-of select="translate($insuredobj/name/first, $lowercase, $uppercase)" /></xsl:otherwise>
 				</xsl:choose></content>
 			</element>
 			<element>
+				<!-- 2010BA NM105: Subscriber Middle -->
 				<content><xsl:choose>
 					<xsl:when test="$insuredobj/relationship = 'S'"><xsl:value-of select="translate($patientobj/name/middle, $lowercase, $uppercase)" /></xsl:when>
 					<xsl:otherwise><xsl:value-of select="translate($insuredobj/name/middle, $lowercase, $uppercase)" /></xsl:otherwise>
 				</xsl:choose></content>
 			</element>
 			<element>
-				<!-- Name prefix -->
+				<!-- 2010BA NM106: Subscriber Name Prefix -->
 				<content></content>
 			</element>
 			<element>
-				<!-- Name suffix -->
+				<!-- 2010BA NM107: Subscriber Name Suffix -->
 				<content></content>
 			</element>
 			<element>
-				<!-- Identification code qualifier (MI = member ID, ZZ = mutually defined) -->
+				<!-- 2010BA NM108: Identification Code Qualifier -->
+				<!-- (MI = member ID, ZZ = mutually defined) -->
 				<content>MI</content>
 			</element>
 			<element>
-				<!-- Identification code -->
+				<!-- 2010BA NM109: Identification Code -->
 				<content><xsl:value-of select="$insuredobj/id" /></content>
 			</element>
 		</x12segment>
 
-		<!-- 2010BA: Subscriber Address (p121) -->
+		<!-- 2010BA N3: Subscriber Address (p121) -->
 		<x12segment sid="N3">
 			<element>
+				<!-- 2010BA NM301: Subscriber Address Line 1 -->
 				<content><xsl:choose>
 					<xsl:when test="$insuredobj/relationship = 'S'"><xsl:value-of select="translate($patientobj/address/streetaddress, $lowercase, $uppercase)" /></xsl:when>
 					<xsl:otherwise><xsl:value-of select="translate($insuredobj/address/streetaddress, $lowercase, $uppercase)" /></xsl:otherwise>
 				</xsl:choose></content>
+			</element>
+			<element>
+				<!-- 2010BA NM302: Subscriber Address Line 2 -->
+				<content></content>
 			</element>
 		</x12segment>
 
 		<!-- FIXME FIXME NEEDS CHECK FOR relationship!! (p122) -->
 		<x12segment sid="N4">
 			<element>
+				<!-- 2010BA NM401: Subscriber City Name -->
 				<content><xsl:value-of select="translate($insuredobj/address/city, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
+				<!-- 2010BA NM402: Subscriber State Code -->
 				<content><xsl:value-of select="translate($insuredobj/address/state, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
+				<!-- 2010BA NM403: Subscriber Postal Code -->
 				<content><xsl:value-of select="$insuredobj/address/zipcode" /></content>
 			</element>
 		</x12segment>
@@ -818,14 +789,17 @@
 		<xsl:if test="$insuredobj/relationship = 'S'">
 		<x12segment sid="DMG">
 			<element>
-				<!-- Specify CCYYMMDD date -->
+				<!-- 2010BA DMG01: Date Time Period Format Qualifier -->
+				<!-- DB = CCYYMMDD -->
 				<content>D8</content>
 			</element>
 			<element>
+				<!-- 2010BA DMG02: Subscriber Birth Date -->
 				<!-- DOB of insured CCYYMMDD -->
 				<content><xsl:value-of select="concat($insuredobj/dateofbirth/year, $insuredobj/dateofbirth/month, $insuredobj/dateofbirth/day)" /></content>
 			</element>
 			<element>
+				<!-- 2010BA DMG03: Subscriber Gender Code -->
 				<!-- Gender (transcode "T"ransgender as U) -->
 				<content><xsl:value-of select="translate($insuredobj/sex, 'mftTu', 'MFUUU')" /></content>
 			</element>
@@ -899,7 +873,7 @@
 		<x12segment sid="PAT">
 			<comment>PAT - Patient Name (p154)</comment>
 			<element>
-				<!-- Entity Identifier Code -->
+				<!-- 2010CA PAT01: Individual Relationship Code -->
 				<content><xsl:choose>
 						<!-- Husband or wife (spouse) is 01 -->
 					<xsl:when test="($insuredobj/relationship = 'H') or ($insuredobj/relationship = 'W')">01</xsl:when>
@@ -954,37 +928,44 @@
 		<x12segment sid="NM1">
 			<comment>NM1 - Subscriber Name (p157)</comment>
 			<element>
-				<!-- Entity Identifier Code (QC = patient) -->
+				<!-- 2010CA NM101: Entity Identifier Code (QC = patient) -->
 				<content>QC</content>
 			</element>
 			<element>
-				<!-- Entity Type Qualifier (1 = person) -->
+				<!-- 2010CA NM102: Entity Type Qualifier (1 = person) -->
 				<content>1</content>
 			</element>
 			<element>
-				<comment>Name, Last</comment>
+				<!-- 2010CA NM103: Patient Last Name -->
 				<content><xsl:value-of select="translate($patientobj/name/last, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
+				<!-- 2010CA NM104: Patient First Name -->
 				<comment>Name, First</comment>
 				<content><xsl:value-of select="translate($patientobj/name/first, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
+				<!-- 2010CA NM105: Patient Middle Name -->
 				<comment>Name, Middle</comment>
 				<content><xsl:value-of select="translate($patientobj/name/middle, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
-				<comment>Name Prefix</comment>
+				<!-- 2010CA NM106: Patient Name Prefix -->
 				<content></content>
 			</element>
 			<element>
-				<!-- NM108 - Identification Code Qualifier -->
+				<!-- 2010CA NM107: Patient Name Suffix -->
+				<content></content>
+			</element>
+			<element>
+				<!-- 2010CA NM108: Patient Code Qualifier -->
 				<content>MI</content>
 			</element>
 			<element>
-				<!-- NM109 - Identification Code -->
+				<!-- 2010CA NM109: Patient Identifier -->
 				<!-- FIXME: needs to be pulled from "insured" or other coverage -->
 				<content></content>
+				<content><xsl:value-of select="translate($insuredobj/id, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
 				<!-- NM110 - Entity Relationship Code (not used) -->
@@ -999,6 +980,7 @@
 		<x12segment sid="N3">
 			<comment>2010BA Subscriber Name / Address</comment>
 			<element>
+				<!-- 2010CA N301: Subscriber Address Line 1 -->
 				<content><xsl:value-of select="translate($patientobj/address/streetaddress, $lowercase, $uppercase)" /></content>
 			</element>
 		</x12segment>
@@ -1006,12 +988,15 @@
 		<x12segment sid="N4">
 			<comment>2010BA Subscriber Name / CSZ</comment>
 			<element>
+				<!-- 2010CA N401: Subscriber City Name -->
 				<content><xsl:value-of select="translate($patientobj/address/city, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
+				<!-- 2010CA N402: Subscriber State Name -->
 				<content><xsl:value-of select="translate($patientobj/address/state, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
+				<!-- 2010CA N403: Subscriber Postal Code -->
 				<content><xsl:value-of select="$patientobj/address/zipcode" /></content>
 			</element>
 		</x12segment>
@@ -1019,21 +1004,20 @@
 
 		<!-- DMG Segment is the demographic segment. It should only
 		     be used when the patient is the same as the insured!!! -->
-			insured = <xsl:value-of select="$insured" />
-			--
-		<xsl:comment>
-		<xsl:if test="$insuredobj/relationship = 'S'">
+		<!-- <xsl:comment> -->
+		<!-- <xsl:if test="$insuredobj/relationship = 'S'"> -->
 		<x12segment sid="DMG">
 			<element>
-				<!-- DMG01 - Date Time Period Format Qualifier -->
+				<!-- 2010CA DMG01: Date Time Period Format Qualifier -->
 				<content>D8</content>
 			</element>
 			<element>
+				<!-- 2010CA DMG02: Patient Birth Date -->
 				<xsl:variable name="dob" select="$patientobj/dateofbirth" />
 				<content><xsl:value-of select="concat($dob/year, $dob/month, $dob/day)" /></content>
 			</element>
 			<element>
-				<!-- DMG03 - Gender Code -->
+				<!-- 2010CA DMG03: Gender Code -->
 				<content><xsl:value-of select="translate($patientobj/sex, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
@@ -1055,8 +1039,8 @@
 				<content></content>
 			</element>
 		</x12segment>
-		</xsl:if>
-		</xsl:comment>
+		<!-- </xsl:if> -->
+		<!-- </xsl:comment> -->
 
 		<xsl:if test="boolean(string($patientobj/socialsecuritynumber))">
 		<x12segment sid="REF">
@@ -1119,8 +1103,7 @@
 				<content></content>
 			</element>
 			<element>
-				<!-- 2300 CLM05: Total charges -->
-				<!-- Place of Service Code -->
+				<!-- 2300 CLM05: Place of Service Code -->
 				<!--	1:	Facility type code -->
 				<!--	2:	Not used -->
 				<!--	3:	Frequency type (1) -->
