@@ -30,6 +30,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -42,7 +43,9 @@ import javax.ws.rs.Produces;
 import javax.xml.ws.WebServiceContext;
 
 import org.apache.log4j.Logger;
+import org.remitt.prototype.EligibilityInterface;
 import org.remitt.prototype.PluginInterface;
+import org.remitt.prototype.EligibilityInterface.EligibilityResponse;
 
 @WebService(endpointInterface = "org.remitt.server.IServiceInterface", serviceName = "remittService")
 public class Service implements IServiceInterface {
@@ -256,6 +259,8 @@ public class Service implements IServiceInterface {
 			category = "translation"; // translation
 		} else if (category.equalsIgnoreCase("transmission")) {
 			category = "transmission"; // transmission/transport
+		} else if (category.equalsIgnoreCase("eligibility")) {
+			category = "eligibility"; // eligibility
 		} else {
 			// No plugins for dud categories.
 			return null;
@@ -368,6 +373,33 @@ public class Service implements IServiceInterface {
 	public Integer[] getOutputYears() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@POST
+	@Path("eligibility")
+	@Produces("application/json")
+	@Override
+	public EligibilityResponse getEligibility(String plugin,
+			HashMap<String, String> parameters) {
+		EligibilityInterface p = null;
+		try {
+			p = (EligibilityInterface) Class.forName(plugin).newInstance();
+		} catch (InstantiationException e) {
+			log.error(e);
+			return null;
+		} catch (IllegalAccessException e) {
+			log.error(e);
+			return null;
+		} catch (ClassNotFoundException e) {
+			log.error(e);
+			return null;
+		}
+		try {
+			return p.checkEligibility(parameters);
+		} catch (Exception e) {
+			log.error(e);
+			return null;
+		}
 	}
 
 	/**

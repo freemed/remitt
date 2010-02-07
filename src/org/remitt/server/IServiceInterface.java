@@ -24,8 +24,12 @@
 
 package org.remitt.server;
 
+import java.util.HashMap;
+
 import javax.jws.WebParam;
 import javax.jws.WebService;
+
+import org.remitt.prototype.EligibilityInterface.EligibilityResponse;
 
 @WebService
 public interface IServiceInterface {
@@ -163,5 +167,16 @@ public interface IServiceInterface {
 	public String[] getPluginOptions(
 			@WebParam(name = "pluginclass") String pluginClass,
 			@WebParam(name = "qualifyingoption") String qualifyingOption);
+
+	/**
+	 * Check for eligibility.
+	 * 
+	 * @param plugin
+	 * @param parameters
+	 * @return
+	 */
+	public EligibilityResponse getEligibility(
+			@WebParam(name = "plugin") String plugin,
+			@WebParam(name = "parameters") HashMap<String, String> parameters);
 
 }

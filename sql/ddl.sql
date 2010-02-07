@@ -194,7 +194,7 @@ CREATE TABLE `tPlugins` (
 	  plugin	VARCHAR( 100 ) NOT NULL
 	, version	VARCHAR( 30 ) NOT NULL
 	, author	VARCHAR( 100 ) NOT NULL
-	, category	ENUM ( 'validation', 'render', 'translation', 'transmission' ) NOT NULL
+	, category	ENUM ( 'validation', 'render', 'translation', 'transmission', 'eligibility' ) NOT NULL
 	, inputFormat	VARCHAR( 100 )
 	, outputFormat	VARCHAR( 100 )
 );
@@ -209,6 +209,8 @@ INSERT INTO `tPlugins` VALUES
 		### Transmission plugins ###
 	, ( 'org.remitt.plugin.transmission.ScriptedHttpTransport', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'text', NULL )
 	, ( 'org.remitt.plugin.transmission.SftpTransport', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'text', NULL )
+		### Eligibility plugins ###
+	, ( 'org.remitt.plugin.eligibility.GatewayEDIEligibility', '0.1', 'jeff@freemedsoftware.org', 'eligibility', NULL, NULL )
 ;
 
 ### Translation Lookup ###
