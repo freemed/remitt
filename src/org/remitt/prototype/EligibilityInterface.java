@@ -34,6 +34,15 @@ public interface EligibilityInterface {
 		private Status status;
 		private SuccessCode successCode;
 		private String rawResponse;
+		private String[] messages;
+
+		public String[] getMessages() {
+			return messages;
+		}
+
+		public void setMessages(String[] m) {
+			messages = m;
+		}
 
 		public String getRawResponse() {
 			return rawResponse;

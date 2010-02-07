@@ -121,6 +121,13 @@ public class GatewayEDIEligibility implements EligibilityInterface {
 		er.setRawResponse(rawResponse);
 		er.setSuccessCode(response.getSuccessCode());
 
+		// Try to pass on all processing messages as well, just in case.
+		try {
+			er.setMessages(response.getExtraProcessingInfo().getAllMessages());
+		} catch (Exception ex) {
+			log.error(ex);
+		}
+
 		if (response.getSuccessCode() == SuccessCode.Success) {
 			er.setStatus(Status.OK);
 			return er;
