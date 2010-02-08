@@ -67,11 +67,14 @@ public class MasterControl extends HttpServlet {
 
 	public void init() throws ServletException {
 		log.info("MasterControl servlet initializing");
+		System.out.println("Master Control setting ServletContext");
 		Configuration.setServletContext(this);
+		System.out.println("Master Control loading Configuration");
 		Configuration.loadConfiguration();
 
 		String jdbcUrl = null;
 		String jdbcDriver = null;
+		System.out.println("Master Control creating db connections");
 		try {
 			jdbcUrl = Configuration.getConfiguration().getString("db.url");
 			log.debug("Found db.url string = " + jdbcUrl);

@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id $
  *
  * Authors:
  *      Jeff Buchbinder <jeff@freemedsoftware.org>
@@ -24,17 +24,51 @@
 
 package org.remitt.prototype;
 
-import java.util.HashMap;
+import java.io.Serializable;
 
-public interface EligibilityInterface {
+import WebServices.GatewayEDI.SuccessCode;
 
-	public String getPluginName();
+public class EligibilityResponse implements Serializable {
 
-	public Double getPluginVersion();
+	private static final long serialVersionUID = 80195456387213L;
 
-	public EligibilityResponse checkEligibility(String userName,
-			HashMap<String, String> values) throws Exception;
+	private EligibilityStatus status;
+	private SuccessCode successCode;
+	private String rawResponse;
+	private String[] messages;
 
-	public String[] getPluginConfigurationOptions();
+	public EligibilityResponse() {
+	}
 
+	public String[] getMessages() {
+		return messages;
+	}
+
+	public void setMessages(String[] m) {
+		messages = m;
+	}
+
+	public String getRawResponse() {
+		return rawResponse;
+	}
+
+	public void setRawResponse(String r) {
+		rawResponse = r;
+	}
+
+	public EligibilityStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(EligibilityStatus s) {
+		status = s;
+	}
+
+	public SuccessCode getSuccessCode() {
+		return successCode;
+	}
+
+	public void setSuccessCode(SuccessCode s) {
+		successCode = s;
+	}
 }

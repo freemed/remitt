@@ -107,29 +107,41 @@ public class Configuration {
 
 			PropertiesConfiguration defaults = null;
 			try {
+				log
+						.info("Attempting to create PropertiesConfiguration object for DEFAULT_CONFIG");
 				defaults = new PropertiesConfiguration(servletContext
 						.getServletContext().getRealPath(DEFAULT_CONFIG));
 				log.info("Loading default configuration from "
 						+ servletContext.getServletContext().getRealPath(
 								DEFAULT_CONFIG));
+				defaults.load();
 			} catch (ConfigurationException e) {
 				log.error("Could not load default configuration from "
 						+ servletContext.getServletContext().getRealPath(
 								DEFAULT_CONFIG));
-				e.printStackTrace();
+				log.error(e);
 			}
 			if (OVERRIDE_CONFIG != null) {
 				PropertiesConfiguration overrides = null;
 				try {
+					log
+							.info("Attempting to create PropertiesConfiguration object for OVERRIDE_CONFIG");
 					overrides = new PropertiesConfiguration();
+					log.info("Setting file for OVERRIDE_CONFIG");
 					overrides.setFile(new File(OVERRIDE_CONFIG));
+					log.info("Setting reload strategy for OVERRIDE_CONFIG");
 					overrides
 							.setReloadingStrategy(new FileChangedReloadingStrategy());
+					log.info("Loading OVERRIDE_CONFIG");
 					overrides.load();
 				} catch (ConfigurationException e) {
-					log.info("Could not load overrides", e);
+					log.error("Could not load overrides", e);
+				} catch (Exception ex) {
+					log.error(ex);
 				}
-				compositeConfiguration.addConfiguration(overrides);
+				if (overrides != null) {
+					compositeConfiguration.addConfiguration(overrides);
+				}
 			}
 			// Afterwards, add defaults so they're read second.
 			compositeConfiguration.addConfiguration(defaults);

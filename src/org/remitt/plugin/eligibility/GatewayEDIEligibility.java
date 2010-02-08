@@ -35,6 +35,8 @@ import org.apache.axis.client.Call;
 import org.apache.axis.client.Stub;
 import org.apache.log4j.Logger;
 import org.remitt.prototype.EligibilityInterface;
+import org.remitt.prototype.EligibilityResponse;
+import org.remitt.prototype.EligibilityStatus;
 import org.remitt.server.Configuration;
 
 import WebServices.GatewayEDI.Eligibility;
@@ -74,7 +76,7 @@ public class GatewayEDIEligibility implements EligibilityInterface {
 			port = service.getEligibilitySoap();
 		} catch (ServiceException e) {
 			log.error(e);
-			er.setStatus(Status.SERVER_ERROR);
+			er.setStatus(EligibilityStatus.SERVER_ERROR);
 			return er;
 		}
 
@@ -112,7 +114,7 @@ public class GatewayEDIEligibility implements EligibilityInterface {
 			response = port.doInquiry(inq);
 		} catch (RemoteException e) {
 			log.error(e);
-			er.setStatus(Status.SERVER_ERROR);
+			er.setStatus(EligibilityStatus.SERVER_ERROR);
 			return er;
 		}
 
@@ -129,41 +131,41 @@ public class GatewayEDIEligibility implements EligibilityInterface {
 		}
 
 		if (response.getSuccessCode() == SuccessCode.Success) {
-			er.setStatus(Status.OK);
+			er.setStatus(EligibilityStatus.OK);
 			return er;
 		}
 
 		if (response.getSuccessCode() == SuccessCode.ValidationFailure) {
-			er.setStatus(Status.BAD);
+			er.setStatus(EligibilityStatus.BAD);
 			return er;
 		}
 
 		if (response.getSuccessCode() == SuccessCode.PayerEnrollmentRequired) {
-			er.setStatus(Status.BAD);
+			er.setStatus(EligibilityStatus.BAD);
 			return er;
 		}
 
 		if (response.getSuccessCode() == SuccessCode.PayerNotSupported) {
-			er.setStatus(Status.SERVER_ERROR);
+			er.setStatus(EligibilityStatus.SERVER_ERROR);
 			return er;
 		}
 
 		if (response.getSuccessCode() == SuccessCode.PayerTimeout) {
-			er.setStatus(Status.SERVER_ERROR);
+			er.setStatus(EligibilityStatus.SERVER_ERROR);
 			return er;
 		}
 
 		if (response.getSuccessCode() == SuccessCode.ProviderEnrollmentRequired) {
-			er.setStatus(Status.BAD);
+			er.setStatus(EligibilityStatus.BAD);
 			return er;
 		}
 
 		if (response.getSuccessCode() == SuccessCode.SystemError) {
-			er.setStatus(Status.SERVER_ERROR);
+			er.setStatus(EligibilityStatus.SERVER_ERROR);
 			return er;
 		}
 
-		er.setStatus(Status.SERVER_ERROR);
+		er.setStatus(EligibilityStatus.SERVER_ERROR);
 		return er;
 	}
 

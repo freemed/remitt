@@ -29,7 +29,7 @@ import java.util.HashMap;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 
-import org.remitt.prototype.EligibilityInterface.EligibilityResponse;
+import org.remitt.prototype.EligibilityResponse;
 
 @WebService
 public interface IServiceInterface {

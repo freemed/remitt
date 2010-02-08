@@ -44,8 +44,8 @@ import javax.xml.ws.WebServiceContext;
 
 import org.apache.log4j.Logger;
 import org.remitt.prototype.EligibilityInterface;
+import org.remitt.prototype.EligibilityResponse;
 import org.remitt.prototype.PluginInterface;
-import org.remitt.prototype.EligibilityInterface.EligibilityResponse;
 
 @WebService(endpointInterface = "org.remitt.server.IServiceInterface", serviceName = "remittService")
 public class Service implements IServiceInterface {
