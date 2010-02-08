@@ -806,7 +806,7 @@
 		</x12segment>
 		</xsl:if>
 
-		<!-- 2010BB: Payer Name (p???) required -->
+		<!-- 2010BB: Payer Name (p130) required -->
 		<x12segment sid="NM1">
 			<element>
 				<!-- 2010BB NM101: Payer -->
@@ -843,6 +843,30 @@
 			<element>
 				<!-- 2010BB NM109: Identification Code -->
 				<content><xsl:value-of select="$payerobj/x12id" /></content>
+			</element>
+		</x12segment>
+
+		<!-- 2010BB N3: Payer Address (p134) -->
+		<x12segment sid="N3">
+			<element>
+				<!-- 2010BB N301: Payer Address Line 1 -->
+				<content><xsl:value-of select="translate($payerobj/address/streetaddress, $lowercase, $uppercase)" /></content>
+			</element>
+		</x12segment>
+
+		<!-- 2010BB N4: Payer City/State/Zip (p135) -->
+		<x12segment sid="N4">
+			<element>
+				<!-- 2010BB N401: Payer City Name -->
+				<content><xsl:value-of select="translate($payerobj/address/city, $lowercase, $uppercase)" /></content>
+			</element>
+			<element>
+				<!-- 2010BB N402: Payer State Name -->
+				<content><xsl:value-of select="translate($payerobj/address/state, $lowercase, $uppercase)" /></content>
+			</element>
+			<element>
+				<!-- 2010BB N403: Payer Postal Code -->
+				<content><xsl:value-of select="$payerobj/address/zipcode" /></content>
 			</element>
 		</x12segment>
 
