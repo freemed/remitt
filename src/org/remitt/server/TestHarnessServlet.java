@@ -27,12 +27,15 @@ package org.remitt.server;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.pb.x12.FormatException;
 import org.remitt.prototype.PluginInterface;
+import org.remitt.prototype.X12Message;
 
 /**
  * Servlet implementation class TestHarnessServlet
@@ -64,6 +67,15 @@ public class TestHarnessServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		String type = request.getParameter("type");
+
+		// Handle parser tests
+		if (type.equals("parser")) {
+			String plugin = request.getParameter("plugin");
+			String input = request.getParameter("input");
+			parserTest(plugin, input, response.getOutputStream());
+			return;
+		}
+
 		String plugin = request.getParameter("plugin");
 		String option = request.getParameter("option");
 		String input = request.getParameter("input");
@@ -108,6 +120,34 @@ public class TestHarnessServlet extends HttpServlet {
 				throw new ServletException(e);
 			}
 		}
+	}
+
+	public void parserTest(String parserClass, String input,
+			ServletOutputStream out) throws IOException {
+		X12Message p = null;
+		try {
+			p = (X12Message) Class.forName(parserClass).newInstance();
+		} catch (InstantiationException e) {
+			log.error(e);
+			out.println(e.toString());
+			return;
+		} catch (IllegalAccessException e) {
+			log.error(e);
+			out.println(e.toString());
+			return;
+		} catch (ClassNotFoundException e) {
+			log.error(e);
+			out.println(e.toString());
+			return;
+		}
+		try {
+			p.parse(input);
+		} catch (FormatException e) {
+			log.error(e);
+			out.println(e.toString());
+			return;
+		}
+		out.println(p.toString());
 	}
 
 }
