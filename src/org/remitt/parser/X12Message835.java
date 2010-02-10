@@ -24,7 +24,7 @@
 
 package org.remitt.parser;
 
-import java.util.Iterator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.pb.x12.Segment;
@@ -34,27 +34,77 @@ public class X12Message835 extends X12Message {
 
 	static final Logger log = Logger.getLogger(X12Message835.class);
 
-	protected String parsedOutput = "";
-
 	protected void parseSegments() {
 		if (getX12message() == null) {
 			log.error("X12 message not set");
 			return;
 		}
-		Iterator<Segment> iter = getX12message().iterator();
-		while (iter.hasNext()) {
-			Segment s = iter.next();
-			String segmentType = s.getElement(0);
-			if (segmentType.length() >= 2) {
-				log.info("Found " + segmentType + " segment");
-				parsedOutput += "Found " + segmentType + " segment\n";
-			}
+		debug.println("Begin parsing 835");
+		position = 1;
+		debug.println("Extracting transaction header");
+		List<Segment> header = extractLoop(new SegmentComparator[] {
+				new SegmentComparator("ISA"), new SegmentComparator("GS"),
+				new SegmentComparator("ST"), new SegmentComparator("BPR"),
+				new SegmentComparator("NTE"), new SegmentComparator("TRN"),
+				new SegmentComparator("CUR"), new SegmentComparator("REF"),
+				new SegmentComparator("DTM") });
+		debug.println("***** Loop 1000A *****");
+		List<Segment> loop1000a = extractLoop(new SegmentComparator[] {
+				new SegmentComparator("N1", 1, new String[] { "PR" }),
+				new SegmentComparator("N2"), new SegmentComparator("N3"),
+				new SegmentComparator("N4"), new SegmentComparator("REF"),
+				new SegmentComparator("PER", 1, new String[] { "CX" }) });
+		debug.println("***** Loop 1000B ***** ");
+		List<Segment> loop1000b = extractLoop(new SegmentComparator[] {
+				new SegmentComparator("N1", 1, new String[] { "PE" }),
+				new SegmentComparator("N3"), new SegmentComparator("N4"),
+				new SegmentComparator("REF") });
+		debug.println("***** Loop 2000 *****");
+		List<Segment> loop2000 = extractLoop(new SegmentComparator[] {
+				new SegmentComparator("LX"), new SegmentComparator("TS3"),
+				new SegmentComparator("TS2") });
+		while (isNextSegmentIdentifier("CLP")) {
+			debug.println("***** Loop 2100 *****");
+			List<Segment> loop2100 = extractLoop(new SegmentComparator[] {
+					new SegmentComparator("CLP"),
+					new SegmentComparator("CAS"),
+					new SegmentComparator("NM1", 1, new String[] { "QC", "IL",
+							"74", "82", "TT", "PR" }),
+					new SegmentComparator("MIA"),
+					new SegmentComparator("MOA"),
+					new SegmentComparator("REF"),
+					new SegmentComparator("DTM", 1, new String[] { "036",
+							"050", "232", "233" }),
+					new SegmentComparator("PER", 1, new String[] { "CX" }),
+					new SegmentComparator("AMT", 1, new String[] { "AU", "D8",
+							"DY", "F5", "I", "NL", "T", "T2", "ZK", "ZL", "ZM",
+							"ZN", "ZO", "ZZ" }),
+					new SegmentComparator("QTY", 1, new String[] { "CA", "CD",
+							"LA", "LE", "NA", "NE", "NR", "OU", "PS", "VS",
+							"ZK", "ZL", "ZM", "ZN", "ZO" }) });
+			debug.println("***** Loop 2110 *****");
+			List<Segment> loop2110 = extractLoop(new SegmentComparator[] {
+					new SegmentComparator("SVC"),
+					new SegmentComparator("DTM", 1, new String[] { "150",
+							"151", "472" }),
+					new SegmentComparator("CAS", 1, new String[] { "CO", "CR",
+							"OA", "PI", "PR" }),
+					new SegmentComparator("REF", 1, new String[] { "1S", "6R",
+							"BB", "E9", "G1", "G3", "LU", "RB" }),
+					new SegmentComparator("REF", 1, new String[] { "1A", "1B",
+							"1C", "1D", "1G", "1H", "1J", "HPI", "SY", "TJ",
+							"XX" }),
+					new SegmentComparator("AMT", 1,
+							new String[] { "B6", "DY", "KH", "NE", "T", "T2",
+									"ZK", "ZL", "ZM", "ZN", "ZO" }),
+					new SegmentComparator("QTY", 1, new String[] { "NE", "ZK",
+							"ZL", "ZM", "ZN", "ZO" }),
+					new SegmentComparator("LQ", 1, new String[] { "HE", "RX" }) });
 		}
-	}
-
-	@Override
-	public String toString() {
-		return parsedOutput;
+		debug.println("Summary loop");
+		List<Segment> summary = extractLoop(new SegmentComparator[] {
+				new SegmentComparator("PLB"), new SegmentComparator("SE") });
+		debug.println("Finished parsing 835");
 	}
 
 }
