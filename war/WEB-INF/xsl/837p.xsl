@@ -439,6 +439,7 @@
 		</x12segment>
 
 		<!-- CUR - Currency information (p82) optional -->
+		<xsl:if test="0 = 1">
 		<x12segment sid="CUR">
 			<element>
 				<!-- Entity ID = Billing Provider -->
@@ -449,6 +450,7 @@
 				<content>USD</content>
 			</element>
 		</x12segment>
+		</xsl:if>
 
 		<xsl:comment>Loop 2010AA: Billing/Pay-to Provider</xsl:comment>
 
@@ -1024,12 +1026,7 @@
 				<content><xsl:value-of select="$patientobj/address/zipcode" /></content>
 			</element>
 		</x12segment>
-		</xsl:if> <!-- end 2000C chunk -->
 
-		<!-- DMG Segment is the demographic segment. It should only
-		     be used when the patient is the same as the insured!!! -->
-		<!-- <xsl:comment> -->
-		<!-- <xsl:if test="$insuredobj/relationship = 'S'"> -->
 		<x12segment sid="DMG">
 			<element>
 				<!-- 2010CA DMG01: Date Time Period Format Qualifier -->
@@ -1063,8 +1060,7 @@
 				<content></content>
 			</element>
 		</x12segment>
-		<!-- </xsl:if> -->
-		<!-- </xsl:comment> -->
+		</xsl:if><!-- end 2000C looping -->
 
 		<xsl:if test="boolean(string($patientobj/socialsecuritynumber))">
 		<x12segment sid="REF">
