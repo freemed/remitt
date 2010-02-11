@@ -87,6 +87,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/axis-1.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxrpc-1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/X12-0.6.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/simple-xml-2.2.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

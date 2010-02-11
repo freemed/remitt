@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,6 +36,8 @@ import org.pb.x12.FormatException;
 import org.pb.x12.Parser;
 import org.pb.x12.Segment;
 import org.pb.x12.X12;
+import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.core.Persister;
 
 abstract public class X12Message {
 
@@ -48,61 +49,6 @@ abstract public class X12Message {
 	private X12 x12message = null;
 	private int x12segmentCount = 0;
 	protected int position = 0;
-
-	public class SegmentComparator {
-		protected String[] qualifiers = new String[] {};
-		protected Integer qualifierSegment = 1;
-		protected String segmentIdentifier = "";
-		protected PrintWriter debug = null;
-
-		public SegmentComparator(String sId) {
-			segmentIdentifier = sId;
-			qualifierSegment = null;
-			qualifiers = null;
-		}
-
-		public SegmentComparator(String sId, Integer qPos, String[] q) {
-			segmentIdentifier = sId;
-			qualifierSegment = qPos;
-			qualifiers = q;
-		}
-
-		public PrintWriter getDebug() {
-			return debug;
-		}
-
-		public void setDebug(PrintWriter d) {
-			debug = d;
-		}
-
-		public boolean check(Segment s) {
-			// Deal with simple cases first
-			if (qualifierSegment == null || qualifiers == null) {
-				if (segmentIdentifier.equals(s.getElement(0))) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-			// More complicated selection checking now
-			if (segmentIdentifier.equals(s.getElement(0))
-					&& Arrays.asList(qualifiers).contains(
-							s.getElement(qualifierSegment))) {
-				return true;
-			}
-			return false;
-		}
-
-		@Override
-		public String toString() {
-			if (qualifierSegment == null || qualifiers == null) {
-				return "Compare(" + segmentIdentifier + ")";
-			} else {
-				return "Compare(" + segmentIdentifier + ","
-						+ qualifiers.toString() + ")";
-			}
-		}
-	}
 
 	public X12Message() {
 	}
@@ -119,6 +65,46 @@ abstract public class X12Message {
 			log.error(e);
 		}
 		parseSegments();
+	}
+
+	/**
+	 * Use a <SegmentComparator> to find the first matching X12 <Segment>.
+	 * 
+	 * @param segments
+	 * @param c
+	 * @return
+	 */
+	public static Segment findSegmentByComparator(List<Segment> segments,
+			SegmentComparator c) {
+		Iterator<Segment> iter = segments.iterator();
+		while (iter.hasNext()) {
+			Segment s = iter.next();
+			if (c.check(s)) {
+				return s;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Use a <SegmentComparator> to find matching X12 segments in a <List> of
+	 * <Segment> objects.
+	 * 
+	 * @param segments
+	 * @param c
+	 * @return
+	 */
+	public static List<Segment> findSegmentsByComparator(
+			List<Segment> segments, SegmentComparator c) {
+		List<Segment> results = new ArrayList<Segment>();
+		Iterator<Segment> iter = segments.iterator();
+		while (iter.hasNext()) {
+			Segment s = iter.next();
+			if (c.check(s)) {
+				results.add(s);
+			}
+		}
+		return results;
 	}
 
 	/**
@@ -156,6 +142,43 @@ abstract public class X12Message {
 	}
 
 	/**
+	 * Static method to create XML serialization of <X12DTO> object.
+	 * 
+	 * @param dto
+	 * @return
+	 */
+	public static String serializeDTO(X12DTO dto) {
+		Serializer serializer = new Persister();
+		StringWriter stringWriter = new StringWriter();
+		try {
+			serializer.write(dto, stringWriter);
+			stringWriter.flush();
+		} catch (Exception e) {
+			log.error(e);
+		}
+		return stringWriter.getBuffer().toString();
+	}
+
+	/**
+	 * "Safe" method for getting text of an element from a <Segment> without
+	 * worrying about catching Exceptions.
+	 * 
+	 * @param segment
+	 * @param position
+	 * @return <String> for the position or null if it can't be found.
+	 */
+	public static String getSafeElement(Segment segment, int position) {
+		if (segment == null) {
+			return null;
+		}
+		try {
+			return segment.getElement(position);
+		} catch (Exception ex) {
+		}
+		return null;
+	}
+
+	/**
 	 * Determine if the next segment identifier at indicated position equals
 	 * identifier sId.
 	 * 
@@ -164,6 +187,23 @@ abstract public class X12Message {
 	 */
 	protected boolean isNextSegmentIdentifier(String sId) {
 		return getX12message().getSegment(position).getElement(0).equals(sId);
+	}
+
+	/**
+	 * Determine if the next segment identifier at indicated position equals any
+	 * of the identifiers in the sIds array.
+	 * 
+	 * @param sIds
+	 * @return
+	 */
+	protected boolean isNextSegmentIdentifier(String[] sIds) {
+		for (int iter = 0; iter < sIds.length; iter++) {
+			if (getX12message().getSegment(position).getElement(0).equals(
+					sIds[iter])) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
