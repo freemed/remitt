@@ -39,6 +39,14 @@ import org.pb.x12.X12;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
+/**
+ * X12Message wraps the parsing and serialization of <X12> with additional
+ * <Segment> comparison and <Element> extraction methods to allow programmatic
+ * access and query to X12 data. It is meant to be extended to handle various
+ * message types.
+ * 
+ * @author jeff@freemedsoftware.org
+ */
 abstract public class X12Message {
 
 	static final Logger log = Logger.getLogger(X12Message.class);
@@ -53,10 +61,24 @@ abstract public class X12Message {
 	public X12Message() {
 	}
 
+	/**
+	 * Create new <X12Message> object with message text.
+	 * 
+	 * @param rawMessage
+	 *            X12 message text
+	 * @throws FormatException
+	 */
 	public X12Message(String rawMessage) throws FormatException {
 		parse(rawMessage);
 	}
 
+	/**
+	 * Parse the <String> representation of an <X12> message into the
+	 * appropriate <X12> object.
+	 * 
+	 * @param rawMessage
+	 * @throws FormatException
+	 */
 	public void parse(String rawMessage) throws FormatException {
 		Parser parser = new Parser();
 		try {
@@ -137,6 +159,11 @@ abstract public class X12Message {
 		return x12message;
 	}
 
+	/**
+	 * Get number of segments in the current <X12> message.
+	 * 
+	 * @return
+	 */
 	public int getSegmentCount() {
 		return x12segmentCount;
 	}
@@ -190,6 +217,17 @@ abstract public class X12Message {
 	}
 
 	/**
+	 * Determine if the next segment at indicated position matches using a
+	 * <SegmentComparator>.
+	 * 
+	 * @param sC
+	 * @return
+	 */
+	protected boolean isNextSegmentIdentifier(SegmentComparator sC) {
+		return sC.check(getX12message().getSegment(position));
+	}
+
+	/**
 	 * Determine if the next segment identifier at indicated position equals any
 	 * of the identifiers in the sIds array.
 	 * 
@@ -200,6 +238,22 @@ abstract public class X12Message {
 		for (int iter = 0; iter < sIds.length; iter++) {
 			if (getX12message().getSegment(position).getElement(0).equals(
 					sIds[iter])) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Determine if the next segment at indicated position is matched by any of
+	 * the <SegmentComparator> objects in the sIds array.
+	 * 
+	 * @param sCs
+	 * @return
+	 */
+	protected boolean isNextSegmentIdentifier(SegmentComparator[] sCs) {
+		for (int iter = 0; iter < sCs.length; iter++) {
+			if (sCs[iter].check(getX12message().getSegment(position))) {
 				return true;
 			}
 		}
@@ -222,7 +276,12 @@ abstract public class X12Message {
 			String segmentType = getX12message().getSegment(position)
 					.getElement(0);
 			if (segmentType.length() >= 2) {
-				log.info("Found " + segmentType + " segment");
+				log
+						.info("Found "
+								+ segmentType
+								+ " segment ["
+								+ getX12message().getSegment(position)
+										.toString() + "]");
 				debug.println("Found " + segmentType + " segment");
 			}
 
@@ -241,6 +300,16 @@ abstract public class X12Message {
 		return segments;
 	}
 
+	/**
+	 * Determine if a <Segment> matches ones or more <SegmentComparator>
+	 * objects' functionality.
+	 * 
+	 * @param s
+	 *            <Segment> to examine
+	 * @param c
+	 *            Array of <SegmentComparator> objects
+	 * @return true if a match is found, false if none
+	 */
 	public boolean checkSegmentForComparators(Segment s, SegmentComparator[] c) {
 		// debug.println(" -- [Segment id = " + s.getElement(0) + "]");
 		for (int iter = 0; iter < c.length; iter++) {

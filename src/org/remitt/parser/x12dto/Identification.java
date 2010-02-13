@@ -24,7 +24,6 @@
 
 package org.remitt.parser.x12dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.pb.x12.Segment;
@@ -32,12 +31,10 @@ import org.remitt.prototype.SegmentComparator;
 import org.remitt.prototype.X12DTO;
 import org.remitt.prototype.X12Message;
 import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
-@Root(name = "payer")
-public class Payer implements X12DTO {
+@Root(name = "identification")
+public class Identification implements X12DTO {
 
 	@Attribute(name = "idNumber")
 	private String idNumber;
@@ -45,28 +42,20 @@ public class Payer implements X12DTO {
 	@Attribute(name = "idQualifier")
 	private String idQualifier;
 
-	@Element(name = "name")
-	private String name;
-
-	@Element(name = "address")
-	private Address address;
-
-	@ElementList(name = "payees", required = false)
-	private List<Payee> payees = new ArrayList<Payee>();
-
-	public Payer() {
+	public Identification() {
 	}
 
-	public Payer(List<Segment> in) {
+	public Identification(List<Segment> in) {
 		processSegmentList(in);
+	}
+
+	public Identification(Segment in) {
+		this.idQualifier = X12Message.getSafeElement(in, 1);
+		this.idNumber = X12Message.getSafeElement(in, 2);
 	}
 
 	@Override
 	public void processSegmentList(List<Segment> in) {
-		Segment N1 = X12Message.findSegmentByComparator(in,
-				new SegmentComparator("N1", 1, new String[] { "PR" }));
-		this.name = X12Message.getSafeElement(N1, 2);
-		this.address = new Address(in);
 		Segment REF = X12Message.findSegmentByComparator(in,
 				new SegmentComparator("REF"));
 		this.idQualifier = X12Message.getSafeElement(REF, 1);
@@ -79,18 +68,6 @@ public class Payer implements X12DTO {
 
 	public String getIdQualifier() {
 		return this.idQualifier;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public Address getAddress() {
-		return this.address;
-	}
-
-	public List<Payee> getPayees() {
-		return this.payees;
 	}
 
 	@Override

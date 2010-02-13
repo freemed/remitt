@@ -25,6 +25,7 @@
 package org.remitt.parser.x12dto;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.pb.x12.Segment;
@@ -36,8 +37,8 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
-@Root(name = "payer")
-public class Payer implements X12DTO {
+@Root(name = "payee")
+public class Payee implements X12DTO {
 
 	@Attribute(name = "idNumber")
 	private String idNumber;
@@ -45,32 +46,37 @@ public class Payer implements X12DTO {
 	@Attribute(name = "idQualifier")
 	private String idQualifier;
 
-	@Element(name = "name")
-	private String name;
-
 	@Element(name = "address")
 	private Address address;
 
-	@ElementList(name = "payees", required = false)
-	private List<Payee> payees = new ArrayList<Payee>();
+	@ElementList(name = "identification", required = false)
+	private List<Identification> identification = new ArrayList<Identification>();
 
-	public Payer() {
+	@ElementList(name = "providerClaimGroup", required = false)
+	private List<ProviderClaimGroup> providerClaimGroup = new ArrayList<ProviderClaimGroup>();
+
+	public Payee() {
 	}
 
-	public Payer(List<Segment> in) {
+	public Payee(List<Segment> in) {
 		processSegmentList(in);
 	}
 
 	@Override
 	public void processSegmentList(List<Segment> in) {
 		Segment N1 = X12Message.findSegmentByComparator(in,
-				new SegmentComparator("N1", 1, new String[] { "PR" }));
-		this.name = X12Message.getSafeElement(N1, 2);
+				new SegmentComparator("N1", 1, new String[] { "PE" }));
+		this.idQualifier = X12Message.getSafeElement(N1, 3);
+		this.idNumber = X12Message.getSafeElement(N1, 4);
 		this.address = new Address(in);
-		Segment REF = X12Message.findSegmentByComparator(in,
+		List<Segment> REF = X12Message.findSegmentsByComparator(in,
 				new SegmentComparator("REF"));
-		this.idQualifier = X12Message.getSafeElement(REF, 1);
-		this.idNumber = X12Message.getSafeElement(REF, 2);
+		if (REF != null) {
+			Iterator<Segment> iter = REF.iterator();
+			while (iter.hasNext()) {
+				this.identification.add(new Identification(iter.next()));
+			}
+		}
 	}
 
 	public String getIdNumber() {
@@ -81,16 +87,12 @@ public class Payer implements X12DTO {
 		return this.idQualifier;
 	}
 
-	public String getName() {
-		return this.name;
-	}
-
 	public Address getAddress() {
 		return this.address;
 	}
 
-	public List<Payee> getPayees() {
-		return this.payees;
+	public List<ProviderClaimGroup> getProviderClaimGroup() {
+		return this.providerClaimGroup;
 	}
 
 	@Override
