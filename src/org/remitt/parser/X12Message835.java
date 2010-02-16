@@ -46,6 +46,8 @@ public class X12Message835 extends X12Message {
 
 	static final Logger log = Logger.getLogger(X12Message835.class);
 
+	private Remittance remittance = null;
+
 	protected void parseSegments() {
 		if (getX12message() == null) {
 			log.error("X12 message not set");
@@ -148,7 +150,16 @@ public class X12Message835 extends X12Message {
 				new SegmentComparator("PLB"), new SegmentComparator("SE") });
 		debug.println("Finished parsing 835");
 
+		setRemittance(remittance);
 		debug.println(remittance.toString());
+	}
+
+	public Remittance getRemittance() {
+		return this.remittance;
+	}
+
+	public void setRemittance(Remittance r) {
+		this.remittance = r;
 	}
 
 }
