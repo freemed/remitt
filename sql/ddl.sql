@@ -22,13 +22,16 @@
 
 DROP TABLE IF EXISTS `tUser`;
 CREATE TABLE `tUser` (
-	  id		SERIAL
-	, username	VARCHAR(50) NOT NULL UNIQUE KEY
-	, passhash	CHAR(32) NOT NULL
-	, apiurl	VARCHAR(150) COMMENT 'For later use'
+	  id				SERIAL
+	, username			VARCHAR(50) NOT NULL UNIQUE KEY
+	, passhash			CHAR(32) NOT NULL
+	, callbackserviceuri		VARCHAR(150) COMMENT 'RemittCallback service URL'
+	, callbackservicewsdluri	VARCHAR(150) COMMENT 'WSDL for RemittCallback service'
+	, callbackusername		VARCHAR(50)
+	, callbackpassword		VARCHAR(50)
 );
 
-INSERT INTO `tUser` VALUES ( 1, 'Administrator', MD5('password'), NULL );
+INSERT INTO `tUser` ( id, username, passhash, callbackserviceuri, callbackservicewsdluri ) VALUES ( 1, 'Administrator', MD5('password'), 'http://localhost/freemed/services/RemittCallback.php', 'http://localhost/freemed/services/RemittCallback.php?wsdl' );
 
 DROP TABLE IF EXISTS `tRole`;
 CREATE TABLE `tRole` (
