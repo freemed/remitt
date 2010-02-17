@@ -28,6 +28,7 @@ Configuration</title>
 <%@ page import="java.sql.*"%>
 <%@ page import="org.remitt.server.Configuration"%>
 <%@ page import="org.apache.log4j.Logger"%>
+<link href="css/stylesheet.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <h1><a href="http://remitt.org/"><img src="img/remitt.jpg"
@@ -49,8 +50,9 @@ Transmission</h1>
 		<%
 			Logger log = Logger.getLogger(this.getClass());
 			String username = request.getUserPrincipal().getName();
+			Connection c = null;
 			try {
-				Connection c = Configuration.getConnection();
+				c = Configuration.getConnection();
 				PreparedStatement p = c
 						.prepareStatement("SELECT * FROM tUserConfig "
 								+ " WHERE user = ?");
@@ -82,10 +84,20 @@ Transmission</h1>
 									+ "delete" + "\" /></td>");
 					out.println("</form></tr>");
 				}
+				try {
+					p.close();
+				} catch (Exception ex) {
+				}
 				c.close();
 			} catch (SQLException se) {
 				out.println("<tr><td colspan=\"4\"><b>Exception: "
 						+ se.toString() + "</b></tr></tr>");
+				if (c != null) {
+					try {
+						c.close();
+					} catch (Exception ex) {
+					}
+				}
 			}
 		%>
 		<tr>

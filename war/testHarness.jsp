@@ -24,6 +24,7 @@
 <html>
 <head>
 <title>REMITT Server: Test Harness</title>
+<link href="css/stylesheet.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <h1><a href="http://remitt.org/"><img src="img/remitt.jpg"

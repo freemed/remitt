@@ -27,6 +27,7 @@
 <%@ page import="java.sql.*"%>
 <%@ page import="org.remitt.server.Configuration"%>
 <%@ page import="org.apache.log4j.Logger"%>
+<link href="css/stylesheet.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <h1><a href="http://remitt.org/"><img src="img/remitt.jpg"

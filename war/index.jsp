@@ -26,6 +26,7 @@
 <title>REMITT Server v<%@ include file="about.jsp"%></title>
 <%@ page import="java.util.*"%>
 <%@ page import="org.remitt.server.Configuration"%>
+<link href="css/stylesheet.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <h1><a href="http://remitt.org/"><img src="img/remitt.jpg"
