@@ -26,7 +26,7 @@
 	</cxf:bus>
 
 	<!-- Service bean -->
-	<bean id="service" class="org.remitt.server.Service" autowire="autodetect" />
+	<bean id="service" class="org.remitt.server.impl.ServiceImpl" autowire="autodetect" />
 
 	<!-- REST service definition -->
 	<jaxrs:server id="restServer" address="/rest/">
@@ -57,7 +57,7 @@
 		</property>
 	</bean>
 
-	<jaxws:endpoint id="serviceEndpoint" implementor="org.remitt.server.Service"
+	<jaxws:endpoint id="serviceEndpoint" implementor="org.remitt.server.impl.ServiceImpl"
 		address="/interface">
 		<jaxws:serviceFactory>
 			<ref bean="jaxws-and-aegis-service-factory" />

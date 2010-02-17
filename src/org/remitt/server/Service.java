@@ -24,396 +24,159 @@
 
 package org.remitt.server;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import javax.annotation.Resource;
+import javax.jws.WebParam;
 import javax.jws.WebService;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.xml.ws.WebServiceContext;
 
-import org.apache.log4j.Logger;
-import org.remitt.prototype.EligibilityInterface;
 import org.remitt.prototype.EligibilityResponse;
-import org.remitt.prototype.PluginInterface;
 
-@WebService(endpointInterface = "org.remitt.server.IServiceInterface", serviceName = "remittService")
-public class Service implements IServiceInterface {
-	@Resource
-	WebServiceContext context;
-
-	static final Logger log = Logger.getLogger(Service.class);
-
-	@GET
-	@Path("protocolversion")
-	@Produces("application/json")
-	public String getProtocolVersion() {
-		return "2.0";
-	}
-
-	@POST
-	@Path("changepassword/{pw}")
-	@Produces("application/json")
-	public Boolean changePassword(@PathParam("pw") String newPassword) {
-		Connection c = getConnection();
-
-		String userName = getCurrentUserName();
-
-		PreparedStatement cStmt = null;
-		try {
-			cStmt = c
-					.prepareCall("UPDATE tUser SET passhash = MD5( ? ) WHERE username = ?;");
-
-			cStmt.setString(1, newPassword);
-			cStmt.setString(2, userName);
-
-			@SuppressWarnings("unused")
-			boolean hadResults = cStmt.execute();
-
-			Boolean returnValue = (cStmt.getUpdateCount() == 1);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return returnValue;
-		} catch (NullPointerException npe) {
-			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return false;
-		} catch (SQLException e) {
-			log.error("Caught SQLException", e);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return false;
-		}
-	}
-
-	@GET
-	@Path("username")
-	@Produces("application/json")
-	public String getCurrentUserName() {
-		return context.getUserPrincipal().getName();
-	}
-
-	@POST
-	@Path("submit")
-	@Produces("application/json")
-	public Integer insertPayload(
-			@PathParam("inputPayload") String inputPayload,
-			@PathParam("renderPlugin") String renderPlugin,
-			@PathParam("renderOption") String renderOption,
-			@PathParam("transportPlugin") String transportPlugin,
-			@PathParam("transportOption") String transportOption) {
-		Connection c = getConnection();
-
-		String userName = getCurrentUserName();
-
-		log.debug("Submit job for " + userName + " [payload length = "
-				+ inputPayload.length() + "]");
-
-		PreparedStatement cStmt = null;
-		try {
-			cStmt = c.prepareStatement("INSERT INTO tPayload ( "
-					+ "user, payload, renderPlugin, renderOption, "
-					+ "transportPlugin, transportOption "
-					+ " ) VALUES ( ?, ?, ?, ?, ?, ? );",
-					PreparedStatement.RETURN_GENERATED_KEYS);
-
-			cStmt.setString(1, userName);
-			cStmt.setString(2, inputPayload);
-			cStmt.setString(3, renderPlugin);
-			cStmt.setString(4, renderOption);
-			cStmt.setString(5, transportPlugin);
-			cStmt.setString(6, transportOption);
-
-			@SuppressWarnings("unused")
-			boolean hadResults = cStmt.execute();
-			ResultSet newKey = cStmt.getGeneratedKeys();
-			Integer returnValue = newKey.getInt("id");
-			newKey.close();
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return returnValue;
-		} catch (NullPointerException npe) {
-			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return null;
-		} catch (SQLException e) {
-			log.error("Caught SQLException", e);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return null;
-		}
-	}
-
-	@POST
-	@Path("setoption/{namespace}/{option}/{value}")
-	@Produces("application/json")
-	public Boolean setConfigValue(@PathParam("namespace") String namespace,
-			@PathParam("option") String option, @PathParam("value") String value) {
-		String userName = getCurrentUserName();
-		try {
-			Configuration.setConfigValue(userName, namespace, option, value);
-		} catch (Exception ex) {
-			log.error(ex);
-			return Boolean.FALSE;
-		}
-		return Boolean.TRUE;
-	}
-
-	@POST
-	@Path("getstatus/{jobid}")
-	@Produces("application/json")
-	public Integer getStatus(@PathParam("jobid") Integer jobId) {
-		String userName = getCurrentUserName();
-
-		Connection c = getConnection();
-
-		CallableStatement cStmt = null;
-		try {
-			cStmt = c.prepareCall("{ CALL p_GetStatus( ?, ? ); }");
-			cStmt.setString(1, userName);
-			cStmt.setInt(2, jobId);
-
-			boolean hadResults = cStmt.execute();
-			int returnValue = 5;
-			if (hadResults) {
-				ResultSet r = cStmt.getResultSet();
-				String status = r.getString("status");
-				String stage = r.getString("stage");
-
-				if (status.equalsIgnoreCase("incomplete")) {
-					if (status.equalsIgnoreCase("validation")) {
-						returnValue = 1; // validation
-					} else if (status.equalsIgnoreCase("render")) {
-						returnValue = 2; // render
-					} else if (status.equalsIgnoreCase("translation")) {
-						returnValue = 3; // translation
-					} else if (status.equalsIgnoreCase("transmission")) {
-						returnValue = 4; // transmission/transport
-					}
-				} else {
-					returnValue = 0; // completed
-				}
-
-				r.close();
-			} else {
-				returnValue = 5; // unknown
-			}
-
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-
-			return returnValue;
-		} catch (NullPointerException npe) {
-			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return null;
-		} catch (SQLException e) {
-			log.error("Caught SQLException", e);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return null;
-		}
-	}
-
-	@POST
-	@Path("plugins/{category}")
-	@Produces("application/json")
-	@Override
-	public String[] getPlugins(@PathParam("category") String category) {
-		if (category.equalsIgnoreCase("validation")) {
-			category = "validation"; // validation
-		} else if (category.equalsIgnoreCase("render")) {
-			category = "render"; // render
-		} else if (category.equalsIgnoreCase("translation")) {
-			category = "translation"; // translation
-		} else if (category.equalsIgnoreCase("transmission")) {
-			category = "transmission"; // transmission/transport
-		} else if (category.equalsIgnoreCase("eligibility")) {
-			category = "eligibility"; // eligibility
-		} else {
-			// No plugins for dud categories.
-			return null;
-		}
-
-		Connection c = getConnection();
-
-		String userName = getCurrentUserName();
-
-		log.debug("Plugin list for " + userName + " [category = " + category
-				+ "]");
-
-		String[] returnValue = null;
-		PreparedStatement cStmt = null;
-		try {
-			cStmt = c.prepareStatement("SELECT * FROM tPlugins "
-					+ "WHERE category = ?");
-
-			cStmt.setString(1, category);
-
-			boolean hadResults = cStmt.execute();
-			List<String> results = new ArrayList<String>();
-			if (hadResults) {
-				ResultSet rs = cStmt.getResultSet();
-				while (rs.next()) {
-					results.add(rs.getString("plugin"));
-				}
-				rs.close();
-			}
-			returnValue = results.toArray(new String[0]);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return returnValue;
-		} catch (NullPointerException npe) {
-			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return null;
-		} catch (SQLException e) {
-			log.error("Caught SQLException", e);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return null;
-		}
-	}
-
-	@POST
-	@Path("file/{category}/{filename}")
-	@Produces("application/json")
-	@Override
-	public byte[] getFile(@PathParam("category") String category,
-			@PathParam("filename") String fileName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@POST
-	@Path("pluginoptions/{pluginclass}/{qualifyingoption}")
-	@Produces("application/json")
-	@Override
-	public String[] getPluginOptions(
-			@PathParam("pluginclass") String pluginClass,
-			@PathParam("qualifyingoption") String qualifyingOption) {
-		PluginInterface p = null;
-		try {
-			p = (PluginInterface) Class.forName(pluginClass).newInstance();
-		} catch (InstantiationException e) {
-			log.error(e);
-			return null;
-		} catch (IllegalAccessException e) {
-			log.error(e);
-			return null;
-		} catch (ClassNotFoundException e) {
-			log.error(e);
-			return null;
-		}
-		return p.getPluginConfigurationOptions();
-	}
-
-	@POST
-	@Path("filelist/{category}/{criteria}/{value}")
-	@Produces("application/json")
-	@Override
-	public String[] getFileList(@PathParam("category") String category,
-			@PathParam("criteria") String criteria,
-			@PathParam("value") String value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@POST
-	@Path("outputmonths/{targetyear}")
-	@Produces("application/json")
-	@Override
-	public String[] getOutputMonths(@PathParam("targetyear") Integer targetYear) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@POST
-	@Path("outputyears")
-	@Produces("application/json")
-	@Override
-	public Integer[] getOutputYears() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@POST
-	@Path("eligibility")
-	@Produces("application/json")
-	@Override
-	public EligibilityResponse getEligibility(String plugin,
-			HashMap<String, String> parameters) {
-		String userName = getCurrentUserName();
-
-		EligibilityInterface p = null;
-		try {
-			p = (EligibilityInterface) Class.forName(plugin).newInstance();
-		} catch (InstantiationException e) {
-			log.error(e);
-			return null;
-		} catch (IllegalAccessException e) {
-			log.error(e);
-			return null;
-		} catch (ClassNotFoundException e) {
-			log.error(e);
-			return null;
-		}
-		try {
-			return p.checkEligibility(userName, parameters);
-		} catch (Exception e) {
-			log.error(e);
-			return null;
-		}
-	}
+@WebService
+public interface Service {
 
 	/**
-	 * Internal method to get a database connection.
+	 * Get version number of REMITT protocol being used.
+	 * 
+	 * @return String representation of protocol version.
+	 */
+	public String getProtocolVersion();
+
+	/**
+	 * Change current user's password
+	 * 
+	 * @param newPassword
+	 *            New password
+	 * @return Success
+	 */
+	public Boolean changePassword(@WebParam(name = "pw") String newPassword);
+
+	/**
+	 * Get the currently authenticated user's name.
+	 * 
+	 * @return String representation of the user's name.
+	 */
+	public String getCurrentUserName();
+
+	/**
+	 * Insert payload into the system for processing.
+	 * 
+	 * @param inputPayload
+	 *            XML text payload
+	 * @param renderPlugin
+	 *            Fully qualified Java class name of rendering plugin.
+	 * @param renderOption
+	 *            Optional option for render plugin.
+	 * @param transportPlugin
+	 *            Fully qualified Java class name of transport/transmission
+	 *            plugin
+	 * @param transportOption
+	 *            Optional option for the transport/transmission plugin
+	 * @return tPayload unique identifier for this job.
+	 */
+	public Integer insertPayload(
+			@WebParam(name = "inputPayload") String inputPayload,
+			@WebParam(name = "renderPlugin") String renderPlugin,
+			@WebParam(name = "renderOption") String renderOption,
+			@WebParam(name = "transportPlugin") String transportPlugin,
+			@WebParam(name = "transportOption") String transportOption);
+
+	/**
+	 * Set configuration option.
+	 * 
+	 * @param namespace
+	 *            Fully qualified class name of plugin.
+	 * @param option
+	 *            Option key.
+	 * @param value
+	 *            Option value.
+	 * @return Success.
+	 */
+	public Boolean setConfigValue(
+			@WebParam(name = "namespace") String namespace,
+			@WebParam(name = "option") String option,
+			@WebParam(name = "value") String value);
+
+	/**
+	 * Retrieve current job status
+	 * 
+	 * @param jobId
+	 * @return Integer indicating current status. 0 = completed, 1 =
+	 *         verification, 2 = rendering, 3 = translation, 4 =
+	 *         transmission/transport, 5 = unknown
+	 */
+	public Integer getStatus(@WebParam(name = "jobid") Integer jobId);
+
+	/**
+	 * Retrieve list of file names that match the provided criteria.
+	 * 
+	 * @param category
+	 * @param criteria
+	 * @param value
+	 * @return
+	 */
+	public String[] getFileList(@WebParam(name = "category") String category,
+			@WebParam(name = "criteria") String criteria,
+			@WebParam(name = "value") String value);
+
+	/**
+	 * Get list of plugins for a specified category.
+	 * 
+	 * @param category
+	 * @return
+	 */
+	public String[] getPlugins(@WebParam(name = "category") String category);
+
+	/**
+	 * Retrieve output file.
+	 * 
+	 * @param category
+	 *            Output file category.
+	 * @param fileName
+	 *            Name of file to be retrieved.
+	 * @return Contents of target file as byte array.
+	 */
+	public byte[] getFile(@WebParam(name = "category") String category,
+			@WebParam(name = "filename") String fileName);
+
+	/**
+	 * Get list of years for which the system has output files.
 	 * 
 	 * @return
 	 */
-	protected Connection getConnection() {
-		// Connection c = (Connection) Configuration.getServletContext()
-		// .getServletContext().getAttribute("connection");
-		// return c;
-		return Configuration.getConnection();
-	}
+	public Integer[] getOutputYears();
+
+	/**
+	 * Get list of months in a target year for which the system has output
+	 * files.
+	 * 
+	 * @param targetYear
+	 * @return
+	 */
+	public String[] getOutputMonths(
+			@WebParam(name = "targetYear") Integer targetYear);
+
+	/**
+	 * Get list of plugin options.
+	 * 
+	 * @param pluginClass
+	 *            Fully qualified class name of target plugin.
+	 * @param qualifyingOption
+	 *            Optional qualifier, required by render plugin.
+	 * @return
+	 */
+	public String[] getPluginOptions(
+			@WebParam(name = "pluginclass") String pluginClass,
+			@WebParam(name = "qualifyingoption") String qualifyingOption);
+
+	/**
+	 * Check for eligibility.
+	 * 
+	 * @param plugin
+	 * @param parameters
+	 * @return
+	 */
+	public EligibilityResponse getEligibility(
+			@WebParam(name = "plugin") String plugin,
+			@WebParam(name = "parameters") HashMap<String, String> parameters);
 
 }
