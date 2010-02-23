@@ -43,8 +43,10 @@ import javax.ws.rs.Produces;
 import javax.xml.ws.WebServiceContext;
 
 import org.apache.log4j.Logger;
+import org.remitt.prototype.ConfigurationOption;
 import org.remitt.prototype.EligibilityInterface;
 import org.remitt.prototype.EligibilityResponse;
+import org.remitt.prototype.ParserInterface;
 import org.remitt.prototype.PluginInterface;
 import org.remitt.server.Configuration;
 import org.remitt.server.Service;
@@ -168,6 +170,14 @@ public class ServiceImpl implements Service {
 			}
 			return null;
 		}
+	}
+
+	@POST
+	@Path("getoptions")
+	@Produces("application/json")
+	public ConfigurationOption[] getConfigValues() {
+		String userName = getCurrentUserName();
+		return Configuration.getConfigValues(userName);
 	}
 
 	@POST
@@ -400,6 +410,34 @@ public class ServiceImpl implements Service {
 		}
 		try {
 			return p.checkEligibility(userName, parameters);
+		} catch (Exception e) {
+			log.error(e);
+			return null;
+		}
+	}
+
+	@POST
+	@Path("parse")
+	@Produces("application/json")
+	@Override
+	public String parseData(String parserClass, String data) {
+		// String userName = getCurrentUserName();
+
+		ParserInterface p = null;
+		try {
+			p = (ParserInterface) Class.forName(parserClass).newInstance();
+		} catch (InstantiationException e) {
+			log.error(e);
+			return null;
+		} catch (IllegalAccessException e) {
+			log.error(e);
+			return null;
+		} catch (ClassNotFoundException e) {
+			log.error(e);
+			return null;
+		}
+		try {
+			return p.parseData(data);
 		} catch (Exception e) {
 			log.error(e);
 			return null;

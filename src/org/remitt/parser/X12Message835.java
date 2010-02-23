@@ -34,6 +34,7 @@ import org.remitt.parser.x12dto.Payee;
 import org.remitt.parser.x12dto.Payer;
 import org.remitt.parser.x12dto.ProviderClaimGroup;
 import org.remitt.parser.x12dto.Remittance;
+import org.remitt.prototype.ParserInterface;
 import org.remitt.prototype.SegmentComparator;
 import org.remitt.prototype.X12Message;
 
@@ -42,7 +43,7 @@ import org.remitt.prototype.X12Message;
  * 
  * @author jeff@freemedsoftware.org
  */
-public class X12Message835 extends X12Message {
+public class X12Message835 extends X12Message implements ParserInterface {
 
 	static final Logger log = Logger.getLogger(X12Message835.class);
 
@@ -160,6 +161,12 @@ public class X12Message835 extends X12Message {
 
 	public void setRemittance(Remittance r) {
 		this.remittance = r;
+	}
+
+	@Override
+	public String parseData(String inputData) throws Exception {
+		this.parse(inputData);
+		return getRemittance().toString();
 	}
 
 }

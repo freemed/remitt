@@ -29,6 +29,7 @@ import java.util.HashMap;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 
+import org.remitt.prototype.ConfigurationOption;
 import org.remitt.prototype.EligibilityResponse;
 
 @WebService
@@ -79,6 +80,13 @@ public interface Service {
 			@WebParam(name = "renderOption") String renderOption,
 			@WebParam(name = "transportPlugin") String transportPlugin,
 			@WebParam(name = "transportOption") String transportOption);
+
+	/**
+	 * Get all configuration values for a user.
+	 * 
+	 * @return
+	 */
+	public ConfigurationOption[] getConfigValues();
 
 	/**
 	 * Set configuration option.
@@ -178,5 +186,17 @@ public interface Service {
 	public EligibilityResponse getEligibility(
 			@WebParam(name = "plugin") String plugin,
 			@WebParam(name = "parameters") HashMap<String, String> parameters);
+
+	/**
+	 * Use a REMITT parser to parse source data.
+	 * 
+	 * @param parserClass
+	 *            <ParserInterface> descendent class name
+	 * @param data
+	 *            Raw data to be parsed
+	 * @return
+	 */
+	public String parseData(@WebParam(name = "parserClass") String parserClass,
+			@WebParam(name = "data") String data);
 
 }

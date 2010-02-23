@@ -32,6 +32,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServlet;
 
@@ -40,6 +42,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.log4j.Logger;
+import org.remitt.prototype.ConfigurationOption;
 import org.remitt.prototype.EligibilityInterface;
 import org.remitt.prototype.PluginInterface;
 
@@ -244,6 +247,56 @@ public class Configuration {
 	}
 
 	/**
+	 * Get all configuration values for a user.
+	 * 
+	 * @param username
+	 * @return
+	 */
+	public static ConfigurationOption[] getConfigValues(String username) {
+		List<ConfigurationOption> results = new ArrayList<ConfigurationOption>();
+		Connection c = Configuration.getConnection();
+		PreparedStatement pStmt = null;
+		try {
+			pStmt = c.prepareCall("SELECT * FROM tUserConfig "
+					+ " WHERE user = ?");
+			pStmt.setString(1, username);
+			boolean hasResult = pStmt.execute();
+			if (hasResult) {
+				ResultSet rs = pStmt.getResultSet();
+				while (!rs.isAfterLast()) {
+					rs.next();
+					ConfigurationOption item = new ConfigurationOption(rs
+							.getString("cNamespace"), rs.getString("cOption"),
+							rs.getString("cValue"));
+					results.add(item);
+				}
+				rs.close();
+			}
+			pStmt.close();
+			c.close();
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
+		} catch (SQLException e) {
+			log.error("Caught SQLException", e);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
+		}
+		return results.toArray(new ConfigurationOption[0]);
+	}
+
+	/**
 	 * Set the configuration value for an option.
 	 * 
 	 * @param user
@@ -267,10 +320,26 @@ public class Configuration {
 
 			cStmt.execute();
 			cStmt.getResultSet();
+			cStmt.close();
+			c.close();
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
 		}
 	}
 
