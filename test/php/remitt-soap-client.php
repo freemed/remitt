@@ -27,15 +27,15 @@
 $username = 'Administrator';
 $password = 'password';
 
-// Hack to deal with Basic Authentication protected WSDL
-$temp = tempnam( "/tmp", "remittwsdl");
-file_put_contents( $temp, file_get_contents("http://".urlencode($username).":".urlencode($password)."@localhost:8080/remitt/services/interface?wsdl") );
-
-$sc = new SoapClient( $temp, array(
+$url = "http://localhost:8080/remitt/services/interface";
+$wsdl = $url . "?wsdl";
+$sc = new SoapClient( $wsdl, array (
 	  'login' => $username
 	, 'password' => $password
 	, 'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP
+	, 'location' => $url
 ));
+
 print "getProtocolVersion : \n";
 print_r( $sc->getProtocolVersion() );
 print "\n";
@@ -44,6 +44,16 @@ print "getCurrentUserName : \n";
 print_r( $sc->getCurrentUserName() );
 print "\n";
 
-unlink($temp);
+print "getConfigValues: \n";
+print_r( $sc->getConfigValues() );
+print "\n";
+
+print "parseData(835): \n";
+$a = array (
+	  'parserClass' => 'org.remitt.parser.X12Message835'
+	, 'data' => file_get_contents( dirname(__FILE__) . '/835.x12' )
+);
+print_r( $sc->parseData((object)$a) );
+print "\n";
 
 ?>
