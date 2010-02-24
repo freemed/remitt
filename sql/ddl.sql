@@ -242,3 +242,20 @@ CREATE TABLE `tJobs` (
 	, jobEnabled	BOOL NOT NULL DEFAULT TRUE
 );
 
+### Scooper ###
+
+DROP TABLE IF EXISTS `tScooper`;
+
+CREATE TABLE `tScooper` (
+	  id		SERIAL
+	, scooperClass	VARCHAR(100) NOT NULL DEFAULT 'org.remitt.plugin.scooper.SftpScooper'
+	, user		VARCHAR(50) NOT NULL
+	, stamp		TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+	, host		VARCHAR(50) NOT NULL
+	, path		VARCHAR(150) NOT NULL DEFAULT '/'
+	, filename	VARCHAR(150) NOT NULL
+	, content	BLOB
+
+	, KEY		( scooperClass, user, host, path, filename )
+);
+

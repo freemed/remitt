@@ -257,7 +257,7 @@ public class Configuration {
 		Connection c = Configuration.getConnection();
 		PreparedStatement pStmt = null;
 		try {
-			pStmt = c.prepareCall("SELECT * FROM tUserConfig "
+			pStmt = c.prepareStatement("SELECT * FROM tUserConfig "
 					+ " WHERE user = ?");
 			pStmt.setString(1, username);
 			boolean hasResult = pStmt.execute();
@@ -340,6 +340,124 @@ public class Configuration {
 					log.error(e1);
 				}
 			}
+		}
+	}
+
+	/**
+	 * Get list of previously scooped files.
+	 * 
+	 * @param username
+	 *            Username of user running scooper
+	 * @param pluginClass
+	 *            Fully qualified scooper class name
+	 * @param host
+	 *            Host name
+	 * @param path
+	 *            SFTP path to files
+	 * @return
+	 */
+	public static List<String> getScoopedFiles(String username,
+			String pluginClass, String host, String path) {
+		List<String> results = new ArrayList<String>();
+		Connection c = Configuration.getConnection();
+		PreparedStatement pStmt = null;
+		try {
+			pStmt = c.prepareStatement("SELECT filename, stamp FROM tScooper "
+					+ " WHERE scooperClass = ? AND user = ? "
+					+ " AND host = ? AND path = ?");
+			pStmt.setString(1, pluginClass);
+			pStmt.setString(2, username);
+			pStmt.setString(3, host);
+			pStmt.setString(4, path);
+			boolean hasResult = pStmt.execute();
+			if (hasResult) {
+				ResultSet rs = pStmt.getResultSet();
+				while (!rs.isAfterLast()) {
+					rs.next();
+					results.add(rs.getString("filename"));
+				}
+				rs.close();
+			}
+			pStmt.close();
+			c.close();
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
+		} catch (SQLException e) {
+			log.error("Caught SQLException", e);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
+		}
+		return results;
+	}
+
+	/**
+	 * Record scooped file.
+	 * 
+	 * @param scooperClass
+	 * @param user
+	 * @param host
+	 * @param path
+	 * @param filename
+	 * @param content
+	 * @return
+	 */
+	public static Integer addScoopedFile(String scooperClass, String user,
+			String host, String path, String filename, byte[] content) {
+		Connection c = Configuration.getConnection();
+
+		PreparedStatement cStmt = null;
+		try {
+			cStmt = c.prepareStatement("INSERT INTO tScooper ( "
+					+ " scooperClass, user, host, path, filename, content "
+					+ " ) VALUES ( " + "?, ?, ?, ?, ?, ? " + " );",
+					PreparedStatement.RETURN_GENERATED_KEYS);
+
+			cStmt.setString(1, scooperClass);
+			cStmt.setString(2, user);
+			cStmt.setString(3, host);
+			cStmt.setString(4, path);
+			cStmt.setString(5, filename);
+			cStmt.setBytes(6, content);
+
+			@SuppressWarnings("unused")
+			boolean hadResults = cStmt.execute();
+			ResultSet newKey = cStmt.getGeneratedKeys();
+			Integer ret = newKey.getInt("id");
+			newKey.close();
+			c.close();
+			return ret;
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
+			return null;
+		} catch (SQLException e) {
+			log.error("Caught SQLException", e);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
+			return null;
 		}
 	}
 
