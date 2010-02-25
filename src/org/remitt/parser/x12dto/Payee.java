@@ -49,10 +49,10 @@ public class Payee implements X12DTO {
 	@Element(name = "address")
 	private Address address;
 
-	@ElementList(name = "identification", required = false)
+	@ElementList(name = "identificationList", required = false)
 	private List<Identification> identification = new ArrayList<Identification>();
 
-	@ElementList(name = "providerClaimGroup", required = false)
+	@ElementList(name = "providerClaimGroups", required = false)
 	private List<ProviderClaimGroup> providerClaimGroup = new ArrayList<ProviderClaimGroup>();
 
 	public Payee() {
