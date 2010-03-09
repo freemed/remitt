@@ -57,13 +57,13 @@ public class X12Message835 extends X12Message implements ParserInterface {
 		debug.println("Begin parsing 835");
 		position = 1;
 		debug.println("Extracting transaction header");
-		Remittance remittance = new Remittance();
 		List<Segment> header = extractLoop(new SegmentComparator[] {
 				new SegmentComparator("ISA"), new SegmentComparator("GS"),
 				new SegmentComparator("ST"), new SegmentComparator("BPR"),
 				new SegmentComparator("NTE"), new SegmentComparator("TRN"),
 				new SegmentComparator("CUR"), new SegmentComparator("REF"),
 				new SegmentComparator("DTM") });
+		Remittance remittance = new Remittance(header);
 		debug.println("***** Loop 1000A *****");
 		while (isNextSegmentIdentifier(new SegmentComparator("N1", 1,
 				new String[] { "PR" }))) {
