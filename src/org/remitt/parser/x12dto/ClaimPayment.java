@@ -24,6 +24,7 @@
 
 package org.remitt.parser.x12dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.pb.x12.Segment;
@@ -32,6 +33,7 @@ import org.remitt.prototype.X12DTO;
 import org.remitt.prototype.X12Message;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 public class ClaimPayment implements X12DTO {
 
@@ -61,6 +63,9 @@ public class ClaimPayment implements X12DTO {
 
 	@Element(name = "insured", required = false)
 	private Insured insured;
+
+	@ElementList(name = "amounts", required = false)
+	private List<Amount> amounts = new ArrayList<Amount>();
 
 	public ClaimPayment() {
 	}
@@ -124,8 +129,21 @@ public class ClaimPayment implements X12DTO {
 				.getSafeElement(CLP, 5));
 		this.claimType = X12Message.getSafeElement(CLP, 6);
 
+		List<Amount> a = new ArrayList<Amount>();
+		List<Segment> AMTs = X12Message.findSegmentsByComparator(in,
+				new SegmentComparator("AMT"));
+		for (Segment AMT : AMTs) {
+			Amount e = new Amount(AMT);
+			a.add(e);
+		}
+		this.amounts = a;
+
 		this.patient = new Patient(in);
 		this.insured = new Insured(in);
+	}
+
+	public List<Amount> getAmounts() {
+		return this.amounts;
 	}
 
 	public String getClaimId() {
