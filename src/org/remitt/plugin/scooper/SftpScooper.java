@@ -26,7 +26,6 @@ package org.remitt.plugin.scooper;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -104,10 +103,7 @@ public class SftpScooper implements ScooperInterface {
 
 		@SuppressWarnings("unchecked")
 		List<SftpFile> filesList = (List<SftpFile>) client.ls();
-		Iterator<SftpFile> filesIterator = filesList.iterator();
-		while (filesIterator.hasNext()) {
-			SftpFile file = filesIterator.next();
-
+		for (SftpFile file : filesList) {
 			// Skip anything that isn't a file
 			if (!(file.isFile() || file.isLink())) {
 				log.debug("File not link or file: " + file.getFilename());
