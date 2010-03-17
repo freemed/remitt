@@ -64,6 +64,8 @@ Transmission</h1>
 	interface</li>
 	<li><a href="configurationDisplay.jsp">Configuration</a> - Edit
 	per-user configuration</li>
+	<li><a href="selfTest.jsp">Self Test</a> - Test internal REMITT
+	functionality. Pretty much useless for end-users.</li>
 </ul>
 
 <div align="center"><i>&copy; 1999-<%=new Date().getYear() + 1900%>
