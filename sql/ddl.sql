@@ -293,6 +293,25 @@ INSERT INTO `tTranslation` VALUES
 	, ( 'org.remitt.plugin.translation.X12Xml', 'x12xml', 'text' )
 ;
 
+DROP PROCEDURE IF EXISTS resolveTranslationPlugin;
+
+DELIMITER //
+
+CREATE PROCEDURE resolveTranslationPlugin (
+		  renderPlugin VARCHAR (100)
+		, renderOption VARCHAR (100)
+		, transmissionPlugin VARCHAR (100)
+		, transmissionOption VARCHAR (100)
+	)
+BEGIN
+	SELECT plugin FROM tTranslation WHERE 
+		inputFormat = renderPluginOutputFormat( renderPlugin, renderOption )
+		AND FIND_IN_SET( outputFormat, transmissionPluginInputFormat( transmissionPlugin, transmissionOption ) )
+		LIMIT 1;
+END//
+
+DELIMITER ;
+
 ### Job Scheduler ###
 
 DROP TABLE IF EXISTS `tJobs`;
