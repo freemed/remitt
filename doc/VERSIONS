@@ -3,16 +3,27 @@ Versions of dependent software for REMITT build
 ------------------------------------------------------------------------------
 
 Apache Commons Configuration [http://commons.apache.org/configuration/] v1.6
+	(no rss feed)
 Apache CXF [http://cxf.apache.org/] v2.2.5
+	(no rss feed)
 Apache Log4j [http://logging.apache.org/log4j/] v1.2.15
+	(no rss feed)
 C3P0 [http://sourceforge.net/projects/c3p0/] v0.9.1.2
-Cron4j [http://www.sauronsoftware.it/projects/cron4j/] v2.2
+	http://sourceforge.net/api/file/index/project-id/25357/mtime/desc/rss
+Cron4j [http://www.sauronsoftware.it/projects/cron4j/] v2.2.2
+	(no rss feed)
 HtmlUnit [http://htmlunit.sourceforge.net/] v2.6
+	http://sourceforge.net/api/file/index/project-id/47038/mtime/desc/rss
 iText [http://itextpdf.com/] v5.0.0
+	http://sourceforge.net/api/file/index/project-id/15255/mtime/desc/rss
 J2SSH [http://sourceforge.net/projects/sshtools/] v0.2.9
-MySQL Connector/J [http://www.mysql.com/products/connector/] v5.1.10
+	http://sourceforge.net/api/file/index/project-id/60894/mtime/desc/rss?path=%2FJ2SSH
+MySQL Connector/J [http://www.mysql.com/products/connector/] v5.1.12
+	(no rss feed)
 Mozilla Rhino [http://www.mozilla.org/rhino/] v1.7r2
+	(no rss feed)
 Sojo [http://sojo.sourceforge.net/] v1.0.0
-	RSS: http://sourceforge.net/api/file/index/project-id/178713/rss?path=/sojo%201.x
+	RSS: http://sourceforge.net/api/file/index/project-id/178713/rss
 Xalan [http://xml.apache.org/xalan-j/] v2.7.1
+	(no rss feed)
 
