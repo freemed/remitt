@@ -293,11 +293,11 @@ INSERT INTO `tTranslation` VALUES
 	, ( 'org.remitt.plugin.translation.X12Xml', 'x12xml', 'text' )
 ;
 
-DROP PROCEDURE IF EXISTS resolveTranslationPlugin;
+DROP PROCEDURE IF EXISTS p_ResolveTranslationPlugin;
 
 DELIMITER //
 
-CREATE PROCEDURE resolveTranslationPlugin (
+CREATE PROCEDURE p_ResolveTranslationPlugin (
 		  renderPlugin VARCHAR (100)
 		, renderOption VARCHAR (100)
 		, transmissionPlugin VARCHAR (100)

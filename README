@@ -29,7 +29,10 @@ element for the default authentication to work:
 The only prerequisite for installing this software is importing the
 database definitions from sql/*.sql into your working database server.
 
-At the moment, MySQL is the supported / preferred database server.
+At the moment, MySQL is the supported / preferred database server. The
+remitt user should probably have all privileges on the remitt database,
+but also SELECT on mysql.proc (otherwise you'll need
+"noAccessToProcedureBodies=true" in the JDBC URL).
 
 Remote Services Information:
 REST services are exposed at /remitt/services/rest/service/(functionname)

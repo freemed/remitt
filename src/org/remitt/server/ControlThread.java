@@ -571,14 +571,14 @@ public class ControlThread extends Thread {
 		case RENDER:
 			return payload.getRenderPlugin();
 		case TRANSLATION:
-			// TODO: resolve plugin
-			break;
+			return Configuration.resolveTranslationPlugin(payload
+					.getRenderPlugin(), payload.getRenderOption(), payload
+					.getTransmissionPlugin(), payload.getTransmissionOption());
 		case TRANSMISSION:
 			return payload.getTransmissionPlugin();
 		default:
 			return null;
 		}
-		return null;
 	}
 
 	public synchronized boolean moveProcessorEntry(JobThreadState tS,

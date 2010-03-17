@@ -182,6 +182,70 @@ public class Configuration {
 	}
 
 	/**
+	 * Resolve plugin name for translation plugin to be used with render and
+	 * transmission plugins and their respective parameters.
+	 * 
+	 * @param renderPlugin
+	 *            Full class name of the render plugin being used
+	 * @param renderOption
+	 *            Name of the render option being passed
+	 * @param transmissionPlugin
+	 *            Full class name of the transmission plugin being used
+	 * @param transmissionOption
+	 *            Option name of the transmission plugin being passed
+	 * @return Full class name of the appropriate translation plugin, or null if
+	 *         none is available.
+	 */
+	public static String resolveTranslationPlugin(String renderPlugin,
+			String renderOption, String transmissionPlugin,
+			String transmissionOption) {
+		log.info("resolveTranslationPlugin: " + renderPlugin + ", "
+				+ renderOption + ", " + transmissionPlugin + ", "
+				+ (transmissionOption == null ? "" : transmissionOption));
+
+		Connection c = Configuration.getConnection();
+		CallableStatement cStmt = null;
+		try {
+			cStmt = c
+					.prepareCall("CALL p_ResolveTranslationPlugin( ?, ?, ?, ? );");
+			cStmt.setString(1, renderPlugin);
+			cStmt.setString(2, renderOption);
+			cStmt.setString(3, transmissionPlugin);
+			cStmt.setString(4, transmissionOption);
+
+			boolean hasResult = cStmt.execute();
+			if (hasResult) {
+				ResultSet r = cStmt.getResultSet();
+				r.next();
+				String ret = r.getString(1);
+				log.info("Resolved to class : " + ret);
+				c.close();
+				return ret;
+			}
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
+		} catch (SQLException e) {
+			log.error("Caught SQLException", e);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Retrieve user-set configuration option for a particular plugin namespace.
 	 * 
 	 * @param plugin

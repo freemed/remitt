@@ -51,6 +51,25 @@ Transmission</h1>
 	} finally {
 		out.println("OK");
 	}
+
+	out.print("Resolve translation plugin for 837p ... ");
+	try {
+		String ret = Configuration.resolveTranslationPlugin( "org.remitt.plugin.render.XsltPlugin", "837p", "org.remitt.plugin.transmission.ScriptedHttpTransport", "" );
+		out.println(ret);
+	} catch (Exception ex) {
+		out.println("FAIL");
+		out.println(ex.toString());
+	}
+	
+	out.print("Resolve translation plugin for hcfa1500 ... ");
+	try {
+		String ret = Configuration.resolveTranslationPlugin( "org.remitt.plugin.render.XsltPlugin", "hcfa1500", "org.remitt.plugin.transmission.ScriptedHttpTransport", "" );
+		out.println(ret);
+	} catch (Exception ex) {
+		out.println("FAIL");
+		out.println(ex.toString());
+	}
+	
 %></pre>
 
 
