@@ -216,6 +216,68 @@ INSERT INTO `tPlugins` VALUES
 	, ( 'org.remitt.plugin.eligibility.GatewayEDIEligibility', '0.1', 'jeff@freemedsoftware.org', 'eligibility', NULL, NULL )
 ;
 
+DROP TABLE IF EXISTS `tPluginOptions`;
+CREATE TABLE `tPluginOptions` (
+	  poption	VARCHAR( 100 ) NOT NULL
+	, plugin	VARCHAR( 100 ) NOT NULL
+	, fullname	VARCHAR( 100 ) NOT NULL
+	, version	VARCHAR( 30 ) NOT NULL
+	, author	VARCHAR( 100 ) NOT NULL
+	, category	ENUM ( 'render', 'transmission' ) NOT NULL
+	, inputFormat	VARCHAR( 100 )
+	, outputFormat	VARCHAR( 100 )
+);
+
+INSERT INTO `tPluginOptions` VALUES
+		### Render plugin options ###
+	  ( '837p', 'org.remitt.plugin.render.XsltPlugin', 'ANSI X12 4010 837 Professional', '0.1', 'jeff@freemedsoftware.org', 'render', NULL, 'x12xml' )
+	, ( 'cms1500', 'org.remitt.plugin.render.XsltPlugin', 'CMS HCFA-1500', '0.1', 'jeff@freemedsoftware.org', 'render', NULL, 'fixedformxml' )
+	, ( 'statement', 'org.remitt.plugin.render.XsltPlugin', 'Patient Statement', '0.1', 'jeff@freemedsoftware.org', 'render', NULL, 'statementxml' )
+;
+
+### Plugin helper functions ###
+
+DROP FUNCTION IF EXISTS renderPluginOutputFormat;
+DROP FUNCTION IF EXISTS transmissionPluginInputFormat;
+
+DELIMITER //
+
+CREATE FUNCTION renderPluginOutputFormat (
+		  pluginClass VARCHAR (100)
+		, pluginOption VARCHAR (100)
+	) RETURNS VARCHAR (100)
+BEGIN
+	DECLARE ret VARCHAR (100);
+
+	SELECT outputFormat INTO ret FROM tPlugins WHERE plugin = pluginClass;
+
+	### For 'various' types, check the plugin ###
+	IF ret = 'various' THEN
+		SELECT outputFormat INTO ret FROM tPluginOptions WHERE plugin = pluginClass AND poption = pluginOption;
+	END IF;
+
+	RETURN ret;
+END//
+
+CREATE FUNCTION transmissionPluginInputFormat (
+		  pluginClass VARCHAR (100)
+		, pluginOption VARCHAR (100)
+	) RETURNS VARCHAR (100)
+BEGIN
+	DECLARE ret VARCHAR (100);
+
+	SELECT inputFormat INTO ret FROM tPlugins WHERE plugin = pluginClass;
+
+	### For 'various' types, check the plugin ###
+	IF ret = 'various' THEN
+		SELECT inputFormat INTO ret FROM tPluginOptions WHERE plugin = pluginClass AND poption = pluginOption;
+	END IF;
+
+	RETURN ret;
+END//
+
+DELIMITER ;
+
 ### Translation Lookup ###
 
 DROP TABLE IF EXISTS `tTranslation`;
