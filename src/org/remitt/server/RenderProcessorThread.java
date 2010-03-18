@@ -78,8 +78,7 @@ public class RenderProcessorThread extends ProcessorThread {
 		} catch (Exception e) {
 			log.error(e);
 			// Clear the thread, since we can't process any further.
-			Configuration.getControlThread().clearProcessorForThread(
-					(int) getId());
+			Configuration.getControlThread().clearProcessorForThread(getId());
 
 			// TODO: Update with error status so that frontend can inform
 			// "client"
@@ -98,7 +97,7 @@ public class RenderProcessorThread extends ProcessorThread {
 						ThreadType.TRANSLATION));
 
 		// Clear thread
-		Configuration.getControlThread().clearProcessorForThread((int) getId());
+		Configuration.getControlThread().clearProcessorForThread(getId());
 
 		return true;
 	}

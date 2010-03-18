@@ -27,7 +27,7 @@ package org.remitt.prototype;
 import org.remitt.prototype.ProcessorThread.ThreadType;
 
 public class JobThreadState {
-	private Integer threadId = 0;
+	private Long threadId = 0L;
 	private Integer processorId = 0;
 	private ProcessorThread.ThreadType threadType = null;
 	private String plugin = "";
@@ -35,11 +35,11 @@ public class JobThreadState {
 	public JobThreadState() {
 	}
 
-	public void setThreadId(Integer tId) {
+	public void setThreadId(Long tId) {
 		threadId = tId;
 	}
 
-	public Integer getThreadId() {
+	public Long getThreadId() {
 		return threadId;
 	}
 

@@ -148,7 +148,7 @@ public class ServiceImpl implements Service {
 			@SuppressWarnings("unused")
 			boolean hadResults = cStmt.execute();
 			ResultSet newKey = cStmt.getGeneratedKeys();
-			Integer returnValue = newKey.getInt("id");
+			Integer returnValue = newKey.getInt(1);
 			newKey.close();
 			try {
 				cStmt.close();

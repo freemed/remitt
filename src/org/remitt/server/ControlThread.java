@@ -31,8 +31,10 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.remitt.prototype.JobThreadState;
@@ -67,7 +69,7 @@ public class ControlThread extends Thread {
 
 	protected MasterControl servletContext = null;
 
-	protected List<ProcessorThread> workerThreads = new ArrayList<ProcessorThread>();
+	protected Map<Long, ProcessorThread> workerThreads = new HashMap<Long, ProcessorThread>();
 
 	protected List<JobThreadState> threadPool = new ArrayList<JobThreadState>();
 
@@ -103,10 +105,14 @@ public class ControlThread extends Thread {
 	 * @param threadId
 	 * @return
 	 */
-	public Integer getPayloadForThread(Integer threadId) {
+	public Integer getPayloadForThread(Long threadId) {
 		Iterator<JobThreadState> iter = threadPool.iterator();
 		while (iter.hasNext()) {
 			JobThreadState s = iter.next();
+			if (s.getProcessorId() == null) {
+				// Skip processing if there's nothing assigned to this
+				continue;
+			}
 			if (s.getProcessorId() == 0) {
 				// Skip processing if there's nothing assigned to this
 				continue;
@@ -139,10 +145,11 @@ public class ControlThread extends Thread {
 
 			PayloadDto payload = new PayloadDto();
 			payload.setId(rs.getInt("id"));
-			payload.setPayload(rs.getString("payload"));
+			payload.setPayload(rs.getBytes("payload"));
 			payload.setRenderPlugin(rs.getString("renderPlugin"));
 			payload.setRenderOption(rs.getString("renderOption"));
-			payload.setTransmissionPlugin(rs.getString("transmissionPlugin"));
+			payload.setTransmissionPlugin(rs.getString("transportPlugin"));
+			payload.setTransmissionOption(rs.getString("transportOption"));
 			payload.setUserName(rs.getString("user"));
 
 			rs.close();
@@ -181,10 +188,11 @@ public class ControlThread extends Thread {
 
 		PreparedStatement cStmt = null;
 		try {
+			log.trace("SELECT payloadId FROM tProcessor WHERE id = "
+					+ processorId.toString());
 			cStmt = c
 					.prepareStatement("SELECT payloadId FROM tProcessor WHERE id = ?;");
 			cStmt.setInt(1, processorId);
-
 			cStmt.execute();
 			ResultSet rs = cStmt.getResultSet();
 			rs.next();
@@ -220,7 +228,7 @@ public class ControlThread extends Thread {
 	 * tProcessor.
 	 * 
 	 * @param payloadId
-	 * @param threadId
+	 * @param availThread
 	 * @param input
 	 * @param output
 	 * @param threadType
@@ -229,7 +237,7 @@ public class ControlThread extends Thread {
 	 * @param tsEnd
 	 */
 	public Integer migratePayloadToProcessor(Integer payloadId,
-			Integer threadId, String input, ThreadType threadType,
+			Long availThread, byte[] input, ThreadType threadType,
 			String plugin, Date tsStart) {
 		Connection c = Configuration.getConnection();
 
@@ -237,20 +245,21 @@ public class ControlThread extends Thread {
 		try {
 			cStmt = c.prepareStatement("INSERT INTO tProcessor ( "
 					+ " threadId, payloadId, stage, plugin, tsStart, pInput "
-					+ " ) VALUES ( " + "?, ?, ?, ?, ?, ?, ? " + " );",
+					+ " ) VALUES ( " + "?, ?, ?, ?, ?, ? " + " );",
 					PreparedStatement.RETURN_GENERATED_KEYS);
 
-			cStmt.setInt(1, threadId);
+			cStmt.setLong(1, availThread);
 			cStmt.setInt(2, payloadId);
 			cStmt.setString(3, threadType.toString());
 			cStmt.setString(4, plugin);
 			cStmt.setTimestamp(5, new Timestamp(tsStart.getTime()));
-			cStmt.setString(6, input);
+			cStmt.setBytes(6, input);
 
 			@SuppressWarnings("unused")
 			boolean hadResults = cStmt.execute();
 			ResultSet newKey = cStmt.getGeneratedKeys();
-			Integer ret = newKey.getInt("id");
+			newKey.next();
+			Integer ret = newKey.getInt(1);
 			newKey.close();
 			c.close();
 			return ret;
@@ -292,8 +301,7 @@ public class ControlThread extends Thread {
 		PreparedStatement cStmt = null;
 		try {
 			cStmt = c.prepareStatement("UPDATE tProcessor SET "
-					+ " tsEnd = ?, " + "pOutput = ? " + " WHERE id = ? "
-					+ " );");
+					+ " tsEnd = ?, " + "pOutput = ? " + " WHERE id = ? " + ";");
 
 			cStmt.setTimestamp(1, new Timestamp(tsEnd.getTime()));
 			cStmt.setBytes(2, output);
@@ -323,7 +331,7 @@ public class ControlThread extends Thread {
 	 * 
 	 * @param threadId
 	 */
-	public void clearProcessorForThread(Integer threadId) {
+	public void clearProcessorForThread(Long threadId) {
 		setProcessorForThread(threadId, 0);
 	}
 
@@ -333,7 +341,7 @@ public class ControlThread extends Thread {
 	 * @param threadId
 	 * @param processorId
 	 */
-	public void setProcessorForThread(Integer threadId, Integer processorId) {
+	public void setProcessorForThread(Long threadId, Integer processorId) {
 		Iterator<JobThreadState> iter = threadPool.iterator();
 		while (iter.hasNext()) {
 			JobThreadState s = iter.next();
@@ -354,7 +362,9 @@ public class ControlThread extends Thread {
 			log.debug("Spawning RenderProcessorThread #" + (iter + 1));
 			RenderProcessorThread t = new RenderProcessorThread();
 			t.start();
-			workerThreads.add(t);
+			workerThreads.put(t.getId(), t);
+			threadPool.add(t.getJobThreadState());
+			addThreadToPool(t);
 
 			// Create a small delay to avoid pig-piling on threads
 			try {
@@ -369,7 +379,24 @@ public class ControlThread extends Thread {
 			log.debug("Spawning TranslationProcessorThread #" + (iter + 1));
 			TranslationProcessorThread t = new TranslationProcessorThread();
 			t.start();
-			workerThreads.add(t);
+			workerThreads.put(t.getId(), t);
+			addThreadToPool(t);
+
+			// Create a small delay to avoid pig-piling on threads
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Spawn TransportProcessThreads
+		for (int iter = 0; iter < numberOfWorkers; iter++) {
+			log.debug("Spawning TransportProcessorThread #" + (iter + 1));
+			TransmissionProcessorThread t = new TransmissionProcessorThread();
+			t.start();
+			workerThreads.put(t.getId(), t);
+			addThreadToPool(t);
 
 			// Create a small delay to avoid pig-piling on threads
 			try {
@@ -383,7 +410,7 @@ public class ControlThread extends Thread {
 
 	protected void stopChildren() {
 		log.info("Stopping all worker threads");
-		Iterator<ProcessorThread> iter = workerThreads.iterator();
+		Iterator<ProcessorThread> iter = workerThreads.values().iterator();
 		while (iter.hasNext()) {
 			Thread t = iter.next();
 			log.info("Interrupting thread #" + t.getId());
@@ -398,9 +425,7 @@ public class ControlThread extends Thread {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			Iterator<ProcessorThread> rIter = workerThreads.iterator();
-			while (rIter.hasNext()) {
-				Thread t = rIter.next();
+			for (Thread t : workerThreads.values()) {
 				if (!t.isAlive()) {
 					log.info("Reaping thread #" + t.getId());
 					workerThreads.remove(t);
@@ -409,6 +434,15 @@ public class ControlThread extends Thread {
 			}
 		}
 		log.info("All worker threads destroyed");
+	}
+
+	protected void addThreadToPool(ProcessorThread pt) {
+		JobThreadState s = new JobThreadState();
+		s.setThreadId(pt.getId());
+		s.setProcessorId(0);
+		s.setThreadType(pt.getThreadType());
+		pt.setJobThreadState(s);
+		threadPool.add(pt.getJobThreadState());
 	}
 
 	/**
@@ -420,20 +454,28 @@ public class ControlThread extends Thread {
 	 * @return Grabbed thread id.
 	 * @throws FreeThreadNotFoundException
 	 */
-	protected Integer getNextAvailableThread(ThreadType threadType,
+	protected Long getNextAvailableThread(ThreadType threadType,
 			Integer payloadId) throws FreeThreadNotFoundException {
 		Iterator<JobThreadState> iter = threadPool.iterator();
-		Integer found = 0;
+		Long found = 0L;
+		log.debug("Iterating through threads");
 		while (found == 0 && iter.hasNext()) {
 			JobThreadState s = iter.next();
-			if (s.getProcessorId() > 0)
+			if (s.getProcessorId() > 0) {
+				log.debug("Skipping as processorId is already defined");
 				continue;
+			}
 			// Deal with wait state
-			if (s.getProcessorId() == -1)
+			if (s.getProcessorId() == -1) {
+				log.debug("Skipping as processorId indicates wait state (-1)");
 				continue;
-			if (s.getThreadType() != threadType)
+			}
+			if (s.getThreadType() != threadType) {
+				log.debug("Wrong thread type (" + s.getThreadType() + ")");
 				continue;
+			}
 			found = s.getThreadId();
+			log.debug("Found thread id " + found);
 			// If we've found something, grab it so no other thread sees it
 			s.setProcessorId(-1);
 		}
@@ -524,20 +566,28 @@ public class ControlThread extends Thread {
 			// ... attempt to insert into ThreadType.[[initialStep]] threads and
 			// let the processing begin.
 
-			Integer availThread = null;
+			Long availThread = null;
 			try {
 				// Attempt to get the next available thread for insertion, which
 				// will "lock" the found thread with a -1 payloadId entry
 				availThread = getNextAvailableThread(initialStep, newWork[iter]);
+				log.trace("Grabbed next available thread " + availThread);
 
 				// ... and populate the appropriate pieces
 				PayloadDto payload = getPayloadById(newWork[iter]);
+				log
+						.trace("Created payload dto with render plugin identified as "
+								+ payload.getRenderPlugin()
+								+ ", option = "
+								+ payload.getRenderOption());
 				Integer processorId = migratePayloadToProcessor(
-						payload.getId(), availThread, payload.getPayload(),
+						payload.getId(),
+						availThread,
+						payload.getPayload(),
 						initialStep,
-						(initialStep == ThreadType.RENDER ? payload
-								.getRenderPlugin() : null), new Date(System
-								.currentTimeMillis()));
+						(initialStep.equals(ThreadType.RENDER) ? payload
+								.getRenderPlugin() : payload.getRenderPlugin()),
+						new Date(System.currentTimeMillis()));
 
 				// Push processor entry
 				setProcessorForThread(availThread, processorId);
@@ -583,7 +633,7 @@ public class ControlThread extends Thread {
 
 	public synchronized boolean moveProcessorEntry(JobThreadState tS,
 			ThreadType nextType, String plugin) {
-		Integer availThread = null;
+		Long availThread = null;
 		boolean done = false;
 		while (!done && !isInterrupted()) {
 			try {

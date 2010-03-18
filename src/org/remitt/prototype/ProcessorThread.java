@@ -54,7 +54,7 @@ public abstract class ProcessorThread extends Thread {
 						+ "] Waking up after " + SLEEP_TIME
 						+ "ms to check for work");
 				Integer job = Configuration.getControlThread()
-						.getPayloadForThread((int) getId());
+						.getPayloadForThread(getId());
 				if (job != null) {
 					work(job);
 				}

@@ -75,7 +75,7 @@ public class TransmissionProcessorThread extends ProcessorThread {
 		// TODO: Mark as completed
 
 		// Clear thread
-		Configuration.getControlThread().clearProcessorForThread((int) getId());
+		Configuration.getControlThread().clearProcessorForThread(getId());
 
 		return true;
 	}

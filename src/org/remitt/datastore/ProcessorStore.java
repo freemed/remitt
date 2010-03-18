@@ -75,7 +75,7 @@ public class ProcessorStore {
 				ResultSet r = cStmt.getResultSet();
 				while (r.next()) {
 					tS.setPlugin(r.getString("plugin"));
-					tS.setThreadId(r.getInt("threadId"));
+					tS.setThreadId(r.getLong("threadId"));
 					tS.setProcessorId(payloadId);
 					tS.setThreadType(tType);
 				}

@@ -85,7 +85,7 @@ public class TranslationProcessorThread extends ProcessorThread {
 						ThreadType.TRANSMISSION));
 
 		// Clear thread
-		Configuration.getControlThread().clearProcessorForThread((int) getId());
+		Configuration.getControlThread().clearProcessorForThread(getId());
 
 		return true;
 	}
