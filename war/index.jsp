@@ -1,4 +1,4 @@
-<!-- 
+<%-- 
  * $Id$
  *
  * Authors:
@@ -20,18 +20,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- -->
-<html>
-<head>
-<title>REMITT Server v<%@ include file="about.jsp"%></title>
+ --%>
 <%@ page import="java.util.*"%>
 <%@ page import="org.remitt.server.Configuration"%>
-<link href="css/stylesheet.css" rel="stylesheet" type="text/css"/>
-</head>
-<body>
-<h1><a href="http://remitt.org/"><img src="img/remitt.jpg"
-	border="0" /></a> REMITT Electronic Medical Information Translation and
-Transmission</h1>
+
+<%@ include file="/WEB-INF/jsp/header.jsp"%>
 
 <table border="1" cellpadding="7">
 	<tbody>
@@ -68,8 +61,5 @@ Transmission</h1>
 	functionality. Pretty much useless for end-users.</li>
 </ul>
 
-<div align="center"><i>&copy; 1999-<%=new Date().getYear() + 1900%>
-by the FreeMED Software Foundation</i></div>
+<%@ include file="/WEB-INF/jsp/footer.jsp"%>
 
-</body>
-</html>

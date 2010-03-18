@@ -1,4 +1,4 @@
-<!-- 
+<%-- 
  * $Id$
  *
  * Authors:
@@ -20,19 +20,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- -->
-<html>
-<head>
-<title>REMITT Server: Self Test</title>
-<link href="css/stylesheet.css" rel="stylesheet" type="text/css"/>
+ --%>
 <%@ page import="java.sql.*"%>
 <%@ page import="org.remitt.server.Configuration"%>
 <%@ page import="org.apache.log4j.Logger"%>
-</head>
-<body>
-<h1><a href="http://remitt.org/"><img src="img/remitt.jpg"
-	border="0" /></a> REMITT Electronic Medical Information Translation and
-Transmission</h1>
+
+<%@ include file="/WEB-INF/jsp/header.jsp"%>
 
 <h2>Self Test</h2>
 
@@ -72,6 +65,5 @@ Transmission</h1>
 	
 %></pre>
 
+<%@ include file="/WEB-INF/jsp/footer.jsp"%>
 
-</body>
-</html>
