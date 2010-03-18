@@ -32,6 +32,12 @@
 <h1><a href="http://remitt.org/"><img src="img/remitt.jpg"
 	border="0" /></a> REMITT Electronic Medical Information Translation and
 Transmission</h1>
+<ul id="menubar">
+	<li><a href="index.jsp">Home</a></li>
+	<li><a href="services/">Services</a></li>
+	<li><a href="configurationDisplay.jsp">Configuration</a></li>
+	<li><a href="testHarness.jsp">Test Harness</a></li>
+</ul>
 
 <!-- end header.jsp -->
 
