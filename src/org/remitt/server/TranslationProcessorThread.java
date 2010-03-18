@@ -64,7 +64,7 @@ public class TranslationProcessorThread extends ProcessorThread {
 			return false;
 		}
 
-		String input = payload.getPayload();
+		byte[] input = payload.getPayload();
 		byte[] output = null;
 		try {
 			output = p.render(jobId, input, null);
@@ -86,7 +86,7 @@ public class TranslationProcessorThread extends ProcessorThread {
 
 		// Clear thread
 		Configuration.getControlThread().clearProcessorForThread((int) getId());
-		
+
 		return true;
 	}
 }

@@ -94,7 +94,7 @@ public class TestHarnessServlet extends HttpServlet {
 		} finally {
 			try {
 				p.setDefaultUsername(request.getUserPrincipal().getName());
-				byte[] output = p.render(0, input, option);
+				byte[] output = p.render(0, input.getBytes("UTF-8"), option);
 				if (new String(output, "UTF-8").startsWith("<?xml ")) {
 					// Handle XML output properly
 					response.setContentType("text/plain");

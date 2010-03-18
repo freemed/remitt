@@ -49,7 +49,7 @@ public class RenderProcessorThread extends ProcessorThread {
 		// Pull from tProcessor -> tPayload
 		PayloadDto payload = Configuration.getControlThread()
 				.getPayloadFromProcessor(jobId);
-		String input = payload.getPayload();
+		byte[] input = payload.getPayload();
 		String option = payload.getRenderOption();
 		String pluginClass = Configuration.getControlThread().resolvePlugin(
 				payload, ThreadType.RENDER);

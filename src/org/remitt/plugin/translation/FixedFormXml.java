@@ -77,7 +77,7 @@ public class FixedFormXml implements PluginInterface {
 	}
 
 	@Override
-	public byte[] render(Integer jobId, String input, String option)
+	public byte[] render(Integer jobId, byte[] input, String option)
 			throws Exception {
 		log.info("Entered Translate for job #" + jobId.toString());
 
@@ -87,8 +87,7 @@ public class FixedFormXml implements PluginInterface {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = dbFactory.newDocumentBuilder();
 		log.debug("Loading input into XmlDocument");
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(input
-				.getBytes("UTF-8"));
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(input);
 		org.w3c.dom.Document xmlInput = builder.parse(inputStream);
 
 		XPathFactory xpFactory = XPathFactory.newInstance();

@@ -212,6 +212,7 @@ INSERT INTO `tPlugins` VALUES
 		### Transmission plugins ###
 	, ( 'org.remitt.plugin.transmission.ScriptedHttpTransport', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'text', NULL )
 	, ( 'org.remitt.plugin.transmission.SftpTransport', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'text', NULL )
+	, ( 'org.remitt.plugin.transmission.StoreFile', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'text,pdf', NULL )
 		### Eligibility plugins ###
 	, ( 'org.remitt.plugin.eligibility.GatewayEDIEligibility', '0.1', 'jeff@freemedsoftware.org', 'eligibility', NULL, NULL )
 ;
@@ -321,6 +322,23 @@ CREATE TABLE `tJobs` (
 	, jobSchedule	VARCHAR(50) NOT NULL
 	, jobClass	VARCHAR(100) NOT NULL
 	, jobEnabled	BOOL NOT NULL DEFAULT TRUE
+);
+
+### File Store ###
+
+DROP TABLE IF EXISTS `tFileStore`;
+
+CREATE TABLE `tFileStore` (
+	  id		SERIAL
+	, user		VARCHAR(50) NOT NULL
+	, stamp		TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+	, category	VARCHAR(50) NOT NULL
+	, filename	VARCHAR(150) NOT NULL
+	, content	BLOB
+
+	# Force db constraint to avoid multiple files for users
+	, CONSTRAINT UNIQUE KEY	( user, category, filename )
+	, KEY			( stamp )
 );
 
 ### Scooper ###

@@ -38,7 +38,7 @@ public interface PluginInterface {
 
 	public HashMap<String, String> getOptions();
 
-	public byte[] render(Integer jobId, String input, String option)
+	public byte[] render(Integer jobId, byte[] input, String option)
 			throws Exception;
 
 	public String[] getPluginConfigurationOptions();

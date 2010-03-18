@@ -24,24 +24,19 @@
 
 package org.remitt.plugin.transmission;
 
-import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 
 import org.remitt.prototype.PluginInterface;
 import org.remitt.server.Configuration;
+import org.remitt.server.DbFileStore;
 
-import com.sshtools.j2ssh.SftpClient;
-import com.sshtools.j2ssh.SshClient;
-import com.sshtools.j2ssh.authentication.AuthenticationProtocolState;
-import com.sshtools.j2ssh.authentication.PasswordAuthenticationClient;
+public class StoreFile implements PluginInterface {
 
-public class SftpTransport implements PluginInterface {
-
-	protected String defaultUsername = "";
+	protected String defaultUsername = null;
 
 	@Override
 	public String getInputFormat() {
-		return "text";
+		return "text,pdf";
 	}
 
 	@Override
@@ -56,13 +51,12 @@ public class SftpTransport implements PluginInterface {
 
 	@Override
 	public String[] getPluginConfigurationOptions() {
-		return new String[] { "sftpUsername", "sftpPassword", "sftpHost",
-				"sftpPort", "sftpPath" };
+		return null;
 	}
 
 	@Override
 	public String getPluginName() {
-		return "SftpTransport";
+		return "StoreFile";
 	}
 
 	@Override
@@ -95,52 +89,16 @@ public class SftpTransport implements PluginInterface {
 		String tempPathName = new Long(System.currentTimeMillis()).toString()
 				+ "." + outputType;
 
-		SshClient ssh = new SshClient();
+		// Store this file
+		DbFileStore.putFile(userName, "output", tempPathName, input);
 
-		String host = Configuration.getPluginOption(this, userName, "sftpHost");
-		Integer port = Integer.parseInt(Configuration.getPluginOption(this,
-				userName, "sftpPort"));
-		String sftpUser = Configuration.getPluginOption(this, userName,
-				"sftpUser");
-		String sftpPassword = Configuration.getPluginOption(this, userName,
-				"sftpPassword");
-		String sftpPath = Configuration.getPluginOption(this, userName,
-				"sftpPath");
-
-		// Perform initial connection
-		ssh.connect(host, port);
-
-		// Authenticate
-		PasswordAuthenticationClient passwordAuthenticationClient = new PasswordAuthenticationClient();
-		passwordAuthenticationClient.setUsername(sftpUser);
-		passwordAuthenticationClient.setPassword(sftpPassword);
-		int result = ssh.authenticate(passwordAuthenticationClient);
-		if (result != AuthenticationProtocolState.COMPLETE) {
-			throw new Exception("Login to " + host + ":" + port + " "
-					+ sftpUser + "/" + sftpPassword + " failed");
-		}
-		// Open the SFTP channel
-		SftpClient client = ssh.openSftpClient();
-
-		if (sftpPath != null && sftpPath != "") {
-			client.cd(sftpPath);
-		}
-
-		// Convert string to input stream for transfer
-		ByteArrayInputStream bs = new ByteArrayInputStream(input);
-
-		// Send the file
-		client.put(bs, tempPathName);
-
-		// Disconnect
-		client.quit();
-		ssh.disconnect();
-
-		return new String("").getBytes();
+		// Return filename
+		return tempPathName.getBytes();
 	}
 
 	@Override
 	public void setDefaultUsername(String username) {
-		defaultUsername = username;
+		this.defaultUsername = username;
 	}
+
 }

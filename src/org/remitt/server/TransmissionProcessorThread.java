@@ -59,7 +59,7 @@ public class TransmissionProcessorThread extends ProcessorThread {
 			return false;
 		}
 
-		String input = payload.getPayload();
+		byte[] input = payload.getPayload();
 		byte[] output = null;
 		try {
 			output = p.render(jobId, input, payload.getTransmissionOption());

@@ -75,7 +75,7 @@ public class XsltPlugin implements PluginInterface {
 	}
 
 	@Override
-	public byte[] render(Integer jobId, String input, String option)
+	public byte[] render(Integer jobId, byte[] input, String option)
 			throws Exception {
 		log.info("Entered Render for job #" + jobId.toString());
 
@@ -85,7 +85,7 @@ public class XsltPlugin implements PluginInterface {
 				.getRealPath("/WEB-INF/xsl/" + option + ".xsl");
 
 		// Input data, load
-		Source xmlInput = new StreamSource(new StringReader(input));
+		Source xmlInput = new StreamSource(new StringReader(new String(input)));
 
 		// Create XSL Transformation
 		log.debug("Loading xsl into transformer");
@@ -101,8 +101,7 @@ public class XsltPlugin implements PluginInterface {
 		transformer.setParameter("currentTime", new Long(System
 				.currentTimeMillis()).toString());
 		transformer.setParameter("jobId", jobId == 0 ? new Long(System
-                                .currentTimeMillis()).toString() : 
-				jobId.toString());
+				.currentTimeMillis()).toString() : jobId.toString());
 
 		StreamResult xmlOutput = new StreamResult(new ByteArrayOutputStream());
 

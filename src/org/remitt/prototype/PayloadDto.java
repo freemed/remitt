@@ -31,7 +31,7 @@ public class PayloadDto {
 	private String renderOption;
 	private String transmissionPlugin;
 	private String transmissionOption;
-	private String payload;
+	private byte[] payload;
 	private String userName;
 
 	public void setId(Integer i) {
@@ -54,7 +54,7 @@ public class PayloadDto {
 		transmissionOption = o;
 	}
 
-	public void setPayload(String p) {
+	public void setPayload(byte[] p) {
 		payload = p;
 	}
 
@@ -82,7 +82,7 @@ public class PayloadDto {
 		return transmissionOption;
 	}
 
-	public String getPayload() {
+	public byte[] getPayload() {
 		return payload;
 	}
 

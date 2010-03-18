@@ -82,7 +82,7 @@ public class ScriptedHttpTransport implements PluginInterface {
 	}
 
 	@Override
-	public byte[] render(Integer jobId, String input, String option)
+	public byte[] render(Integer jobId, byte[] input, String option)
 			throws Exception {
 		String userName = null;
 		if (jobId == 0 || jobId == null) {
@@ -124,7 +124,7 @@ public class ScriptedHttpTransport implements PluginInterface {
 		// Inject objects
 		engine.put("log", log);
 		engine.put("jobId", jobId);
-		engine.put("input", input.getBytes());
+		engine.put("input", input);
 		engine.put("webClient", webClient);
 		engine.put("username", Configuration.getPluginOption(this, userName,
 				"username"));
