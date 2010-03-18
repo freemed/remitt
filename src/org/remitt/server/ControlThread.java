@@ -186,6 +186,12 @@ public class ControlThread extends Thread {
 	public PayloadDto getPayloadFromProcessor(Integer processorId) {
 		Connection c = Configuration.getConnection();
 
+		// Safety check so that if there isn't a value, we tell the calling
+		// function so.
+		if (processorId == -1) {
+			return null;
+		}
+
 		PreparedStatement cStmt = null;
 		try {
 			log.trace("SELECT payloadId FROM tProcessor WHERE id = "
@@ -199,6 +205,8 @@ public class ControlThread extends Thread {
 			Integer payloadId = rs.getInt(1);
 			rs.close();
 			c.close();
+			log.trace("getPayloadFromProcessor for " + processorId
+					+ " returned " + payloadId);
 			return getPayloadById(payloadId);
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
@@ -247,6 +255,11 @@ public class ControlThread extends Thread {
 					+ " threadId, payloadId, stage, plugin, tsStart, pInput "
 					+ " ) VALUES ( " + "?, ?, ?, ?, ?, ? " + " );",
 					PreparedStatement.RETURN_GENERATED_KEYS);
+			log.trace("INSERT INTO tProcessor ( "
+					+ " threadId, payloadId, stage, plugin, tsStart, pInput "
+					+ " ) VALUES ( " + availThread + ", " + payloadId + ", "
+					+ threadType.toString() + ", " + plugin + ", "
+					+ tsStart.getTime() + ", PAYLOAD " + " );");
 
 			cStmt.setLong(1, availThread);
 			cStmt.setInt(2, payloadId);
@@ -302,6 +315,9 @@ public class ControlThread extends Thread {
 		try {
 			cStmt = c.prepareStatement("UPDATE tProcessor SET "
 					+ " tsEnd = ?, " + "pOutput = ? " + " WHERE id = ? " + ";");
+			log.trace("UPDATE tProcessor SET " + " tsEnd = " + tsEnd.getTime()
+					+ ", " + "pOutput = OUTPUT " + " WHERE id = " + processorId
+					+ " ;");
 
 			cStmt.setTimestamp(1, new Timestamp(tsEnd.getTime()));
 			cStmt.setBytes(2, output);
@@ -646,7 +662,8 @@ public class ControlThread extends Thread {
 						.getId());
 
 				// ... and populate the appropriate pieces
-				PayloadDto payload = getPayloadById(tS.getProcessorId());
+				PayloadDto payload = getPayloadFromProcessor(tS
+						.getProcessorId());
 				Integer processorId = migratePayloadToProcessor(
 						payload.getId(), availThread, payload.getPayload(),
 						nextType, resolvePlugin(payload, nextType), new Date(

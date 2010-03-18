@@ -24,6 +24,8 @@
 
 package org.remitt.server;
 
+import java.util.Date;
+
 import org.apache.log4j.Logger;
 import org.remitt.prototype.PayloadDto;
 import org.remitt.prototype.PluginInterface;
@@ -75,7 +77,7 @@ public class TranslationProcessorThread extends ProcessorThread {
 
 		// Store output
 		Configuration.getControlThread().commitPayloadRun(jobId, output,
-				getThreadType(), null);
+				getThreadType(), new Date(System.currentTimeMillis()));
 
 		// Push to next state
 		Configuration.getControlThread().moveProcessorEntry(
