@@ -105,22 +105,33 @@ public class DbFileStore {
 	 * @return Success, true or false.
 	 */
 	public static boolean putFile(String username, String category,
-			String filename, byte[] content) {
+			String filename, byte[] content, Integer processorId) {
 		Connection c = Configuration.getConnection();
 
 		boolean success = false;
 
+		Integer payloadId = 0;
+		try {
+			payloadId = Configuration.getControlThread()
+					.getPayloadFromProcessor(processorId).getId();
+		} catch (Exception ex) {
+			log.error("Couldn't get payloadId from processorId = "
+					+ (processorId == null ? "null" : processorId));
+		}
+
 		PreparedStatement cStmt = null;
 		try {
-			cStmt = c
-					.prepareStatement("INSERT INTO tFileStore "
-							+ " ( user, stamp, category, filename, content, contentsize ) "
-							+ " VALUES ( ?, NOW(), ?, ?, ?, ? ) " + ";");
+			cStmt = c.prepareStatement("INSERT INTO tFileStore "
+					+ " ( user, stamp, category, filename, content, "
+					+ " contentsize, processorId, payloadId ) "
+					+ " VALUES ( ?, NOW(), ?, ?, ?, ?, ?, ? ) " + ";");
 			cStmt.setString(1, username);
 			cStmt.setString(2, category);
 			cStmt.setString(3, filename);
 			cStmt.setBytes(4, content);
 			cStmt.setInt(5, content.length);
+			cStmt.setInt(6, processorId);
+			cStmt.setInt(7, payloadId);
 			cStmt.execute();
 			c.close();
 			success = true;
@@ -150,5 +161,4 @@ public class DbFileStore {
 
 		return success;
 	}
-
 }

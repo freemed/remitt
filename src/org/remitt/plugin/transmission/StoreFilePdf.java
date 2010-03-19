@@ -84,7 +84,7 @@ public class StoreFilePdf implements PluginInterface {
 				+ ".pdf";
 
 		// Store this file
-		DbFileStore.putFile(userName, "output", tempPathName, input);
+		DbFileStore.putFile(userName, "output", tempPathName, input, jobId);
 
 		log.info("Leaving Transport for job #" + jobId.toString());
 

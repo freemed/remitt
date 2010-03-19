@@ -338,12 +338,16 @@ CREATE TABLE `tFileStore` (
 	, stamp		TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 	, category	VARCHAR(50) NOT NULL
 	, filename	VARCHAR(150) NOT NULL
+	, payloadId	INT UNSIGNED NOT NULL
+	, processorId	INT UNSIGNED NOT NULL
 	, content	BLOB
 	, contentsize	BIGINT NOT NULL DEFAULT 0
 
 	# Force db constraint to avoid multiple files for users
 	, CONSTRAINT UNIQUE KEY	( user, category, filename )
 	, KEY			( stamp )
+	, FOREIGN KEY		( payloadId ) REFERENCES tPayload.id ON DELETE CASCADE
+	, FOREIGN KEY		( processorId ) REFERENCES tProcessor.id ON DELETE CASCADE
 );
 
 ### Scooper ###
