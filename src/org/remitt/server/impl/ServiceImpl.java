@@ -264,6 +264,18 @@ public class ServiceImpl implements Service {
 	}
 
 	@POST
+	@Path("getbulkstatus/{jobsIds}")
+	@Produces("application/json")
+	@Override
+	public Integer[] getBulkStatus(@PathParam("jobIds") Integer[] jobIds) {
+		List<Integer> ret = new ArrayList<Integer>();
+		for (Integer i : jobIds) {
+			ret.add(getStatus(i));
+		}
+		return (Integer[]) ret.toArray(new Integer[0]);
+	}
+
+	@POST
 	@Path("plugins/{category}")
 	@Produces("application/json")
 	@Override

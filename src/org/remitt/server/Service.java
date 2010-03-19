@@ -115,6 +115,17 @@ public interface Service {
 	public Integer getStatus(@WebParam(name = "jobId") Integer jobId);
 
 	/**
+	 * Retrieve current job status for a list of job ids.
+	 * 
+	 * @param jobIds
+	 *            Array of payload ids.
+	 * @return Array of Integers indicating current status. 0 = completed, 1 =
+	 *         verification, 2 = rendering, 3 = translation, 4 =
+	 *         transmission/transport, 5 = unknown
+	 */
+	public Integer[] getBulkStatus(@WebParam(name = "jobIds") Integer[] jobIds);
+
+	/**
 	 * Retrieve list of file names that match the provided criteria.
 	 * 
 	 * @param category
