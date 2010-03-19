@@ -28,11 +28,12 @@ import java.util.HashMap;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
+import javax.ws.rs.PathParam;
 
 import org.remitt.prototype.ConfigurationOption;
 import org.remitt.prototype.EligibilityResponse;
 
-@WebService
+@WebService(targetNamespace = "http://server.remitt.org/")
 public interface Service {
 
 	/**
@@ -49,7 +50,8 @@ public interface Service {
 	 *            New password
 	 * @return Success
 	 */
-	public Boolean changePassword(@WebParam(name = "pw") String newPassword);
+	public Boolean changePassword(
+			@PathParam("pw") @WebParam(name = "pw") String newPassword);
 
 	/**
 	 * Get the currently authenticated user's name.
@@ -75,11 +77,11 @@ public interface Service {
 	 * @return tPayload unique identifier for this job.
 	 */
 	public Integer insertPayload(
-			@WebParam(name = "inputPayload") String inputPayload,
-			@WebParam(name = "renderPlugin") String renderPlugin,
-			@WebParam(name = "renderOption") String renderOption,
-			@WebParam(name = "transportPlugin") String transportPlugin,
-			@WebParam(name = "transportOption") String transportOption);
+			@PathParam("inputPayload") @WebParam(name = "inputPayload") String inputPayload,
+			@PathParam("renderPlugin") @WebParam(name = "renderPlugin") String renderPlugin,
+			@PathParam("renderOption") @WebParam(name = "renderOption") String renderOption,
+			@PathParam("transportPlugin") @WebParam(name = "transportPlugin") String transportPlugin,
+			@PathParam("transportOption") @WebParam(name = "transportOption") String transportOption);
 
 	/**
 	 * Get all configuration values for a user.
@@ -100,9 +102,9 @@ public interface Service {
 	 * @return Success.
 	 */
 	public Boolean setConfigValue(
-			@WebParam(name = "namespace") String namespace,
-			@WebParam(name = "option") String option,
-			@WebParam(name = "value") String value);
+			@PathParam("namespace") @WebParam(name = "namespace") String namespace,
+			@PathParam("option") @WebParam(name = "option") String option,
+			@PathParam("value") @WebParam(name = "value") String value);
 
 	/**
 	 * Retrieve current job status
@@ -112,7 +114,8 @@ public interface Service {
 	 *         verification, 2 = rendering, 3 = translation, 4 =
 	 *         transmission/transport, 5 = unknown
 	 */
-	public Integer getStatus(@WebParam(name = "jobId") Integer jobId);
+	public Integer getStatus(
+			@PathParam("jobId") @WebParam(name = "jobId") Integer jobId);
 
 	/**
 	 * Retrieve current job status for a list of job ids.
@@ -123,7 +126,8 @@ public interface Service {
 	 *         verification, 2 = rendering, 3 = translation, 4 =
 	 *         transmission/transport, 5 = unknown
 	 */
-	public Integer[] getBulkStatus(@WebParam(name = "jobIds") Integer[] jobIds);
+	public Integer[] getBulkStatus(
+			@PathParam("jobIds") @WebParam(name = "jobIds") Integer[] jobIds);
 
 	/**
 	 * Retrieve list of file names that match the provided criteria.
@@ -133,9 +137,10 @@ public interface Service {
 	 * @param value
 	 * @return
 	 */
-	public String[] getFileList(@WebParam(name = "category") String category,
-			@WebParam(name = "criteria") String criteria,
-			@WebParam(name = "value") String value);
+	public String[] getFileList(
+			@PathParam("category") @WebParam(name = "category") String category,
+			@PathParam("criteria") @WebParam(name = "criteria") String criteria,
+			@PathParam("value") @WebParam(name = "value") String value);
 
 	/**
 	 * Get list of plugins for a specified category.
@@ -143,7 +148,8 @@ public interface Service {
 	 * @param category
 	 * @return
 	 */
-	public String[] getPlugins(@WebParam(name = "category") String category);
+	public String[] getPlugins(
+			@PathParam("category") @WebParam(name = "category") String category);
 
 	/**
 	 * Retrieve output file.
@@ -154,8 +160,9 @@ public interface Service {
 	 *            Name of file to be retrieved.
 	 * @return Contents of target file as byte array.
 	 */
-	public byte[] getFile(@WebParam(name = "category") String category,
-			@WebParam(name = "filename") String fileName);
+	public byte[] getFile(
+			@PathParam("category") @WebParam(name = "category") String category,
+			@PathParam("filename") @WebParam(name = "filename") String fileName);
 
 	/**
 	 * Get list of years for which the system has output files.
@@ -172,7 +179,7 @@ public interface Service {
 	 * @return
 	 */
 	public String[] getOutputMonths(
-			@WebParam(name = "targetYear") Integer targetYear);
+			@PathParam("targetyear") @WebParam(name = "targetYear") Integer targetYear);
 
 	/**
 	 * Get list of plugin options.
@@ -184,8 +191,8 @@ public interface Service {
 	 * @return
 	 */
 	public String[] getPluginOptions(
-			@WebParam(name = "pluginclass") String pluginClass,
-			@WebParam(name = "qualifyingoption") String qualifyingOption);
+			@PathParam("pluginclass") @WebParam(name = "pluginclass") String pluginClass,
+			@PathParam("qualifyingoption") @WebParam(name = "qualifyingoption") String qualifyingOption);
 
 	/**
 	 * Check for eligibility.
@@ -195,8 +202,8 @@ public interface Service {
 	 * @return
 	 */
 	public EligibilityResponse getEligibility(
-			@WebParam(name = "plugin") String plugin,
-			@WebParam(name = "parameters") HashMap<String, String> parameters);
+			@PathParam("plugin") @WebParam(name = "plugin") String plugin,
+			@PathParam("parameters") @WebParam(name = "parameters") HashMap<String, String> parameters);
 
 	/**
 	 * Use a REMITT parser to parse source data.
@@ -207,7 +214,8 @@ public interface Service {
 	 *            Raw data to be parsed
 	 * @return
 	 */
-	public String parseData(@WebParam(name = "parserClass") String parserClass,
-			@WebParam(name = "data") String data);
+	public String parseData(
+			@PathParam("parserClass") @WebParam(name = "parserClass") String parserClass,
+			@PathParam("data") @WebParam(name = "data") String data);
 
 }

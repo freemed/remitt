@@ -59,7 +59,7 @@ public class StoreFilePdf implements PluginInterface {
 
 	@Override
 	public String getPluginName() {
-		return "StoreFile";
+		return "StoreFilePdf";
 	}
 
 	@Override

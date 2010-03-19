@@ -38,7 +38,6 @@ import javax.jws.WebService;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.xml.ws.WebServiceContext;
 
@@ -51,7 +50,7 @@ import org.remitt.prototype.PluginInterface;
 import org.remitt.server.Configuration;
 import org.remitt.server.Service;
 
-@WebService(endpointInterface = "org.remitt.server.Service", serviceName = "remittService")
+@WebService(targetNamespace = "http://server.remitt.org/", endpointInterface = "org.remitt.server.Service", serviceName = "RemittService")
 public class ServiceImpl implements Service {
 	@Resource
 	WebServiceContext context;
@@ -68,7 +67,7 @@ public class ServiceImpl implements Service {
 	@POST
 	@Path("changepassword/{pw}")
 	@Produces("application/json")
-	public Boolean changePassword(@PathParam("pw") String newPassword) {
+	public Boolean changePassword(String newPassword) {
 		Connection c = getConnection();
 
 		String userName = getCurrentUserName();
@@ -117,12 +116,8 @@ public class ServiceImpl implements Service {
 	@POST
 	@Path("submit")
 	@Produces("application/json")
-	public Integer insertPayload(
-			@PathParam("inputPayload") String inputPayload,
-			@PathParam("renderPlugin") String renderPlugin,
-			@PathParam("renderOption") String renderOption,
-			@PathParam("transportPlugin") String transportPlugin,
-			@PathParam("transportOption") String transportOption) {
+	public Integer insertPayload(String inputPayload, String renderPlugin,
+			String renderOption, String transportPlugin, String transportOption) {
 		Connection c = getConnection();
 
 		String userName = getCurrentUserName();
@@ -184,8 +179,7 @@ public class ServiceImpl implements Service {
 	@POST
 	@Path("setoption/{namespace}/{option}/{value}")
 	@Produces("application/json")
-	public Boolean setConfigValue(@PathParam("namespace") String namespace,
-			@PathParam("option") String option, @PathParam("value") String value) {
+	public Boolean setConfigValue(String namespace, String option, String value) {
 		String userName = getCurrentUserName();
 		try {
 			Configuration.setConfigValue(userName, namespace, option, value);
@@ -199,7 +193,7 @@ public class ServiceImpl implements Service {
 	@POST
 	@Path("getstatus/{jobId}")
 	@Produces("application/json")
-	public Integer getStatus(@PathParam("jobId") Integer jobId) {
+	public Integer getStatus(Integer jobId) {
 		String userName = getCurrentUserName();
 
 		log.info("getStatus called for user = " + userName + ", jobId = "
@@ -267,7 +261,7 @@ public class ServiceImpl implements Service {
 	@Path("getbulkstatus/{jobsIds}")
 	@Produces("application/json")
 	@Override
-	public Integer[] getBulkStatus(@PathParam("jobIds") Integer[] jobIds) {
+	public Integer[] getBulkStatus(Integer[] jobIds) {
 		List<Integer> ret = new ArrayList<Integer>();
 		for (Integer i : jobIds) {
 			ret.add(getStatus(i));
@@ -279,7 +273,7 @@ public class ServiceImpl implements Service {
 	@Path("plugins/{category}")
 	@Produces("application/json")
 	@Override
-	public String[] getPlugins(@PathParam("category") String category) {
+	public String[] getPlugins(String category) {
 		if (category.equalsIgnoreCase("validation")) {
 			category = "validation"; // validation
 		} else if (category.equalsIgnoreCase("render")) {
@@ -346,8 +340,7 @@ public class ServiceImpl implements Service {
 	@Path("file/{category}/{filename}")
 	@Produces("application/json")
 	@Override
-	public byte[] getFile(@PathParam("category") String category,
-			@PathParam("filename") String fileName) {
+	public byte[] getFile(String category, String fileName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -356,9 +349,7 @@ public class ServiceImpl implements Service {
 	@Path("pluginoptions/{pluginclass}/{qualifyingoption}")
 	@Produces("application/json")
 	@Override
-	public String[] getPluginOptions(
-			@PathParam("pluginclass") String pluginClass,
-			@PathParam("qualifyingoption") String qualifyingOption) {
+	public String[] getPluginOptions(String pluginClass, String qualifyingOption) {
 		PluginInterface p = null;
 		try {
 			p = (PluginInterface) Class.forName(pluginClass).newInstance();
@@ -379,9 +370,7 @@ public class ServiceImpl implements Service {
 	@Path("filelist/{category}/{criteria}/{value}")
 	@Produces("application/json")
 	@Override
-	public String[] getFileList(@PathParam("category") String category,
-			@PathParam("criteria") String criteria,
-			@PathParam("value") String value) {
+	public String[] getFileList(String category, String criteria, String value) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -390,7 +379,7 @@ public class ServiceImpl implements Service {
 	@Path("outputmonths/{targetyear}")
 	@Produces("application/json")
 	@Override
-	public String[] getOutputMonths(@PathParam("targetyear") Integer targetYear) {
+	public String[] getOutputMonths(Integer targetYear) {
 		// TODO Auto-generated method stub
 		return null;
 	}
