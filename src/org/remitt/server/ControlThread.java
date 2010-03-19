@@ -369,6 +369,9 @@ public class ControlThread extends Thread {
 		}
 	}
 
+	/**
+	 * Start all processor threads and add them to the thread pool.
+	 */
 	protected void startChildren() {
 		Integer numberOfWorkers = Configuration.getConfiguration().getInt(
 				"remitt.worker.threadPoolSize", 5);
@@ -424,6 +427,9 @@ public class ControlThread extends Thread {
 
 	}
 
+	/**
+	 * Stop all processor threads.
+	 */
 	protected void stopChildren() {
 		log.info("Stopping all worker threads");
 		Iterator<ProcessorThread> iter = workerThreads.values().iterator();
@@ -452,6 +458,13 @@ public class ControlThread extends Thread {
 		log.info("All worker threads destroyed");
 	}
 
+	/**
+	 * Internal method to add a processor thread to the <ControlThread> pool of
+	 * worker threads, as well as setting up the <JobThreadState> both for the
+	 * <ProcessorThread> and internally.
+	 * 
+	 * @param pt
+	 */
 	protected void addThreadToPool(ProcessorThread pt) {
 		JobThreadState s = new JobThreadState();
 		s.setThreadId(pt.getId());
@@ -647,6 +660,14 @@ public class ControlThread extends Thread {
 		}
 	}
 
+	/**
+	 * "Move" a tProcessor entry into the next queue stage.
+	 * 
+	 * @param tS
+	 * @param nextType
+	 * @param plugin
+	 * @return Success
+	 */
 	public synchronized boolean moveProcessorEntry(JobThreadState tS,
 			ThreadType nextType, String plugin) {
 		Long availThread = null;
@@ -686,7 +707,7 @@ public class ControlThread extends Thread {
 				}
 			}
 		}
-		return false;
+		return done;
 	}
 
 }

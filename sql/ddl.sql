@@ -215,7 +215,8 @@ INSERT INTO `tPlugins` VALUES
 		### Transmission plugins ###
 	, ( 'org.remitt.plugin.transmission.ScriptedHttpTransport', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'text', NULL )
 	, ( 'org.remitt.plugin.transmission.SftpTransport', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'text', NULL )
-	, ( 'org.remitt.plugin.transmission.StoreFile', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'text,pdf', NULL )
+	, ( 'org.remitt.plugin.transmission.StoreFile', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'text', NULL )
+	, ( 'org.remitt.plugin.transmission.StoreFilePdf', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'pdf', NULL )
 		### Eligibility plugins ###
 	, ( 'org.remitt.plugin.eligibility.GatewayEDIEligibility', '0.1', 'jeff@freemedsoftware.org', 'eligibility', NULL, NULL )
 ;

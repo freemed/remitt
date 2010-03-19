@@ -141,7 +141,7 @@ public class SftpTransport implements PluginInterface {
 		client.quit();
 		ssh.disconnect();
 
-		log.info("Lraving Transport for job #" + jobId.toString());
+		log.info("Leaving Transport for job #" + jobId.toString());
 
 		return new String("").getBytes();
 	}

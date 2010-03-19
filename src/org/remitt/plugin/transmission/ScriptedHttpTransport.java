@@ -133,8 +133,8 @@ public class ScriptedHttpTransport implements PluginInterface {
 		engine.put("password", Configuration.getPluginOption(this, userName,
 				"password"));
 
-		log.info("Lraving Transport for job #" + jobId.toString());
-		
+		log.info("Leaving Transport for job #" + jobId.toString());
+
 		InputStream is = new FileInputStream(realScriptPath);
 		try {
 			Reader reader = new InputStreamReader(is);

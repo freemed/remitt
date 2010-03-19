@@ -159,11 +159,24 @@ public class Configuration {
 		return controlThread;
 	}
 
+	/**
+	 * Attempt to find the current installed location of REMITT. First tries
+	 * "REMITT_HOME" environment variable, then attempts to use the
+	 * catalina.home property.
+	 * 
+	 * @return
+	 */
 	public static String getInstallLocation() {
 		String home = System.getenv("REMITT_HOME");
 		return (home == "") ? System.getProperty("catalina.home") : home;
 	}
 
+	/**
+	 * Get an unused database connection from the <ComboPooledDataSource> pool
+	 * of db connections.
+	 * 
+	 * @return
+	 */
 	public static Connection getConnection() {
 		try {
 			return comboPooledDataSource.getConnection();

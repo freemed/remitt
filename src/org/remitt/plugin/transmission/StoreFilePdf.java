@@ -31,15 +31,15 @@ import org.remitt.datastore.DbFileStore;
 import org.remitt.prototype.PluginInterface;
 import org.remitt.server.Configuration;
 
-public class StoreFile implements PluginInterface {
+public class StoreFilePdf implements PluginInterface {
 
-	static final Logger log = Logger.getLogger(StoreFile.class);
+	static final Logger log = Logger.getLogger(StoreFilePdf.class);
 
 	protected String defaultUsername = null;
 
 	@Override
 	public String getInputFormat() {
-		return "text";
+		return "pdf";
 	}
 
 	@Override
@@ -80,26 +80,13 @@ public class StoreFile implements PluginInterface {
 					.getPayloadFromProcessor(jobId).getUserName();
 		}
 
-		String inputString = new String(input);
-
-		String outputType = "";
-		if (inputString.startsWith("%PDF")) {
-			outputType = "pdf";
-		} else if (inputString.startsWith("<?xml ")) {
-			outputType = "xml";
-		} else if (inputString.startsWith("ISA*")) {
-			outputType = "x12";
-		} else {
-			outputType = "txt";
-		}
-
 		String tempPathName = new Long(System.currentTimeMillis()).toString()
-				+ "." + outputType;
+				+ ".pdf";
 
 		// Store this file
 		DbFileStore.putFile(userName, "output", tempPathName, input);
 
-		log.info("Lraving Transport for job #" + jobId.toString());
+		log.info("Leaving Transport for job #" + jobId.toString());
 
 		// Return filename
 		return tempPathName.getBytes();
