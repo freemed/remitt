@@ -148,6 +148,7 @@ public class ServiceImpl implements Service {
 			@SuppressWarnings("unused")
 			boolean hadResults = cStmt.execute();
 			ResultSet newKey = cStmt.getGeneratedKeys();
+			newKey.next();
 			Integer returnValue = newKey.getInt(1);
 			newKey.close();
 			try {
@@ -196,16 +197,19 @@ public class ServiceImpl implements Service {
 	}
 
 	@POST
-	@Path("getstatus/{jobid}")
+	@Path("getstatus/{jobId}")
 	@Produces("application/json")
-	public Integer getStatus(@PathParam("jobid") Integer jobId) {
+	public Integer getStatus(@PathParam("jobId") Integer jobId) {
 		String userName = getCurrentUserName();
+
+		log.info("getStatus called for user = " + userName + ", jobId = "
+				+ (jobId == null ? "null" : jobId.toString()));
 
 		Connection c = getConnection();
 
 		CallableStatement cStmt = null;
 		try {
-			cStmt = c.prepareCall("{ CALL p_GetStatus( ?, ? ); }");
+			cStmt = c.prepareCall("CALL p_GetStatus( ?, ? );");
 			cStmt.setString(1, userName);
 			cStmt.setInt(2, jobId);
 
@@ -213,17 +217,18 @@ public class ServiceImpl implements Service {
 			int returnValue = 5;
 			if (hadResults) {
 				ResultSet r = cStmt.getResultSet();
-				String status = r.getString("status");
+				r.next();
+				Integer status = r.getInt("status");
 				String stage = r.getString("stage");
 
-				if (status.equalsIgnoreCase("incomplete")) {
-					if (status.equalsIgnoreCase("validation")) {
+				if (status.equals(0)) {
+					if (stage.equalsIgnoreCase("validation")) {
 						returnValue = 1; // validation
-					} else if (status.equalsIgnoreCase("render")) {
+					} else if (stage.equalsIgnoreCase("render")) {
 						returnValue = 2; // render
-					} else if (status.equalsIgnoreCase("translation")) {
+					} else if (stage.equalsIgnoreCase("translation")) {
 						returnValue = 3; // translation
-					} else if (status.equalsIgnoreCase("transmission")) {
+					} else if (stage.equalsIgnoreCase("transmission")) {
 						returnValue = 4; // transmission/transport
 					}
 				} else {

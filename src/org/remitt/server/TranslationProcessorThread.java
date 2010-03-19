@@ -48,9 +48,7 @@ public class TranslationProcessorThread extends ProcessorThread {
 		String pluginClass = Configuration.getControlThread().resolvePlugin(
 				payload, getThreadType());
 
-		//
-
-		//
+		log.info("Using pluginClass = " + pluginClass);
 
 		PluginInterface p = null;
 		try {

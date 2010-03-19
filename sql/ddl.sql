@@ -142,24 +142,27 @@ CREATE PROCEDURE p_GetStatus (
 	)
 BEGIN
 	DECLARE c ENUM ( 'validation', 'render', 'translation', 'transmission' );
-	DECLARE x INT UNSIGNED;
+	DECLARE x ENUM ( 'validation', 'render', 'translation', 'transmission' );
 
 	SELECT NULL INTO c;
 
+	#--- Find a stage with a null timestamp, which indicates work in progress
 	SELECT
 		stage INTO c
 	FROM tProcessor p
 		LEFT OUTER JOIN tPayload a ON p.payloadId = a.id
 	WHERE ISNULL( tsEnd ) AND a.id = jobId AND a.user = username;
 
-	#--- If we can't find anything...
+	#--- If we can't find anything that looks like work in progress ...
 	IF ISNULL( c ) THEN
-		#---- Check to see if there's output
-		SELECT COUNT(*) INTO x
-		FROM tOutput o
-			LEFT OUTER JOIN tPayload p ON o.payloadId = p.id
-		WHERE p.id = jobId AND p.user = username;
-		IF x > 0 THEN
+		#---- Check to see if latest stage is completed
+		SELECT p.stage INTO x
+		FROM tProcessor p
+			LEFT OUTER JOIN tPayload a ON p.payloadId = a.id
+		WHERE a.id = jobId AND a.user = username
+		ORDER BY p.tsStart DESC LIMIT 1;
+
+		IF x = 'transmission' THEN
 			SELECT 1 AS 'status', 'completed' AS 'stage';
 		ELSE
 			SELECT 0 AS 'status', NULL AS 'stage';
@@ -335,6 +338,7 @@ CREATE TABLE `tFileStore` (
 	, category	VARCHAR(50) NOT NULL
 	, filename	VARCHAR(150) NOT NULL
 	, content	BLOB
+	, contentsize	BIGINT NOT NULL DEFAULT 0
 
 	# Force db constraint to avoid multiple files for users
 	, CONSTRAINT UNIQUE KEY	( user, category, filename )

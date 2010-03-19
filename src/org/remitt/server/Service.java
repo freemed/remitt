@@ -112,7 +112,7 @@ public interface Service {
 	 *         verification, 2 = rendering, 3 = translation, 4 =
 	 *         transmission/transport, 5 = unknown
 	 */
-	public Integer getStatus(@WebParam(name = "jobid") Integer jobId);
+	public Integer getStatus(@WebParam(name = "jobId") Integer jobId);
 
 	/**
 	 * Retrieve list of file names that match the provided criteria.

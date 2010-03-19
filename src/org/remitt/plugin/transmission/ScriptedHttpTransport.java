@@ -84,13 +84,15 @@ public class ScriptedHttpTransport implements PluginInterface {
 	@Override
 	public byte[] render(Integer jobId, byte[] input, String option)
 			throws Exception {
+		log.info("Entered Transport for job #" + jobId.toString());
+
 		String userName = null;
 		if (jobId == 0 || jobId == null) {
 			// No job id, no user name
 			userName = defaultUsername;
 		} else {
-			userName = Configuration.getControlThread().getPayloadById(jobId)
-					.getUserName();
+			userName = Configuration.getControlThread()
+					.getPayloadFromProcessor(jobId).getUserName();
 		}
 
 		// Get configuration
@@ -131,6 +133,8 @@ public class ScriptedHttpTransport implements PluginInterface {
 		engine.put("password", Configuration.getPluginOption(this, userName,
 				"password"));
 
+		log.info("Lraving Transport for job #" + jobId.toString());
+		
 		InputStream is = new FileInputStream(realScriptPath);
 		try {
 			Reader reader = new InputStreamReader(is);

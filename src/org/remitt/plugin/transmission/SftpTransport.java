@@ -27,6 +27,7 @@ package org.remitt.plugin.transmission;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
 import org.remitt.prototype.PluginInterface;
 import org.remitt.server.Configuration;
 
@@ -36,6 +37,8 @@ import com.sshtools.j2ssh.authentication.AuthenticationProtocolState;
 import com.sshtools.j2ssh.authentication.PasswordAuthenticationClient;
 
 public class SftpTransport implements PluginInterface {
+
+	static final Logger log = Logger.getLogger(SftpTransport.class);
 
 	protected String defaultUsername = "";
 
@@ -73,12 +76,14 @@ public class SftpTransport implements PluginInterface {
 	@Override
 	public byte[] render(Integer jobId, byte[] input, String option)
 			throws Exception {
+		log.info("Entered Transport for job #" + jobId.toString());
+
 		String userName = null;
 		if (jobId == 0) {
 			userName = defaultUsername;
 		} else {
-			userName = Configuration.getControlThread().getPayloadById(jobId)
-					.getUserName();
+			userName = Configuration.getControlThread()
+					.getPayloadFromProcessor(jobId).getUserName();
 		}
 
 		String inputString = new String(input);
@@ -135,6 +140,8 @@ public class SftpTransport implements PluginInterface {
 		// Disconnect
 		client.quit();
 		ssh.disconnect();
+
+		log.info("Lraving Transport for job #" + jobId.toString());
 
 		return new String("").getBytes();
 	}

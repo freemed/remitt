@@ -26,11 +26,14 @@ package org.remitt.plugin.transmission;
 
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
+import org.remitt.datastore.DbFileStore;
 import org.remitt.prototype.PluginInterface;
 import org.remitt.server.Configuration;
-import org.remitt.server.DbFileStore;
 
 public class StoreFile implements PluginInterface {
+
+	static final Logger log = Logger.getLogger(StoreFile.class);
 
 	protected String defaultUsername = null;
 
@@ -67,12 +70,14 @@ public class StoreFile implements PluginInterface {
 	@Override
 	public byte[] render(Integer jobId, byte[] input, String option)
 			throws Exception {
+		log.info("Entered Transport for job #" + jobId.toString());
+
 		String userName = null;
 		if (jobId == 0) {
 			userName = defaultUsername;
 		} else {
-			userName = Configuration.getControlThread().getPayloadById(jobId)
-					.getUserName();
+			userName = Configuration.getControlThread()
+					.getPayloadFromProcessor(jobId).getUserName();
 		}
 
 		String inputString = new String(input);
@@ -92,6 +97,8 @@ public class StoreFile implements PluginInterface {
 		// Store this file
 		DbFileStore.putFile(userName, "output", tempPathName, input);
 
+		log.info("Lraving Transport for job #" + jobId.toString());
+		
 		// Return filename
 		return tempPathName.getBytes();
 	}

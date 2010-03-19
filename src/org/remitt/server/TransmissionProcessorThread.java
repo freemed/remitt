@@ -45,6 +45,9 @@ public class TransmissionProcessorThread extends ProcessorThread {
 				.getPayloadFromProcessor(jobId);
 		String pluginClass = Configuration.getControlThread().resolvePlugin(
 				payload, getThreadType());
+
+		log.info("Using pluginClass = " + pluginClass);
+
 		PluginInterface p = null;
 		try {
 			p = (PluginInterface) Class.forName(pluginClass).newInstance();

@@ -158,6 +158,8 @@ public class FixedFormPdf implements PluginInterface {
 			pageCount += 1;
 		}
 
+		log.info("Leaving Translate for job #" + jobId.toString());
+
 		// Close document
 		newDocument.close();
 		outputStream.flush();

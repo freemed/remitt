@@ -108,6 +108,8 @@ public class XsltPlugin implements PluginInterface {
 		log.debug("Performing transformation");
 		transformer.transform(xmlInput, xmlOutput);
 
+		log.info("Leaving Render for job #" + jobId.toString());
+
 		// Push stream to output
 		return xmlOutput.getOutputStream().toString().getBytes("UTF-8");
 	}

@@ -22,7 +22,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package org.remitt.server;
+package org.remitt.datastore;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
+import org.remitt.server.Configuration;
 
 public class DbFileStore {
 
@@ -111,13 +112,15 @@ public class DbFileStore {
 
 		PreparedStatement cStmt = null;
 		try {
-			cStmt = c.prepareStatement("INSERT INTO tFileStore "
-					+ " ( user, stamp, category, filename, content ) "
-					+ " VALUES ( ?, NOW(), ?, ?, ? ) " + ";");
+			cStmt = c
+					.prepareStatement("INSERT INTO tFileStore "
+							+ " ( user, stamp, category, filename, content, contentsize ) "
+							+ " VALUES ( ?, NOW(), ?, ?, ?, ? ) " + ";");
 			cStmt.setString(1, username);
 			cStmt.setString(2, category);
 			cStmt.setString(3, filename);
 			cStmt.setBytes(4, content);
+			cStmt.setInt(5, content.length);
 			cStmt.execute();
 			c.close();
 			success = true;

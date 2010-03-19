@@ -114,6 +114,8 @@ public class X12Xml implements PluginInterface {
 			// sb.append("\n");
 		}
 
+		log.info("Leaving Translate for job #" + jobId.toString());
+
 		return sb.toString().getBytes();
 	}
 

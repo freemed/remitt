@@ -102,6 +102,8 @@ public class FixedFormXml implements PluginInterface {
 			sb.append(TranslatePageFromNode(nodeList.item(iter)));
 		}
 
+		log.info("Leaving Translate for job #" + jobId.toString());
+
 		return sb.toString().getBytes();
 	}
 
