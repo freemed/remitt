@@ -42,6 +42,7 @@ import javax.ws.rs.Produces;
 import javax.xml.ws.WebServiceContext;
 
 import org.apache.log4j.Logger;
+import org.remitt.datastore.DbFileStore;
 import org.remitt.prototype.ConfigurationOption;
 import org.remitt.prototype.EligibilityInterface;
 import org.remitt.prototype.EligibilityResponse;
@@ -341,8 +342,12 @@ public class ServiceImpl implements Service {
 	@Produces("application/json")
 	@Override
 	public byte[] getFile(String category, String fileName) {
-		// TODO Auto-generated method stub
-		return null;
+		String userName = getCurrentUserName();
+
+		log.debug("getFile for " + userName + " [category = " + category
+				+ ", filename = " + fileName + "]");
+
+		return DbFileStore.getFile(userName, category, fileName);
 	}
 
 	@POST
@@ -371,8 +376,56 @@ public class ServiceImpl implements Service {
 	@Produces("application/json")
 	@Override
 	public String[] getFileList(String category, String criteria, String value) {
-		// TODO Auto-generated method stub
-		return null;
+		// Criteria is YYYY-MM
+		Connection c = getConnection();
+
+		String userName = getCurrentUserName();
+
+		log.debug("getFileList for " + userName + " [criteria = "
+				+ (criteria == null ? "null" : criteria) + ", value = "
+				+ (value == null ? "null" : value) + ", category = " + category
+				+ "]");
+
+		String[] returnValue = null;
+		PreparedStatement cStmt = null;
+		try {
+			cStmt = c.prepareStatement("SELECT filename " + " FROM tFileStore "
+					+ " WHERE user = ? " + " AND category = ? "
+					+ " AND DATE_FORMAT(stamp, '%Y-%m') = ? " + ";");
+			cStmt.setString(1, userName);
+			cStmt.setString(2, category);
+			cStmt.setString(3, criteria);
+
+			boolean hadResults = cStmt.execute();
+			List<String> results = new ArrayList<String>();
+			if (hadResults) {
+				ResultSet rs = cStmt.getResultSet();
+				while (rs.next()) {
+					results.add(rs.getString(1));
+				}
+				rs.close();
+			}
+			returnValue = results.toArray(new String[0]);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			return returnValue;
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			return null;
+		} catch (SQLException e) {
+			log.error("Caught SQLException", e);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			return null;
+		}
 	}
 
 	@POST
@@ -380,8 +433,54 @@ public class ServiceImpl implements Service {
 	@Produces("application/json")
 	@Override
 	public String[] getOutputMonths(Integer targetYear) {
-		// TODO Auto-generated method stub
-		return null;
+		Connection c = getConnection();
+
+		String userName = getCurrentUserName();
+
+		log.debug("getOutputMonths for " + userName + " [targetYear = "
+				+ targetYear + "]");
+
+		String[] returnValue = null;
+		PreparedStatement cStmt = null;
+		try {
+			cStmt = c
+					.prepareStatement("SELECT DATE_FORMAT(stamp, '%Y-%m') AS m "
+							+ " FROM tFileStore "
+							+ " WHERE user = ? AND YEAR(stamp) = ? "
+							+ " GROUP BY m ;");
+			cStmt.setString(1, userName);
+			cStmt.setInt(2, targetYear);
+
+			boolean hadResults = cStmt.execute();
+			List<String> results = new ArrayList<String>();
+			if (hadResults) {
+				ResultSet rs = cStmt.getResultSet();
+				while (rs.next()) {
+					results.add(rs.getString("m"));
+				}
+				rs.close();
+			}
+			returnValue = results.toArray(new String[0]);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			return returnValue;
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			return null;
+		} catch (SQLException e) {
+			log.error("Caught SQLException", e);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			return null;
+		}
 	}
 
 	@POST
@@ -389,8 +488,49 @@ public class ServiceImpl implements Service {
 	@Produces("application/json")
 	@Override
 	public Integer[] getOutputYears() {
-		// TODO Auto-generated method stub
-		return null;
+		Connection c = getConnection();
+
+		String userName = getCurrentUserName();
+
+		log.debug("getOutputYears for " + userName);
+
+		Integer[] returnValue = null;
+		PreparedStatement cStmt = null;
+		try {
+			cStmt = c.prepareStatement("SELECT DISTINCT(YEAR(stamp) AS year "
+					+ " FROM tFileStore " + "WHERE user = ?;");
+			cStmt.setString(1, userName);
+
+			boolean hadResults = cStmt.execute();
+			List<Integer> results = new ArrayList<Integer>();
+			if (hadResults) {
+				ResultSet rs = cStmt.getResultSet();
+				while (rs.next()) {
+					results.add(rs.getInt("year"));
+				}
+				rs.close();
+			}
+			returnValue = results.toArray(new Integer[0]);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			return returnValue;
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			return null;
+		} catch (SQLException e) {
+			log.error("Caught SQLException", e);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			return null;
+		}
 	}
 
 	@POST
