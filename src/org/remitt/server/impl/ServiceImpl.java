@@ -43,11 +43,13 @@ import javax.xml.ws.WebServiceContext;
 
 import org.apache.log4j.Logger;
 import org.remitt.datastore.DbFileStore;
+import org.remitt.datastore.UserManagement;
 import org.remitt.prototype.ConfigurationOption;
 import org.remitt.prototype.EligibilityInterface;
 import org.remitt.prototype.EligibilityResponse;
 import org.remitt.prototype.ParserInterface;
 import org.remitt.prototype.PluginInterface;
+import org.remitt.prototype.UserDTO;
 import org.remitt.server.Configuration;
 import org.remitt.server.Service;
 
@@ -588,6 +590,20 @@ public class ServiceImpl implements Service {
 			log.error(e);
 			return null;
 		}
+	}
+
+	@POST
+	@Path("adduser/{user}")
+	@Produces("application/json")
+	@Override
+	public boolean addRemittUser(UserDTO user) {
+		if (!context.isUserInRole("admin")) {
+			log.error("Attempt to add a user by a non-admin account");
+			return false;
+		}
+		return UserManagement.addUser(user.getUsername(), user.getPassword(),
+				user.getCallbackServiceUri(), user.getCallbackServiceWsdlUri(),
+				user.getCallbackUsername(), user.getCallbackPassword());
 	}
 
 	/**

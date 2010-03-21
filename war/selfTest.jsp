@@ -22,6 +22,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  --%>
 <%@ page import="java.sql.*"%>
+<%@ page import="org.remitt.datastore.UserManagement"%>
+<%@ page import="org.remitt.prototype.UserDTO"%>
 <%@ page import="org.remitt.server.Configuration"%>
 <%@ page import="org.apache.log4j.Logger"%>
 
@@ -58,6 +60,18 @@
 	try {
 		String ret = Configuration.resolveTranslationPlugin( "org.remitt.plugin.render.XsltPlugin", "hcfa1500", "org.remitt.plugin.transmission.ScriptedHttpTransport", "" );
 		out.println(ret);
+	} catch (Exception ex) {
+		out.println("FAIL");
+		out.println(ex.toString());
+	}
+	
+	out.print("Try to pull all UserDTO objects from the system ... ");
+	try {
+		List<UserDTO> users = UserManagement.listUsers();
+		out.println("OK");
+		for ( UserDTO u : users ) {
+			out.println("\t" + u.toString());
+		}
 	} catch (Exception ex) {
 		out.println("FAIL");
 		out.println(ex.toString());

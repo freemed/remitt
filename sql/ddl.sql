@@ -38,7 +38,10 @@ CREATE TABLE `tRole` (
 	  id		SERIAL
 	, username	VARCHAR(50) NOT NULL
 	, rolename	VARCHAR(50) NOT NULL
-	, PRIMARY KEY ( username, rolename )
+
+	# Enforce unique combinations and cascading deletions
+	, CONSTRAINT UNIQUE KEY ( username, rolename )
+	, FOREIGN KEY ( username ) REFERENCES tUser.username ON DELETE CASCADE
 );
 
 INSERT INTO `tRole` VALUES ( NULL, 'Administrator', 'admin' );

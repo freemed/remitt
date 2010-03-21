@@ -32,6 +32,7 @@ import javax.ws.rs.PathParam;
 
 import org.remitt.prototype.ConfigurationOption;
 import org.remitt.prototype.EligibilityResponse;
+import org.remitt.prototype.UserDTO;
 
 @WebService(targetNamespace = "http://server.remitt.org/")
 public interface Service {
@@ -217,5 +218,14 @@ public interface Service {
 	public String parseData(
 			@PathParam("parserClass") @WebParam(name = "parserClass") String parserClass,
 			@PathParam("data") @WebParam(name = "data") String data);
+
+	/**
+	 * Add a REMITT user.
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public boolean addRemittUser(
+			@PathParam("user") @WebParam(name = "user") UserDTO user);
 
 }

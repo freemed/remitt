@@ -26,7 +26,7 @@
 
 <%@ page import="java.util.*"%>
 
-<div align="center"><i>&copy; 1999-<%=new Date().getYear() + 1900%>
+<div align="center"><i>&copy; 1999-<%=new java.util.Date().getYear() + 1900%>
 by the FreeMED Software Foundation</i></div>
 
 </body>
