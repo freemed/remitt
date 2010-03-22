@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.remitt.datastore.DbPatch;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -58,6 +59,8 @@ public class MasterControl extends HttpServlet {
 	private static final long serialVersionUID = 2009072801000L;
 
 	static final Logger log = Logger.getLogger(MasterControl.class);
+
+	static final String PATCH_PATH = "/WEB-INF/dbpatch";
 
 	/**
 	 * Default constructor.
@@ -113,6 +116,9 @@ public class MasterControl extends HttpServlet {
 		// Save connection
 		Configuration.setComboPooledDataSource(cpds);
 		getServletContext().setAttribute("combopooleddatasource", cpds);
+
+		// Attempt db patching before we do anything crazy
+		DbPatch.dbPatcher(getServletContext().getRealPath(PATCH_PATH));
 
 		// Start control thread
 		ControlThread control = new ControlThread();

@@ -80,8 +80,9 @@ public class RenderProcessorThread extends ProcessorThread {
 			// Clear the thread, since we can't process any further.
 			Configuration.getControlThread().clearProcessorForThread(getId());
 
-			// TODO: Update with error status so that frontend can inform
-			// "client"
+			// Update with error status so that frontend can inform "client"
+			tsEnd.setTime(System.currentTimeMillis());
+			Configuration.getControlThread().setFailedPayloadRun(jobId, tsEnd);
 			return false;
 		}
 

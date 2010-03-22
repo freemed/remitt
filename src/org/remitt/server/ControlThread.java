@@ -325,17 +325,150 @@ public class ControlThread extends Thread {
 
 			cStmt.executeUpdate();
 			cStmt.close();
+
+			c.close();
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
 			try {
 				cStmt.close();
 			} catch (Exception ex) {
 			}
+			if (c != null) {
+				try {
+					cStmt.close();
+				} catch (Exception ex) {
+				}
+			}
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
 			try {
 				cStmt.close();
 			} catch (Exception ex) {
+			}
+			if (c != null) {
+				try {
+					cStmt.close();
+				} catch (Exception ex) {
+				}
+			}
+		}
+	}
+
+	/**
+	 * Record a failed run to the processor table.
+	 * 
+	 * @param processorId
+	 * @param tsEnd
+	 */
+	public void setFailedPayloadRun(Integer processorId, Date tsEnd) {
+		Connection c = Configuration.getConnection();
+
+		if (tsEnd == null) {
+			tsEnd = new Date();
+		}
+
+		PreparedStatement cStmt = null;
+		PreparedStatement cStmt2 = null;
+		try {
+			cStmt = c.prepareStatement("UPDATE tProcessor SET " + " tsEnd = ? "
+					+ " WHERE id = ? " + ";");
+			log.trace("UPDATE tProcessor SET " + " tsEnd = " + tsEnd.getTime()
+					+ " WHERE id = " + processorId + " ;");
+
+			cStmt.setTimestamp(1, new Timestamp(tsEnd.getTime()));
+			cStmt.setInt(2, processorId);
+
+			cStmt.executeUpdate();
+			cStmt.close();
+
+			cStmt2 = c
+					.prepareStatement("UPDATE tPayload SET payloadState = 'failed' "
+							+ " WHERE id = "
+							+ " ( SELECT payloadId FROM tProcessor WHERE id = ? ); ");
+			cStmt2.setInt(1, processorId);
+			cStmt2.executeUpdate();
+			cStmt2.close();
+
+			c.close();
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			try {
+				cStmt2.close();
+			} catch (Exception ex) {
+			}
+			if (c != null) {
+				try {
+					cStmt.close();
+				} catch (Exception ex) {
+				}
+			}
+		} catch (SQLException e) {
+			log.error("Caught SQLException", e);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			try {
+				cStmt2.close();
+			} catch (Exception ex) {
+			}
+			if (c != null) {
+				try {
+					cStmt.close();
+				} catch (Exception ex) {
+				}
+			}
+		}
+	}
+
+	/**
+	 * Mark a payload as having finished processing.
+	 * 
+	 * @param payloadId
+	 */
+	public void setPayloadCompleted(Integer payloadId) {
+		Connection c = Configuration.getConnection();
+
+		PreparedStatement cStmt = null;
+		try {
+			log.trace("UPDATE tProcessor SET " + " payloadState = 'completed' "
+					+ " WHERE id = " + payloadId + " ;");
+			cStmt = c.prepareStatement("UPDATE tPayload SET "
+					+ " payloadState = ? " + " WHERE id = ? " + ";");
+
+			cStmt.setInt(1, payloadId);
+
+			cStmt.executeUpdate();
+			cStmt.close();
+
+			c.close();
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			if (c != null) {
+				try {
+					cStmt.close();
+				} catch (Exception ex) {
+				}
+			}
+		} catch (SQLException e) {
+			log.error("Caught SQLException", e);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			if (c != null) {
+				try {
+					cStmt.close();
+				} catch (Exception ex) {
+				}
 			}
 		}
 	}
@@ -529,7 +662,9 @@ public class ControlThread extends Thread {
 		try {
 			cStmt = c.prepareStatement("SELECT a.id AS id FROM tPayload AS a "
 					+ " WHERE a.id NOT IN "
-					+ " ( SELECT b.payloadId FROM tProcessor AS b ) " + ";");
+					+ " ( SELECT b.payloadId FROM tProcessor AS b ) "
+					+ " AND a.payloadState = 'queued' "
+					+ " ORDER BY a.insertId " + ";");
 
 			boolean hadResults = cStmt.execute();
 			if (hadResults) {

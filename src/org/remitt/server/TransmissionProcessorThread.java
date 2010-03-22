@@ -24,6 +24,8 @@
 
 package org.remitt.server;
 
+import java.util.Date;
+
 import org.apache.log4j.Logger;
 import org.remitt.prototype.PayloadDto;
 import org.remitt.prototype.PluginInterface;
@@ -53,12 +55,27 @@ public class TransmissionProcessorThread extends ProcessorThread {
 			p = (PluginInterface) Class.forName(pluginClass).newInstance();
 		} catch (InstantiationException e) {
 			log.error(e);
+
+			// Update with error status so that frontend can inform "client"
+			Configuration.getControlThread().setFailedPayloadRun(jobId,
+					new Date(System.currentTimeMillis()));
+
 			return false;
 		} catch (IllegalAccessException e) {
 			log.error(e);
+
+			// Update with error status so that frontend can inform "client"
+			Configuration.getControlThread().setFailedPayloadRun(jobId,
+					new Date(System.currentTimeMillis()));
+
 			return false;
 		} catch (ClassNotFoundException e) {
 			log.error(e);
+
+			// Update with error status so that frontend can inform "client"
+			Configuration.getControlThread().setFailedPayloadRun(jobId,
+					new Date(System.currentTimeMillis()));
+
 			return false;
 		}
 
@@ -68,6 +85,11 @@ public class TransmissionProcessorThread extends ProcessorThread {
 			output = p.render(jobId, input, payload.getTransmissionOption());
 		} catch (Exception e) {
 			log.error(e);
+
+			// Update with error status so that frontend can inform "client"
+			Configuration.getControlThread().setFailedPayloadRun(jobId,
+					new Date(System.currentTimeMillis()));
+
 			return false;
 		}
 
@@ -75,7 +97,8 @@ public class TransmissionProcessorThread extends ProcessorThread {
 		Configuration.getControlThread().commitPayloadRun(jobId, output,
 				getThreadType(), null);
 
-		// TODO: Mark as completed
+		// Mark as completed
+		Configuration.getControlThread().setPayloadCompleted(payload.getId());
 
 		// Clear thread
 		Configuration.getControlThread().clearProcessorForThread(getId());

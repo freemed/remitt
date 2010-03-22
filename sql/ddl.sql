@@ -117,6 +117,9 @@ CREATE TABLE `tPayload` (
 	, renderOption		VARCHAR(100) NOT NULL
 	, transportPlugin	VARCHAR(100) NOT NULL
 	, transportOption	VARCHAR(100) NOT NULL
+	, payloadState		ENUM ( 'valid', 'failed', 'completed' ) DEFAULT 'valid'
+
+	, KEY			( payloadState )
 );
 
 ##### Processor Tables #####
@@ -368,5 +371,18 @@ CREATE TABLE `tScooper` (
 	, content	BLOB
 
 	, KEY		( scooperClass, user, host, path, filename )
+);
+
+### Database Patches ###
+
+DROP TABLE IF EXISTS `tPatch`;
+
+CREATE TABLE `tPatch` (
+	  id		SERIAL
+	, patchName	VARCHAR(150) NOT NULL
+	, stamp		TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+
+	# Ensure patches are unique entries
+	, CONSTRAINT UNIQUE KEY ( patchName )
 );
 

@@ -70,6 +70,11 @@ public class TranslationProcessorThread extends ProcessorThread {
 			output = p.render(jobId, input, null);
 		} catch (Exception e) {
 			log.error(e);
+
+			// Update with error status so that frontend can inform "client"
+			Configuration.getControlThread().setFailedPayloadRun(jobId,
+					new Date(System.currentTimeMillis()));
+
 			return false;
 		}
 
