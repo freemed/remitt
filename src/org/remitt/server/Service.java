@@ -228,4 +228,11 @@ public interface Service {
 	public boolean addRemittUser(
 			@PathParam("user") @WebParam(name = "user") UserDTO user);
 
+	/**
+	 * Get array of REMITT user objects.
+	 * 
+	 * @return
+	 */
+	public UserDTO[] listRemittUsers();
+
 }

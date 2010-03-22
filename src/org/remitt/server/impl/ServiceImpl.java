@@ -606,6 +606,18 @@ public class ServiceImpl implements Service {
 				user.getCallbackUsername(), user.getCallbackPassword());
 	}
 
+	@POST
+	@Path("listusers")
+	@Produces("application/json")
+	@Override
+	public UserDTO[] listRemittUsers() {
+		if (!context.isUserInRole("admin")) {
+			log.error("Attempt to list users by a non-admin account");
+			return null;
+		}
+		return UserManagement.listUsers().toArray(new UserDTO[0]);
+	}
+
 	/**
 	 * Internal method to get a database connection.
 	 * 
