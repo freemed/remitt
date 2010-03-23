@@ -143,7 +143,7 @@ public class HttpLoginModule implements LoginModule {
 
 	@Override
 	public boolean commit() throws LoginException {
-		// System.out.println("HttpLoginModule commit()");
+		System.out.println("HttpLoginModule commit()");
 
 		if (!loginSucceeded) {
 			// We didn't authenticate the user, but someone else did.
@@ -165,6 +165,12 @@ public class HttpLoginModule implements LoginModule {
 		// Clean up our internal state
 		username = null;
 		commitSucceeded = true;
+
+		for (Principal s : subject.getPrincipals()) {
+			System.out
+					.println("Found principal " + s.getName() + " in subject");
+		}
+
 		return true;
 	}
 

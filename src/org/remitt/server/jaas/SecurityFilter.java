@@ -25,6 +25,10 @@
 package org.remitt.server.jaas;
 
 import java.io.IOException;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -42,6 +46,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -49,23 +54,87 @@ import org.apache.commons.codec.binary.Base64;
 
 public class SecurityFilter implements Filter {
 
+	/**
+	 * An extension for the HTTPServletRequest that overrides the
+	 * getUserPrincipal() and isUserInRole(). We supply these implementations
+	 * here, where they are not normally populated unless we are going through
+	 * the facility provided by the container.
+	 * <p>
+	 * If he user or roles are null on this wrapper, the parent request is
+	 * consulted to try to fetch what ever the container has set for us. This is
+	 * intended to be created and used by the UserRoleFilter.
+	 * 
+	 * @author thein
+	 * 
+	 */
+	public class UserRoleRequestWrapper extends HttpServletRequestWrapper {
+
+		String user;
+		List<String> roles = null;
+		HttpServletRequest realRequest;
+
+		public UserRoleRequestWrapper(String user, List<String> roles,
+				HttpServletRequest request) {
+			super(request);
+			this.user = user;
+			this.roles = roles;
+			this.realRequest = request;
+			if (this.roles == null) {
+				this.roles = new ArrayList<String>();
+			}
+		}
+
+		@Override
+		public boolean isUserInRole(String role) {
+			if (roles == null) {
+				return this.realRequest.isUserInRole(role);
+			}
+			return roles.contains(role);
+		}
+
+		@Override
+		public Principal getUserPrincipal() {
+			if (this.user == null) {
+				return realRequest.getUserPrincipal();
+			}
+
+			// make an anonymous implementation to just return our user
+			return new Principal() {
+				@Override
+				public String getName() {
+					return user;
+				}
+			};
+		}
+	}
+
 	class HttpAuthCallbackHandler implements CallbackHandler {
 
 		private String userName;
 		private String password;
 
 		public HttpAuthCallbackHandler(HttpServletRequest request) {
-			userName = request.getRemoteUser();
-
+			/*
+			 * Enumeration<String> hs = request.getHeaderNames(); while
+			 * (hs.hasMoreElements()) { String e = hs.nextElement(); System.out
+			 * .println("Header " + e + " = " + request.getHeader(e)); }
+			 */
+			// Don't know target case, so try both:
 			String authheader = request.getHeader("Authorization");
+			if (authheader == null) {
+				authheader = request.getHeader("authorization");
+			}
 			if (authheader != null) {
+				// Can't use request.getRemoteUser() because it isn't set...
+				userName = (getDecodedCredentials(authheader.substring(6))
+						.split(":"))[0];
 				password = (getDecodedCredentials(authheader.substring(6))
 						.split(":"))[1];
 			}
 
-			System.out.println("SecurityFilter::HttpAuthCallbackHander: "
-					+ "Remote user is: " + request.getRemoteUser());
-			// System.out.println("Password is: " + password);
+			// System.out.println("SecurityFilter::HttpAuthCallbackHander: "
+			// + "Remote user is: " + userName + ", pw length = "
+			// + (password == null ? "0" : password.length()));
 		}
 
 		public void handle(Callback[] callbacks) throws IOException,
@@ -78,7 +147,8 @@ public class SecurityFilter implements Filter {
 					nc.setName(userName);
 				} else if (callbacks[i] instanceof PasswordCallback) {
 					PasswordCallback nc = (PasswordCallback) callbacks[i];
-					nc.setPassword(password.toCharArray());
+					if (password != null)
+						nc.setPassword(password.toCharArray());
 				} else {
 					throw new UnsupportedCallbackException(callbacks[i],
 							"Unrecognized Callback");
@@ -115,7 +185,7 @@ public class SecurityFilter implements Filter {
 
 	public void doFilter(ServletRequest sreq, ServletResponse sres,
 			FilterChain chain) throws IOException, ServletException {
-		System.out.println("Starting SecurityFilter.doFilter");
+		// System.out.println("Starting SecurityFilter.doFilter");
 
 		HttpServletResponse response = (HttpServletResponse) sres;
 		HttpServletRequest request = (HttpServletRequest) sreq;
@@ -134,30 +204,54 @@ public class SecurityFilter implements Filter {
 		try {
 			lc = new LoginContext("Jaas", subject, new HttpAuthCallbackHandler(
 					request));
+			session.setAttribute("javax.security.auth.subject", subject);
 			// System.out.println("established new logincontext");
 		} catch (LoginException le) {
 			le.printStackTrace();
-			response.sendError(HttpServletResponse.SC_FORBIDDEN, request
-					.getRequestURI());
+			sendAuthRequest(response);
 			return;
 		}
 
 		try {
 			lc.login();
 			// if we return with no exception, authentication succeeded
+			// Split from subject
 		} catch (Exception e) {
 			System.out.println("Login failed: " + e);
-			response.sendError(HttpServletResponse.SC_FORBIDDEN, request
-					.getRequestURI());
+			sendAuthRequest(response);
 			return;
 		}
 
 		try {
 			// System.out.println("Subject is " + lc.getSubject());
-			chain.doFilter(request, response);
+			if (subject.getPrincipals().size() > 0) {
+				Iterator<Principal> iterP = subject.getPrincipals().iterator();
+				String user = iterP.next().getName();
+				List<String> roles = new ArrayList<String>();
+				while (iterP.hasNext()) {
+					roles.add(iterP.next().getName());
+				}
+				chain.doFilter(
+						new UserRoleRequestWrapper(user, roles, request),
+						response);
+			} else {
+				chain.doFilter(request, response);
+			}
 		} catch (SecurityException se) {
-			response.sendError(HttpServletResponse.SC_FORBIDDEN, request
-					.getRequestURI());
+			sendAuthRequest(response);
+		}
+	}
+
+	/**
+	 * Send a 401 request for BASIC authentication.
+	 * @param response
+	 */
+	protected void sendAuthRequest(HttpServletResponse response) {
+		response.setHeader("WWW-Authenticate", "Basic realm=\"REMITT\"");
+		try {
+			response.sendError(401);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
