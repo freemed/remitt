@@ -35,10 +35,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -129,9 +131,7 @@ public class HttpLoginModule implements LoginModule {
 	private boolean loginSucceeded = false;
 
 	private String username;
-	@SuppressWarnings("unused")
 	private Principal user;
-	@SuppressWarnings("unused")
 	private Principal[] roles;
 
 	public static Properties config = null;
@@ -153,14 +153,10 @@ public class HttpLoginModule implements LoginModule {
 			// return false;
 		}
 
-		assignPrincipal(new MyPrincipal(username));
-
-		// TODO: assign principals
-
-		// Based on the username, we can assign principals here
-		// Some examples for test....
-		assignPrincipal(new MyPrincipal("admin"));
-		assignPrincipal(new MyPrincipal("default"));
+		assignPrincipal(user);
+		for (Principal role : roles) {
+			assignPrincipal(role);
+		}
 
 		// Clean up our internal state
 		username = null;
@@ -174,6 +170,11 @@ public class HttpLoginModule implements LoginModule {
 		return true;
 	}
 
+	/**
+	 * Assign a principal to the current <Subject>.
+	 * 
+	 * @param p
+	 */
 	private void assignPrincipal(Principal p) {
 		// Make sure we don't add duplicate principals
 		if (!subject.getPrincipals().contains(p)) {
@@ -213,20 +214,8 @@ public class HttpLoginModule implements LoginModule {
 		char[] password = passwordCallback.getPassword();
 		passwordCallback.clearPassword();
 
-		Properties p = getProperties();
-
 		// Setup mysql connection
-		Connection c = null;
-		try {
-			// Class.forName("com.mysql.jdbc.Driver").newInstance();
-			// c = DriverManager.getConnection("jdbc:mysql://localhost/remitt",
-			// "remitt", "remitt");
-			Class.forName(p.getProperty("db.driver")).newInstance();
-			c = DriverManager.getConnection(p.getProperty("db.url"));
-			// System.out.println("Connected to the database for auth");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Connection c = getConnection();
 
 		PreparedStatement cStmt = null;
 		try {
@@ -269,14 +258,61 @@ public class HttpLoginModule implements LoginModule {
 		// Validate user and password
 		System.out.println("Appears to have validated properly.");
 		user = new MyPrincipal(username);
-		roles = new Principal[] { new MyPrincipal("admin"),
-				new MyPrincipal("default") };
+		roles = getRolesForUser(username);
 		return true;
 	}
 
 	@Override
 	public boolean logout() throws LoginException {
 		return false;
+	}
+
+	/**
+	 * Get list of <Principal> roles for the specified user.
+	 * 
+	 * @param username
+	 *            String name of the user.
+	 * @return
+	 */
+	public Principal[] getRolesForUser(String username) {
+		List<Principal> ret = new ArrayList<Principal>();
+
+		// Setup mysql connection
+		Connection c = getConnection();
+
+		PreparedStatement cStmt = null;
+		try {
+			cStmt = c.prepareStatement("SELECT rolename FROM tRole "
+					+ " WHERE username = ? ;");
+			cStmt.setString(1, username);
+			if (cStmt.execute()) {
+				ResultSet rs = cStmt.getResultSet();
+				while (rs.next()) {
+					ret.add(new MyPrincipal(rs.getString(1)));
+				}
+				rs.close();
+			}
+			c.close();
+		} catch (NullPointerException npe) {
+			System.out.println("Caught NullPointerException: " + npe);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					System.out.println(e1);
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println("Caught SQLException: " + e);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					System.out.println(e1);
+				}
+			}
+		}
+		return ret.toArray(new Principal[0]);
 	}
 
 	/**
@@ -336,6 +372,30 @@ public class HttpLoginModule implements LoginModule {
 			}
 		}
 		return config;
+	}
+
+	/**
+	 * Get a database connection for authentication.
+	 * 
+	 * @return
+	 */
+	protected Connection getConnection() {
+		Properties p = getProperties();
+
+		// Setup mysql connection
+		Connection c = null;
+		try {
+			// Class.forName("com.mysql.jdbc.Driver").newInstance();
+			// c = DriverManager.getConnection("jdbc:mysql://localhost/remitt",
+			// "remitt", "remitt");
+			Class.forName(p.getProperty("db.driver")).newInstance();
+			c = DriverManager.getConnection(p.getProperty("db.url"));
+			// System.out.println("Connected to the database for auth");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return c;
 	}
 
 }
