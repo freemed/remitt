@@ -44,6 +44,7 @@ public class SftpScooper implements ScooperInterface {
 	static final Logger log = Logger.getLogger(SftpScooper.class);
 
 	public static String SCOOPER_CLASS = "org.remitt.plugin.scooper.SftpScooper";
+	public static String SCOOPER_ENABLED = "org.remitt.plugin.scooper.SftpScooper.enabled";
 
 	public static String SFTP_USERNAME = "org.remitt.plugin.scooper.SftpScooper.sftpUsername";
 	public static String SFTP_PASSWORD = "org.remitt.plugin.scooper.SftpScooper.sftpPassword";
@@ -135,6 +136,11 @@ public class SftpScooper implements ScooperInterface {
 		ssh.disconnect();
 
 		return results;
+	}
+
+	@Override
+	public String getEnabledConfigValue() {
+		return SCOOPER_ENABLED;
 	}
 
 }

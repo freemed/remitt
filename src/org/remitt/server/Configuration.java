@@ -259,6 +259,69 @@ public class Configuration {
 	}
 
 	/**
+	 * Get a list of plugins for a particular category.
+	 * 
+	 * @param category
+	 * @return
+	 */
+	public static List<String> getPlugins(String category) {
+		List<String> results = new ArrayList<String>();
+
+		if (category.equalsIgnoreCase("validation")) {
+			category = "validation"; // validation
+		} else if (category.equalsIgnoreCase("render")) {
+			category = "render"; // render
+		} else if (category.equalsIgnoreCase("translation")) {
+			category = "translation"; // translation
+		} else if (category.equalsIgnoreCase("transmission")) {
+			category = "transmission"; // transmission/transport
+		} else if (category.equalsIgnoreCase("eligibility")) {
+			category = "eligibility"; // eligibility
+		} else if (category.equalsIgnoreCase("scooper")) {
+			category = "scooper"; // scooper
+		} else {
+			// No plugins for dud categories.
+			return results;
+		}
+
+		Connection c = getConnection();
+
+		PreparedStatement cStmt = null;
+		try {
+			cStmt = c.prepareStatement("SELECT * FROM tPlugins "
+					+ "WHERE category = ?");
+
+			cStmt.setString(1, category);
+
+			boolean hadResults = cStmt.execute();
+			if (hadResults) {
+				ResultSet rs = cStmt.getResultSet();
+				while (rs.next()) {
+					results.add(rs.getString("plugin"));
+				}
+				rs.close();
+			}
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+		} catch (SQLException e) {
+			log.error("Caught SQLException", e);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+		}
+		return results;
+	}
+
+	/**
 	 * Retrieve user-set configuration option for a particular plugin namespace.
 	 * 
 	 * @param plugin
@@ -567,6 +630,55 @@ public class Configuration {
 	 */
 	public static void setScheduler(Scheduler s) {
 		scheduler = s;
+	}
+
+	/**
+	 * Get <List<String>> of users who have a certain scooper enabled.
+	 * 
+	 * @param scooperEnabledConfigOption
+	 * @return
+	 */
+	public static List<String> getUsersForScooper(
+			String scooperEnabledConfigOption) {
+		List<String> results = new ArrayList<String>();
+		Connection c = Configuration.getConnection();
+		PreparedStatement pStmt = null;
+		try {
+			pStmt = c.prepareStatement("SELECT user FROM tUserConfig "
+					+ " WHERE cNamespace = ? "
+					+ " AND cValue IN ( '1', 'yes', 'true' );");
+			pStmt.setString(1, scooperEnabledConfigOption);
+			boolean hasResult = pStmt.execute();
+			if (hasResult) {
+				ResultSet rs = pStmt.getResultSet();
+				while (!rs.isAfterLast()) {
+					rs.next();
+					results.add(rs.getString(1));
+				}
+				rs.close();
+			}
+			pStmt.close();
+			c.close();
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
+		} catch (SQLException e) {
+			log.error("Caught SQLException", e);
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
+		}
+		return results;
 	}
 
 }

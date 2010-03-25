@@ -56,4 +56,11 @@ public interface ScooperInterface {
 	 */
 	public void setUsername(String user);
 
+	/**
+	 * Get configuration variable which indicates a user is using this scooper.
+	 * 
+	 * @return
+	 */
+	public String getEnabledConfigValue();
+
 }

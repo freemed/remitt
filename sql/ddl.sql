@@ -206,7 +206,7 @@ CREATE TABLE `tPlugins` (
 	  plugin	VARCHAR( 100 ) NOT NULL
 	, version	VARCHAR( 30 ) NOT NULL
 	, author	VARCHAR( 100 ) NOT NULL
-	, category	ENUM ( 'validation', 'render', 'translation', 'transmission', 'eligibility' ) NOT NULL
+	, category	ENUM ( 'validation', 'render', 'translation', 'transmission', 'eligibility', 'scooper' ) NOT NULL
 	, inputFormat	VARCHAR( 100 )
 	, outputFormat	VARCHAR( 100 )
 );
@@ -225,6 +225,8 @@ INSERT INTO `tPlugins` VALUES
 	, ( 'org.remitt.plugin.transmission.StoreFilePdf', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'pdf', NULL )
 		### Eligibility plugins ###
 	, ( 'org.remitt.plugin.eligibility.GatewayEDIEligibility', '0.1', 'jeff@freemedsoftware.org', 'eligibility', NULL, NULL )
+		### Scooper plugins ###
+	, ( 'org.remitt.plugin.scooper.SftpScooper', '0.1', 'jeff@freemedsoftware.org', 'scooper', NULL, NULL )
 ;
 
 DROP TABLE IF EXISTS `tPluginOptions`;
@@ -333,6 +335,8 @@ CREATE TABLE `tJobs` (
 	, jobClass	VARCHAR(100) NOT NULL
 	, jobEnabled	BOOL NOT NULL DEFAULT TRUE
 );
+
+INSERT INTO tJobs VALUES ( 1, '* * * * *', 'org.remitt.server.tasks.ScooperTask', TRUE );
 
 ### File Store ###
 

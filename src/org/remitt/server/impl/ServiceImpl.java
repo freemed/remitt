@@ -277,66 +277,12 @@ public class ServiceImpl implements Service {
 	@Produces("application/json")
 	@Override
 	public String[] getPlugins(String category) {
-		if (category.equalsIgnoreCase("validation")) {
-			category = "validation"; // validation
-		} else if (category.equalsIgnoreCase("render")) {
-			category = "render"; // render
-		} else if (category.equalsIgnoreCase("translation")) {
-			category = "translation"; // translation
-		} else if (category.equalsIgnoreCase("transmission")) {
-			category = "transmission"; // transmission/transport
-		} else if (category.equalsIgnoreCase("eligibility")) {
-			category = "eligibility"; // eligibility
-		} else {
-			// No plugins for dud categories.
-			return null;
-		}
-
-		Connection c = getConnection();
-
 		String userName = getCurrentUserName();
 
 		log.debug("Plugin list for " + userName + " [category = " + category
 				+ "]");
 
-		String[] returnValue = null;
-		PreparedStatement cStmt = null;
-		try {
-			cStmt = c.prepareStatement("SELECT * FROM tPlugins "
-					+ "WHERE category = ?");
-
-			cStmt.setString(1, category);
-
-			boolean hadResults = cStmt.execute();
-			List<String> results = new ArrayList<String>();
-			if (hadResults) {
-				ResultSet rs = cStmt.getResultSet();
-				while (rs.next()) {
-					results.add(rs.getString("plugin"));
-				}
-				rs.close();
-			}
-			returnValue = results.toArray(new String[0]);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return returnValue;
-		} catch (NullPointerException npe) {
-			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return null;
-		} catch (SQLException e) {
-			log.error("Caught SQLException", e);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return null;
-		}
+		return Configuration.getPlugins(category).toArray(new String[0]);
 	}
 
 	@POST
