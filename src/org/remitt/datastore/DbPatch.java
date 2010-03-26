@@ -163,7 +163,7 @@ public class DbPatch {
 		PreparedStatement cStmt = null;
 		try {
 			cStmt = c.prepareStatement("INSERT INTO tPatch "
-					+ " ( patchName, state ) " + " VALUES ( ?, NOW() ) " + ";");
+					+ " ( patchName, stamp ) " + " VALUES ( ?, NOW() ) " + ";");
 			cStmt.setString(1, patchName);
 
 			cStmt.execute();
@@ -171,6 +171,20 @@ public class DbPatch {
 			return true;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
+			try {
+				cStmt.close();
+			} catch (Exception ex) {
+			}
+			if (c != null) {
+				try {
+					c.close();
+				} catch (SQLException e1) {
+					log.error(e1);
+				}
+			}
+			return false;
+		} catch (SQLException sq) {
+			log.error("Caught SQLException", sq);
 			try {
 				cStmt.close();
 			} catch (Exception ex) {
