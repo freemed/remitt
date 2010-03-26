@@ -62,6 +62,8 @@ public class MasterControl extends HttpServlet {
 
 	static final String PATCH_PATH = "/WEB-INF/dbpatch";
 
+	private static Scheduler scheduler = null;
+
 	/**
 	 * Default constructor.
 	 */
@@ -127,8 +129,8 @@ public class MasterControl extends HttpServlet {
 		control.start();
 
 		// Start scheduler
-		Scheduler s = new Scheduler();
-		s.addSchedulerListener(new SchedulerListener() {
+		scheduler = new Scheduler();
+		scheduler.addSchedulerListener(new SchedulerListener() {
 			@Override
 			public void taskFailed(TaskExecutor arg0, Throwable arg1) {
 				log.error("Cron task FAILED: " + arg0.getTask().toString()
@@ -146,7 +148,7 @@ public class MasterControl extends HttpServlet {
 						+ " (" + arg0.getStatusMessage() + ")");
 			}
 		});
-		s.addTaskCollector(new TaskCollector() {
+		scheduler.addTaskCollector(new TaskCollector() {
 			@Override
 			public TaskTable getTasks() {
 				TaskTable t = new TaskTable();
@@ -159,8 +161,7 @@ public class MasterControl extends HttpServlet {
 							.prepareStatement("SELECT jobSchedule, jobClass FROM tJobs "
 									+ " WHERE jobEnabled = TRUE");
 
-					boolean hasResult = cStmt.execute();
-					if (hasResult) {
+					if (cStmt.execute()) {
 						ResultSet r = cStmt.getResultSet();
 						while (r.next()) {
 							String jobSchedule = r.getString(1);
@@ -180,7 +181,7 @@ public class MasterControl extends HttpServlet {
 						}
 					}
 				} catch (SQLException e) {
-					log.error("Caught SQLException", e);
+					log.trace("Caught SQLException", e);
 					if (c != null) {
 						try {
 							c.close();
@@ -213,6 +214,8 @@ public class MasterControl extends HttpServlet {
 				}
 			}
 		});
+		log.info("Starting scheduler");
+		scheduler.start();
 	}
 
 	/**
@@ -229,6 +232,13 @@ public class MasterControl extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+	}
+
+	@Override
+	public void destroy() {
+		log.info("Stopping scheduler");
+		scheduler.stop();
+		super.destroy();
 	}
 
 }

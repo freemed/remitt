@@ -76,4 +76,9 @@ public class ScooperTask extends Task {
 		}
 	}
 
+	@Override
+	public boolean canBePaused() {
+		return false;
+	}
+
 }

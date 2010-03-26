@@ -651,8 +651,7 @@ public class Configuration {
 			boolean hasResult = pStmt.execute();
 			if (hasResult) {
 				ResultSet rs = pStmt.getResultSet();
-				while (!rs.isAfterLast()) {
-					rs.next();
+				while (rs.next()) {
 					results.add(rs.getString(1));
 				}
 				rs.close();
