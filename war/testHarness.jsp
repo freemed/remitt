@@ -108,7 +108,7 @@ function populateFieldFromFrame(f) {
 					<td>Plugin :</td>
 					<td><select name="plugin">
 						<option
-							value="org.remitt.plugin.transmission.ScriptedHttpTransport">org.remitt.plugin.transmission.ScriptedHttpTransport</option>
+							value="org.remitt.plugin.transport.ScriptedHttpTransport">org.remitt.plugin.transport.ScriptedHttpTransport</option>
 					</select></td>
 				</tr>
 				<tr>

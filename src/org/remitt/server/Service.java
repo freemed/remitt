@@ -71,10 +71,9 @@ public interface Service {
 	 * @param renderOption
 	 *            Optional option for render plugin.
 	 * @param transportPlugin
-	 *            Fully qualified Java class name of transport/transmission
-	 *            plugin
+	 *            Fully qualified Java class name of transport plugin
 	 * @param transportOption
-	 *            Optional option for the transport/transmission plugin
+	 *            Optional option for the transport plugin
 	 * @return tPayload unique identifier for this job.
 	 */
 	public Integer insertPayload(
@@ -112,8 +111,8 @@ public interface Service {
 	 * 
 	 * @param jobId
 	 * @return Integer indicating current status. 0 = completed, 1 =
-	 *         verification, 2 = rendering, 3 = translation, 4 =
-	 *         transmission/transport, 5 = unknown
+	 *         verification, 2 = rendering, 3 = translation, 4 = transport, 5 =
+	 *         unknown
 	 */
 	public Integer getStatus(
 			@PathParam("jobId") @WebParam(name = "jobId") Integer jobId);
@@ -124,8 +123,8 @@ public interface Service {
 	 * @param jobIds
 	 *            Array of payload ids.
 	 * @return Array of Integers indicating current status. 0 = completed, 1 =
-	 *         verification, 2 = rendering, 3 = translation, 4 =
-	 *         transmission/transport, 5 = unknown
+	 *         verification, 2 = rendering, 3 = translation, 4 = transport, 5 =
+	 *         unknown
 	 */
 	public Integer[] getBulkStatus(
 			@PathParam("jobIds") @WebParam(name = "jobIds") Integer[] jobIds);

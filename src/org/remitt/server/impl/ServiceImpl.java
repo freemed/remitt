@@ -225,8 +225,8 @@ public class ServiceImpl implements Service {
 						returnValue = 2; // render
 					} else if (stage.equalsIgnoreCase("translation")) {
 						returnValue = 3; // translation
-					} else if (stage.equalsIgnoreCase("transmission")) {
-						returnValue = 4; // transmission/transport
+					} else if (stage.equalsIgnoreCase("transport")) {
+						returnValue = 4; // transport
 					}
 				} else {
 					returnValue = 0; // completed

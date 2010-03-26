@@ -31,14 +31,13 @@ import org.remitt.prototype.PayloadDto;
 import org.remitt.prototype.PluginInterface;
 import org.remitt.prototype.ProcessorThread;
 
-public class TransmissionProcessorThread extends ProcessorThread {
+public class TransportProcessorThread extends ProcessorThread {
 
-	static final Logger log = Logger
-			.getLogger(TransmissionProcessorThread.class);
+	static final Logger log = Logger.getLogger(TransportProcessorThread.class);
 
 	@Override
 	public ThreadType getThreadType() {
-		return ThreadType.TRANSMISSION;
+		return ThreadType.TRANSPORT;
 	}
 
 	@Override
@@ -82,7 +81,7 @@ public class TransmissionProcessorThread extends ProcessorThread {
 		byte[] input = payload.getPayload();
 		byte[] output = null;
 		try {
-			output = p.render(jobId, input, payload.getTransmissionOption());
+			output = p.render(jobId, input, payload.getTransportOption());
 		} catch (Exception e) {
 			log.error(e);
 

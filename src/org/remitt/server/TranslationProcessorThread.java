@@ -85,9 +85,9 @@ public class TranslationProcessorThread extends ProcessorThread {
 		// Push to next state
 		Configuration.getControlThread().moveProcessorEntry(
 				getJobThreadState(),
-				ThreadType.TRANSMISSION,
+				ThreadType.TRANSPORT,
 				Configuration.getControlThread().resolvePlugin(payload,
-						ThreadType.TRANSMISSION));
+						ThreadType.TRANSPORT));
 
 		// Clear thread
 		Configuration.getControlThread().clearProcessorForThread(getId());

@@ -148,8 +148,8 @@ public class ControlThread extends Thread {
 			payload.setPayload(rs.getBytes("payload"));
 			payload.setRenderPlugin(rs.getString("renderPlugin"));
 			payload.setRenderOption(rs.getString("renderOption"));
-			payload.setTransmissionPlugin(rs.getString("transportPlugin"));
-			payload.setTransmissionOption(rs.getString("transportOption"));
+			payload.setTransportPlugin(rs.getString("transportPlugin"));
+			payload.setTransportOption(rs.getString("transportOption"));
 			payload.setUserName(rs.getString("user"));
 
 			rs.close();
@@ -545,7 +545,7 @@ public class ControlThread extends Thread {
 		// Spawn TransportProcessThreads
 		for (int iter = 0; iter < numberOfWorkers; iter++) {
 			log.debug("Spawning TransportProcessorThread #" + (iter + 1));
-			TransmissionProcessorThread t = new TransmissionProcessorThread();
+			TransportProcessorThread t = new TransportProcessorThread();
 			t.start();
 			workerThreads.put(t.getId(), t);
 			addThreadToPool(t);
@@ -787,9 +787,9 @@ public class ControlThread extends Thread {
 		case TRANSLATION:
 			return Configuration.resolveTranslationPlugin(payload
 					.getRenderPlugin(), payload.getRenderOption(), payload
-					.getTransmissionPlugin(), payload.getTransmissionOption());
-		case TRANSMISSION:
-			return payload.getTransmissionPlugin();
+					.getTransportPlugin(), payload.getTransportOption());
+		case TRANSPORT:
+			return payload.getTransportPlugin();
 		default:
 			return null;
 		}

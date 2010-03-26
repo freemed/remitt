@@ -30,7 +30,7 @@ import org.remitt.server.Configuration;
 public abstract class ProcessorThread extends Thread {
 
 	public enum ThreadType {
-		VALIDATION, RENDER, TRANSLATION, TRANSMISSION;
+		VALIDATION, RENDER, TRANSLATION, TRANSPORT;
 
 		@Override
 		public String toString() {
@@ -80,8 +80,8 @@ public abstract class ProcessorThread extends Thread {
 			return "Render";
 		case TRANSLATION:
 			return "Translation";
-		case TRANSMISSION:
-			return "Transmission";
+		case TRANSPORT:
+			return "Transport";
 		default:
 			return "";
 		}

@@ -196,25 +196,24 @@ public class Configuration {
 
 	/**
 	 * Resolve plugin name for translation plugin to be used with render and
-	 * transmission plugins and their respective parameters.
+	 * transport plugins and their respective parameters.
 	 * 
 	 * @param renderPlugin
 	 *            Full class name of the render plugin being used
 	 * @param renderOption
 	 *            Name of the render option being passed
-	 * @param transmissionPlugin
-	 *            Full class name of the transmission plugin being used
-	 * @param transmissionOption
-	 *            Option name of the transmission plugin being passed
+	 * @param transportPlugin
+	 *            Full class name of the transport plugin being used
+	 * @param transportOption
+	 *            Option name of the transport plugin being passed
 	 * @return Full class name of the appropriate translation plugin, or null if
 	 *         none is available.
 	 */
 	public static String resolveTranslationPlugin(String renderPlugin,
-			String renderOption, String transmissionPlugin,
-			String transmissionOption) {
+			String renderOption, String transportPlugin, String transportOption) {
 		log.info("resolveTranslationPlugin: " + renderPlugin + ", "
-				+ renderOption + ", " + transmissionPlugin + ", "
-				+ (transmissionOption == null ? "" : transmissionOption));
+				+ renderOption + ", " + transportPlugin + ", "
+				+ (transportOption == null ? "" : transportOption));
 
 		Connection c = Configuration.getConnection();
 		CallableStatement cStmt = null;
@@ -223,8 +222,8 @@ public class Configuration {
 					.prepareCall("CALL p_ResolveTranslationPlugin( ?, ?, ?, ? );");
 			cStmt.setString(1, renderPlugin);
 			cStmt.setString(2, renderOption);
-			cStmt.setString(3, transmissionPlugin);
-			cStmt.setString(4, transmissionOption);
+			cStmt.setString(3, transportPlugin);
+			cStmt.setString(4, transportOption);
 
 			boolean hasResult = cStmt.execute();
 			if (hasResult) {
@@ -273,8 +272,8 @@ public class Configuration {
 			category = "render"; // render
 		} else if (category.equalsIgnoreCase("translation")) {
 			category = "translation"; // translation
-		} else if (category.equalsIgnoreCase("transmission")) {
-			category = "transmission"; // transmission/transport
+		} else if (category.equalsIgnoreCase("transport")) {
+			category = "transport"; // transport
 		} else if (category.equalsIgnoreCase("eligibility")) {
 			category = "eligibility"; // eligibility
 		} else if (category.equalsIgnoreCase("scooper")) {

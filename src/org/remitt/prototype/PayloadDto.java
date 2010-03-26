@@ -29,8 +29,8 @@ public class PayloadDto {
 	private Integer id;
 	private String renderPlugin;
 	private String renderOption;
-	private String transmissionPlugin;
-	private String transmissionOption;
+	private String transportPlugin;
+	private String transportOption;
 	private byte[] payload;
 	private String userName;
 
@@ -46,12 +46,12 @@ public class PayloadDto {
 		renderOption = o;
 	}
 
-	public void setTransmissionPlugin(String p) {
-		transmissionPlugin = p;
+	public void setTransportPlugin(String p) {
+		transportPlugin = p;
 	}
 
-	public void setTransmissionOption(String o) {
-		transmissionOption = o;
+	public void setTransportOption(String o) {
+		transportOption = o;
 	}
 
 	public void setPayload(byte[] p) {
@@ -74,12 +74,12 @@ public class PayloadDto {
 		return renderOption;
 	}
 
-	public String getTransmissionPlugin() {
-		return transmissionPlugin;
+	public String getTransportPlugin() {
+		return transportPlugin;
 	}
 
-	public String getTransmissionOption() {
-		return transmissionOption;
+	public String getTransportOption() {
+		return transportOption;
 	}
 
 	public byte[] getPayload() {

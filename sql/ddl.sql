@@ -58,12 +58,12 @@ CREATE TABLE `tUserConfig` (
 );
 
 INSERT INTO `tUserConfig` VALUES
-	  ( 'Administrator', 'org.remitt.plugin.transmission.SftpTransport', 'sftpHost', '' )
-	, ( 'Administrator', 'org.remitt.plugin.transmission.SftpTransport', 'sftpPort', '22' )
-	, ( 'Administrator', 'org.remitt.plugin.transmission.SftpTransport', 'sftpUsername', '' )
-	, ( 'Administrator', 'org.remitt.plugin.transmission.SftpTransport', 'sftpPassword', '' )
-	, ( 'Administrator', 'org.remitt.plugin.transmission.ScriptedHttpTransport', 'username', 'user' )
-	, ( 'Administrator', 'org.remitt.plugin.transmission.ScriptedHttpTransport', 'password', 'pass' )
+	  ( 'Administrator', 'org.remitt.plugin.transport.SftpTransport', 'sftpHost', '' )
+	, ( 'Administrator', 'org.remitt.plugin.transport.SftpTransport', 'sftpPort', '22' )
+	, ( 'Administrator', 'org.remitt.plugin.transport.SftpTransport', 'sftpUsername', '' )
+	, ( 'Administrator', 'org.remitt.plugin.transport.SftpTransport', 'sftpPassword', '' )
+	, ( 'Administrator', 'org.remitt.plugin.transport.ScriptedHttpTransport', 'username', 'user' )
+	, ( 'Administrator', 'org.remitt.plugin.transport.ScriptedHttpTransport', 'password', 'pass' )
 ;
 
 DROP PROCEDURE IF EXISTS p_UserConfigUpdate;
@@ -129,7 +129,7 @@ CREATE TABLE `tProcessor` (
 	  id		SERIAL
 	, threadId	INT UNSIGNED NOT NULL DEFAULT 0
 	, payloadId	INT UNSIGNED NOT NULL
-	, stage		ENUM ( 'validation', 'render', 'translation', 'transmission' )
+	, stage		ENUM ( 'validation', 'render', 'translation', 'transport' )
 	, plugin	VARCHAR (100) NOT NULL
 	, tsStart	TIMESTAMP NULL DEFAULT NULL
 	, tsEnd		TIMESTAMP NULL DEFAULT NULL
@@ -147,8 +147,8 @@ CREATE PROCEDURE p_GetStatus (
 	, IN jobId INT UNSIGNED
 	)
 BEGIN
-	DECLARE c ENUM ( 'validation', 'render', 'translation', 'transmission' );
-	DECLARE x ENUM ( 'validation', 'render', 'translation', 'transmission' );
+	DECLARE c ENUM ( 'validation', 'render', 'translation', 'transport' );
+	DECLARE x ENUM ( 'validation', 'render', 'translation', 'transport' );
 
 	SELECT NULL INTO c;
 
@@ -168,7 +168,7 @@ BEGIN
 		WHERE a.id = jobId AND a.user = username
 		ORDER BY p.tsStart DESC LIMIT 1;
 
-		IF x = 'transmission' THEN
+		IF x = 'transport' THEN
 			SELECT 1 AS 'status', 'completed' AS 'stage';
 		ELSE
 			SELECT 0 AS 'status', NULL AS 'stage';
@@ -206,7 +206,7 @@ CREATE TABLE `tPlugins` (
 	  plugin	VARCHAR( 100 ) NOT NULL
 	, version	VARCHAR( 30 ) NOT NULL
 	, author	VARCHAR( 100 ) NOT NULL
-	, category	ENUM ( 'validation', 'render', 'translation', 'transmission', 'eligibility', 'scooper' ) NOT NULL
+	, category	ENUM ( 'validation', 'render', 'translation', 'transport', 'eligibility', 'scooper' ) NOT NULL
 	, inputFormat	VARCHAR( 100 )
 	, outputFormat	VARCHAR( 100 )
 );
@@ -218,11 +218,13 @@ INSERT INTO `tPlugins` VALUES
 	, ( 'org.remitt.plugin.translation.FixedFormPdf', '0.1', 'jeff@freemedsoftware.org', 'translation', 'fixedformxml', 'pdf' )
 	, ( 'org.remitt.plugin.translation.FixedFormXml', '0.1', 'jeff@freemedsoftware.org', 'translation', 'fixedformxml', 'text' )
 	, ( 'org.remitt.plugin.translation.X12Xml', '0.1', 'jeff@freemedsoftware.org', 'translation', 'x12xml', 'text' )
-		### Transmission plugins ###
-	, ( 'org.remitt.plugin.transmission.ScriptedHttpTransport', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'text', NULL )
-	, ( 'org.remitt.plugin.transmission.SftpTransport', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'text', NULL )
-	, ( 'org.remitt.plugin.transmission.StoreFile', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'text', NULL )
-	, ( 'org.remitt.plugin.transmission.StoreFilePdf', '0.1', 'jeff@freemedsoftware.org', 'transmission', 'pdf', NULL )
+		### Transport plugins ###
+	, ( 'org.remitt.plugin.transport.ClaimLogicTransport', '0.1', 'jeff@freemedsoftware.org', 'transport', 'text', NULL )
+	, ( 'org.remitt.plugin.transport.GatewayEdiTransport', '0.1', 'jeff@freemedsoftware.org', 'transport', 'text', NULL )
+	, ( 'org.remitt.plugin.transport.ScriptedHttpTransport', '0.1', 'jeff@freemedsoftware.org', 'transport', 'text', NULL )
+	, ( 'org.remitt.plugin.transport.SftpTransport', '0.1', 'jeff@freemedsoftware.org', 'transport', 'text', NULL )
+	, ( 'org.remitt.plugin.transport.StoreFile', '0.1', 'jeff@freemedsoftware.org', 'transport', 'text', NULL )
+	, ( 'org.remitt.plugin.transport.StoreFilePdf', '0.1', 'jeff@freemedsoftware.org', 'transport', 'pdf', NULL )
 		### Eligibility plugins ###
 	, ( 'org.remitt.plugin.eligibility.GatewayEDIEligibility', '0.1', 'jeff@freemedsoftware.org', 'eligibility', NULL, NULL )
 		### Scooper plugins ###
@@ -236,7 +238,7 @@ CREATE TABLE `tPluginOptions` (
 	, fullname	VARCHAR( 100 ) NOT NULL
 	, version	VARCHAR( 30 ) NOT NULL
 	, author	VARCHAR( 100 ) NOT NULL
-	, category	ENUM ( 'render', 'transmission' ) NOT NULL
+	, category	ENUM ( 'render', 'transport' ) NOT NULL
 	, inputFormat	VARCHAR( 100 )
 	, outputFormat	VARCHAR( 100 )
 );
@@ -251,7 +253,7 @@ INSERT INTO `tPluginOptions` VALUES
 ### Plugin helper functions ###
 
 DROP FUNCTION IF EXISTS renderPluginOutputFormat;
-DROP FUNCTION IF EXISTS transmissionPluginInputFormat;
+DROP FUNCTION IF EXISTS transportPluginInputFormat;
 
 DELIMITER //
 
@@ -272,7 +274,7 @@ BEGIN
 	RETURN ret;
 END//
 
-CREATE FUNCTION transmissionPluginInputFormat (
+CREATE FUNCTION transportPluginInputFormat (
 		  pluginClass VARCHAR (100)
 		, pluginOption VARCHAR (100)
 	) RETURNS VARCHAR (100)
@@ -313,13 +315,13 @@ DELIMITER //
 CREATE PROCEDURE p_ResolveTranslationPlugin (
 		  renderPlugin VARCHAR (100)
 		, renderOption VARCHAR (100)
-		, transmissionPlugin VARCHAR (100)
-		, transmissionOption VARCHAR (100)
+		, transportPlugin VARCHAR (100)
+		, transportOption VARCHAR (100)
 	)
 BEGIN
 	SELECT plugin FROM tTranslation WHERE 
 		inputFormat = renderPluginOutputFormat( renderPlugin, renderOption )
-		AND FIND_IN_SET( outputFormat, transmissionPluginInputFormat( transmissionPlugin, transmissionOption ) )
+		AND FIND_IN_SET( outputFormat, transportPluginInputFormat( transportPlugin, transportOption ) )
 		LIMIT 1;
 END//
 

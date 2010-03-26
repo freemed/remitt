@@ -49,7 +49,7 @@
 
 	out.print("Resolve translation plugin for 837p ... ");
 	try {
-		String ret = Configuration.resolveTranslationPlugin( "org.remitt.plugin.render.XsltPlugin", "837p", "org.remitt.plugin.transmission.ScriptedHttpTransport", "" );
+		String ret = Configuration.resolveTranslationPlugin( "org.remitt.plugin.render.XsltPlugin", "837p", "org.remitt.plugin.transport.ScriptedHttpTransport", "" );
 		out.println(ret);
 	} catch (Exception ex) {
 		out.println("FAIL");
@@ -58,7 +58,7 @@
 	
 	out.print("Resolve translation plugin for hcfa1500 ... ");
 	try {
-		String ret = Configuration.resolveTranslationPlugin( "org.remitt.plugin.render.XsltPlugin", "hcfa1500", "org.remitt.plugin.transmission.ScriptedHttpTransport", "" );
+		String ret = Configuration.resolveTranslationPlugin( "org.remitt.plugin.render.XsltPlugin", "hcfa1500", "org.remitt.plugin.transport.ScriptedHttpTransport", "" );
 		out.println(ret);
 	} catch (Exception ex) {
 		out.println("FAIL");
