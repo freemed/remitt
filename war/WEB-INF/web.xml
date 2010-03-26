@@ -83,6 +83,19 @@
 		<url-pattern>/services/*</url-pattern>
 	</servlet-mapping>
 
+	<!-- Unit testing -->
+
+	<servlet>
+		<servlet-name>JUnitEETestServlet</servlet-name>
+		<description>JUnitEE test runner</description>
+		<servlet-class>org.junitee.servlet.JUnitEEServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>JUnitEETestServlet</servlet-name>
+		<url-pattern>/TestServlet/*</url-pattern>
+	</servlet-mapping>
+
 	<!-- Define security constraints -->
 
 	<filter>

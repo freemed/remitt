@@ -12,6 +12,8 @@ REMITT ROADMAP
 	Web-based configuration interface
 	Insurance Eligibility abstraction API
 	Process and return data for claims from clearinghouses (X12 835)
+	Self-patching/maintaining database
+	Unit tests
 
 0.6.x	Support all X12 837x formats
 	Validation using XSL to produce error codes and descriptions

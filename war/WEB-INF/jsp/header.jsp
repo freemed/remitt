@@ -37,6 +37,7 @@ Transmission</h1>
 	<li><a href="services/">Services</a></li>
 	<li><a href="configurationDisplay.jsp">Configuration</a></li>
 	<li><a href="testHarness.jsp">Test Harness</a></li>
+	<li><a href="TestServlet">Unit Tests</a></li>
 </ul>
 
 <!-- end header.jsp -->

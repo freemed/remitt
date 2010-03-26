@@ -57,7 +57,7 @@
 	interface</li>
 	<li><a href="configurationDisplay.jsp">Configuration</a> - Edit
 	per-user configuration</li>
-	<li><a href="selfTest.jsp">Self Test</a> - Test internal REMITT
+	<li><a href="TestServlet">Unit Tests</a> - Test internal REMITT
 	functionality. Pretty much useless for end-users.</li>
 </ul>
 
