@@ -27,7 +27,10 @@ package org.remitt.prototype;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -57,6 +60,9 @@ abstract public class X12Message {
 	private X12 x12message = null;
 	private int x12segmentCount = 0;
 	protected int position = 0;
+
+	private static SimpleDateFormat x12dateFormat = new SimpleDateFormat(
+			"yyyyMMdd");
 
 	public X12Message() {
 	}
@@ -327,6 +333,21 @@ abstract public class X12Message {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Parse X12 formatted date.
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static Date parseDate(String date) {
+		try {
+			return x12dateFormat.parse(date);
+		} catch (ParseException ex) {
+			log.error(ex);
+			return null;
+		}
 	}
 
 	public String getDebugLog() {

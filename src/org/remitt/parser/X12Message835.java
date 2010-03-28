@@ -29,6 +29,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.pb.x12.Segment;
 import org.remitt.parser.x12dto.ClaimAdjustment;
+import org.remitt.parser.x12dto.ClaimInformation;
 import org.remitt.parser.x12dto.ClaimPayment;
 import org.remitt.parser.x12dto.Payee;
 import org.remitt.parser.x12dto.Payer;
@@ -74,7 +75,6 @@ public class X12Message835 extends X12Message implements ParserInterface {
 					new SegmentComparator("PER", 1, new String[] { "CX" }) });
 			debug.println("Serialize Payer DTO");
 			Payer payer = new Payer(loop1000a);
-			// debug.println(payer.toString());
 			debug.println("***** Loop 1000B ***** ");
 			while (isNextSegmentIdentifier(new SegmentComparator("N1", 1,
 					new String[] { "PE" }))) {
@@ -138,17 +138,23 @@ public class X12Message835 extends X12Message implements ParserInterface {
 										"NE", "ZK", "ZL", "ZM", "ZN", "ZO" }),
 								new SegmentComparator("LQ", 1, new String[] {
 										"HE", "RX" }) });
+						providerClaimGroup.getClaimInformations().add(
+								new ClaimInformation(loop2110));
+						log.info("2110 finished");
 					}
 					payee.getProviderClaimGroup().add(providerClaimGroup);
+					log.info("2100 finished");
 				}
 				payer.getPayees().add(payee);
-				// debug.println(payer.toString());
+				log.info("2000 finished");
 			}
 			remittance.getPayers().add(payer);
 		}
 		debug.println("Summary loop");
+		/*
 		List<Segment> summary = extractLoop(new SegmentComparator[] {
 				new SegmentComparator("PLB"), new SegmentComparator("SE") });
+				*/
 		debug.println("Finished parsing 835");
 
 		setRemittance(remittance);

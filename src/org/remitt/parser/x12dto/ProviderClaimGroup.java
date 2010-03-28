@@ -64,6 +64,9 @@ public class ProviderClaimGroup implements X12DTO {
 	@ElementList(name = "claimAdjustments", required = false)
 	private List<ClaimAdjustment> claimAdjustments = new ArrayList<ClaimAdjustment>();
 
+	@ElementList(name = "claimInformations", required = false)
+	private List<ClaimInformation> claimInformations = new ArrayList<ClaimInformation>();
+
 	private SimpleDateFormat x12dateFormat = new SimpleDateFormat("yyyyMMdd");
 
 	static final Logger log = Logger.getLogger(ProviderClaimGroup.class);
@@ -88,10 +91,10 @@ public class ProviderClaimGroup implements X12DTO {
 			} catch (ParseException e) {
 				log.error(e);
 			}
-			this.totalClaimCount = Integer.parseInt(X12Message.getSafeElement(TS3,
-					4));
-			this.totalClaimAmount = Double.parseDouble(X12Message.getSafeElement(
-					TS3, 5));
+			this.totalClaimCount = Integer.parseInt(X12Message.getSafeElement(
+					TS3, 4));
+			this.totalClaimAmount = Double.parseDouble(X12Message
+					.getSafeElement(TS3, 5));
 		}
 	}
 
@@ -121,6 +124,10 @@ public class ProviderClaimGroup implements X12DTO {
 
 	public List<ClaimAdjustment> getClaimAdjustments() {
 		return this.claimAdjustments;
+	}
+
+	public List<ClaimInformation> getClaimInformations() {
+		return claimInformations;
 	}
 
 	@Override
