@@ -51,6 +51,7 @@ import org.remitt.prototype.ParserInterface;
 import org.remitt.prototype.PluginInterface;
 import org.remitt.prototype.UserDTO;
 import org.remitt.server.Configuration;
+import org.remitt.server.DbUtil;
 import org.remitt.server.Service;
 
 @WebService(targetNamespace = "http://server.remitt.org/", endpointInterface = "org.remitt.server.Service", serviceName = "RemittService")
@@ -83,28 +84,20 @@ public class ServiceImpl implements Service {
 			cStmt.setString(1, newPassword);
 			cStmt.setString(2, userName);
 
-			@SuppressWarnings("unused")
-			boolean hadResults = cStmt.execute();
-
+			cStmt.execute();
 			Boolean returnValue = (cStmt.getUpdateCount() == 1);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return returnValue;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return false;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return false;
 		}
 	}
@@ -128,6 +121,7 @@ public class ServiceImpl implements Service {
 		log.debug("Submit job for " + userName + " [payload length = "
 				+ inputPayload.length() + "]");
 
+		Integer returnValue = null;
 		PreparedStatement cStmt = null;
 		try {
 			cStmt = c.prepareStatement("INSERT INTO tPayload ( "
@@ -147,28 +141,17 @@ public class ServiceImpl implements Service {
 			boolean hadResults = cStmt.execute();
 			ResultSet newKey = cStmt.getGeneratedKeys();
 			newKey.next();
-			Integer returnValue = newKey.getInt(1);
-			newKey.close();
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return returnValue;
+			returnValue = newKey.getInt(1);
+			DbUtil.closeSafely(newKey);
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			return null;
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
+		return returnValue;
 	}
 
 	@POST
@@ -237,25 +220,18 @@ public class ServiceImpl implements Service {
 				returnValue = 5; // unknown
 			}
 
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return returnValue;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return null;
 		}
 	}
@@ -354,24 +330,18 @@ public class ServiceImpl implements Service {
 				rs.close();
 			}
 			returnValue = results.toArray(new String[0]);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return returnValue;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return null;
 		}
 	}
@@ -409,24 +379,18 @@ public class ServiceImpl implements Service {
 				rs.close();
 			}
 			returnValue = results.toArray(new String[0]);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return returnValue;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return null;
 		}
 	}
@@ -459,24 +423,18 @@ public class ServiceImpl implements Service {
 				rs.close();
 			}
 			returnValue = results.toArray(new Integer[0]);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return returnValue;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return null;
 		}
 	}

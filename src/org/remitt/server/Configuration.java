@@ -231,27 +231,17 @@ public class Configuration {
 				r.next();
 				String ret = r.getString(1);
 				log.info("Resolved to class : " + ret);
-				c.close();
+				DbUtil.closeSafely(cStmt);
+				DbUtil.closeSafely(c);
 				return ret;
 			}
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
 
 		return null;
@@ -304,27 +294,15 @@ public class Configuration {
 				}
 				rs.close();
 			}
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
-		try {
-			c.close();
-		} catch (Exception ex) {
-		}
+
 		return results;
 	}
 
@@ -364,32 +342,25 @@ public class Configuration {
 				ResultSet r = cStmt.getResultSet();
 				r.next();
 				String ret = r.getString(1);
-				c.close();
+				DbUtil.closeSafely(cStmt);
+				DbUtil.closeSafely(c);
 				return ret;
 			}
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
 			log.info("Statement: SELECT cValue FROM tUserConfig WHERE "
 					+ "cNameSpace = '" + className + "' AND user = '"
 					+ userName + "' AND cOption = " + option);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
 
+		DbUtil.closeSafely(cStmt);
+		DbUtil.closeSafely(c);
 		return "";
 	}
 
@@ -419,26 +390,16 @@ public class Configuration {
 				}
 				rs.close();
 			}
-			pStmt.close();
-			c.close();
+			DbUtil.closeSafely(pStmt);
+			DbUtil.closeSafely(c);
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+			DbUtil.closeSafely(pStmt);
+			DbUtil.closeSafely(c);
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+			DbUtil.closeSafely(pStmt);
+			DbUtil.closeSafely(c);
 		}
 		return results.toArray(new ConfigurationOption[0]);
 	}
@@ -467,26 +428,16 @@ public class Configuration {
 
 			cStmt.execute();
 			cStmt.getResultSet();
-			cStmt.close();
-			c.close();
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
 	}
 
@@ -525,26 +476,16 @@ public class Configuration {
 				}
 				rs.close();
 			}
-			pStmt.close();
-			c.close();
+			DbUtil.closeSafely(pStmt);
+			DbUtil.closeSafely(c);
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+			DbUtil.closeSafely(pStmt);
+			DbUtil.closeSafely(c);
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+			DbUtil.closeSafely(pStmt);
+			DbUtil.closeSafely(c);
 		}
 		return results;
 	}
@@ -578,32 +519,22 @@ public class Configuration {
 			cStmt.setString(5, filename);
 			cStmt.setBytes(6, content);
 
-			@SuppressWarnings("unused")
-			boolean hadResults = cStmt.execute();
+			cStmt.execute();
 			ResultSet newKey = cStmt.getGeneratedKeys();
 			Integer ret = newKey.getInt("id");
-			newKey.close();
-			c.close();
+			DbUtil.closeSafely(newKey);
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return ret;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return null;
 		}
 	}
@@ -663,26 +594,16 @@ public class Configuration {
 				}
 				rs.close();
 			}
-			pStmt.close();
-			c.close();
+			DbUtil.closeSafely(pStmt);
+			DbUtil.closeSafely(c);
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+			DbUtil.closeSafely(pStmt);
+			DbUtil.closeSafely(c);
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+			DbUtil.closeSafely(pStmt);
+			DbUtil.closeSafely(c);
 		}
 		return results;
 	}
