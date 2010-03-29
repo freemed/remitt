@@ -280,6 +280,7 @@ public class Configuration {
 			category = "scooper"; // scooper
 		} else {
 			// No plugins for dud categories.
+			log.error("Could not find plugins for category " + category);
 			return results;
 		}
 
@@ -287,6 +288,9 @@ public class Configuration {
 
 		PreparedStatement cStmt = null;
 		try {
+			log.debug("SELECT * FROM tPlugins " + "WHERE category = "
+					+ category);
+
 			cStmt = c.prepareStatement("SELECT * FROM tPlugins "
 					+ "WHERE category = ?");
 
@@ -316,6 +320,10 @@ public class Configuration {
 				cStmt.close();
 			} catch (Exception ex) {
 			}
+		}
+		try {
+			c.close();
+		} catch (Exception ex) {
 		}
 		return results;
 	}
