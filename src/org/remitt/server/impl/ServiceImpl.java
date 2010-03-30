@@ -76,6 +76,7 @@ public class ServiceImpl implements Service {
 
 		String userName = getCurrentUserName();
 
+		Boolean returnValue = false;
 		PreparedStatement cStmt = null;
 		try {
 			cStmt = c
@@ -85,21 +86,16 @@ public class ServiceImpl implements Service {
 			cStmt.setString(2, userName);
 
 			cStmt.execute();
-			Boolean returnValue = (cStmt.getUpdateCount() == 1);
-			DbUtil.closeSafely(cStmt);
-			DbUtil.closeSafely(c);
-			return returnValue;
+			returnValue = (cStmt.getUpdateCount() == 1);
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			DbUtil.closeSafely(cStmt);
-			DbUtil.closeSafely(c);
-			return false;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+		} finally {
 			DbUtil.closeSafely(cStmt);
 			DbUtil.closeSafely(c);
-			return false;
 		}
+		return returnValue;
 	}
 
 	@GET
@@ -188,52 +184,50 @@ public class ServiceImpl implements Service {
 		Connection c = getConnection();
 
 		CallableStatement cStmt = null;
+		int returnValue = 5;
 		try {
 			cStmt = c.prepareCall("CALL p_GetStatus( ?, ? );");
 			cStmt.setString(1, userName);
 			cStmt.setInt(2, jobId);
 
 			boolean hadResults = cStmt.execute();
-			int returnValue = 5;
 			if (hadResults) {
 				ResultSet r = cStmt.getResultSet();
 				r.next();
 				Integer status = r.getInt("status");
 				String stage = r.getString("stage");
 
-				if (status.equals(0)) {
-					if (stage.equalsIgnoreCase("validation")) {
-						returnValue = 1; // validation
-					} else if (stage.equalsIgnoreCase("render")) {
-						returnValue = 2; // render
-					} else if (stage.equalsIgnoreCase("translation")) {
-						returnValue = 3; // translation
-					} else if (stage.equalsIgnoreCase("transport")) {
-						returnValue = 4; // transport
-					}
+				if (stage == null) {
+					// Handle null stage
 				} else {
-					returnValue = 0; // completed
+					if (status.equals(0)) {
+						if (stage.equalsIgnoreCase("validation")) {
+							returnValue = 1; // validation
+						} else if (stage.equalsIgnoreCase("render")) {
+							returnValue = 2; // render
+						} else if (stage.equalsIgnoreCase("translation")) {
+							returnValue = 3; // translation
+						} else if (stage.equalsIgnoreCase("transport")) {
+							returnValue = 4; // transport
+						}
+					} else {
+						returnValue = 0; // completed
+					}
 				}
 
 				r.close();
 			} else {
 				returnValue = 5; // unknown
 			}
-
-			DbUtil.closeSafely(cStmt);
-			DbUtil.closeSafely(c);
-			return returnValue;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			DbUtil.closeSafely(cStmt);
-			DbUtil.closeSafely(c);
-			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+		} finally {
 			DbUtil.closeSafely(cStmt);
 			DbUtil.closeSafely(c);
-			return null;
 		}
+		return returnValue;
 	}
 
 	@POST
@@ -300,7 +294,6 @@ public class ServiceImpl implements Service {
 	@Produces("application/json")
 	@Override
 	public String[] getFileList(String category, String criteria, String value) {
-		// Criteria is YYYY-MM
 		Connection c = getConnection();
 
 		String userName = getCurrentUserName();
@@ -313,12 +306,28 @@ public class ServiceImpl implements Service {
 		String[] returnValue = null;
 		PreparedStatement cStmt = null;
 		try {
-			cStmt = c.prepareStatement("SELECT filename " + " FROM tFileStore "
-					+ " WHERE user = ? " + " AND category = ? "
-					+ " AND DATE_FORMAT(stamp, '%Y-%m') = ? " + ";");
+			if (criteria.equalsIgnoreCase("month")) {
+				cStmt = c.prepareStatement("SELECT filename "
+						+ " FROM tFileStore " + " WHERE user = ? "
+						+ " AND category = ? "
+						+ " AND DATE_FORMAT(stamp, '%Y-%m') = ? " + ";");
+			} else if (criteria.equalsIgnoreCase("year")) {
+				cStmt = c.prepareStatement("SELECT filename "
+						+ " FROM tFileStore " + " WHERE user = ? "
+						+ " AND category = ? "
+						+ " AND DATE_FORMAT(stamp, '%Y') = ? " + ";");
+			} else if (criteria.equalsIgnoreCase("payload")) {
+				cStmt = c.prepareStatement("SELECT filename "
+						+ " FROM tFileStore " + " WHERE user = ? "
+						+ " AND category = ? " + " AND payloadId = ? " + ";");
+			} else {
+				DbUtil.closeSafely(cStmt);
+				DbUtil.closeSafely(c);
+				return null;
+			}
 			cStmt.setString(1, userName);
 			cStmt.setString(2, category);
-			cStmt.setString(3, criteria);
+			cStmt.setString(3, value);
 
 			boolean hadResults = cStmt.execute();
 			List<String> results = new ArrayList<String>();
@@ -330,20 +339,15 @@ public class ServiceImpl implements Service {
 				rs.close();
 			}
 			returnValue = results.toArray(new String[0]);
-			DbUtil.closeSafely(cStmt);
-			DbUtil.closeSafely(c);
-			return returnValue;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			DbUtil.closeSafely(cStmt);
-			DbUtil.closeSafely(c);
-			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+		} finally {
 			DbUtil.closeSafely(cStmt);
 			DbUtil.closeSafely(c);
-			return null;
 		}
+		return returnValue;
 	}
 
 	@POST
@@ -379,20 +383,15 @@ public class ServiceImpl implements Service {
 				rs.close();
 			}
 			returnValue = results.toArray(new String[0]);
-			DbUtil.closeSafely(cStmt);
-			DbUtil.closeSafely(c);
-			return returnValue;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			DbUtil.closeSafely(cStmt);
-			DbUtil.closeSafely(c);
-			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+		} finally {
 			DbUtil.closeSafely(cStmt);
 			DbUtil.closeSafely(c);
-			return null;
 		}
+		return returnValue;
 	}
 
 	@POST
@@ -423,20 +422,15 @@ public class ServiceImpl implements Service {
 				rs.close();
 			}
 			returnValue = results.toArray(new Integer[0]);
-			DbUtil.closeSafely(cStmt);
-			DbUtil.closeSafely(c);
-			return returnValue;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			DbUtil.closeSafely(cStmt);
-			DbUtil.closeSafely(c);
-			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+		} finally {
 			DbUtil.closeSafely(cStmt);
 			DbUtil.closeSafely(c);
-			return null;
 		}
+		return returnValue;
 	}
 
 	@POST

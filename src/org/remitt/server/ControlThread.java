@@ -134,6 +134,7 @@ public class ControlThread extends Thread {
 	public PayloadDto getPayloadById(Integer payloadId) {
 		Connection c = Configuration.getConnection();
 
+		PayloadDto payload = new PayloadDto();
 		PreparedStatement cStmt = null;
 		try {
 			cStmt = c.prepareStatement("SELECT * FROM tPayload WHERE id = ?;");
@@ -143,7 +144,6 @@ public class ControlThread extends Thread {
 			ResultSet rs = cStmt.getResultSet();
 			rs.next();
 
-			PayloadDto payload = new PayloadDto();
 			payload.setId(rs.getInt("id"));
 			payload.setPayload(rs.getBytes("payload"));
 			payload.setRenderPlugin(rs.getString("renderPlugin"));
@@ -153,29 +153,18 @@ public class ControlThread extends Thread {
 			payload.setUserName(rs.getString("user"));
 
 			rs.close();
-			c.close();
-			return payload;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+			payload = null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+			payload = null;
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
 
-		return null;
+		return payload;
 	}
 
 	/**
@@ -193,6 +182,7 @@ public class ControlThread extends Thread {
 		}
 
 		PreparedStatement cStmt = null;
+		PayloadDto payload = null;
 		try {
 			log.trace("SELECT payloadId FROM tProcessor WHERE id = "
 					+ processorId.toString());
@@ -204,31 +194,19 @@ public class ControlThread extends Thread {
 			rs.next();
 			Integer payloadId = rs.getInt(1);
 			rs.close();
-			c.close();
 			log.trace("getPayloadFromProcessor for " + processorId
 					+ " returned " + payloadId);
-			return getPayloadById(payloadId);
+			payload = getPayloadById(payloadId);
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
 
-		return null;
+		return payload;
 	}
 
 	/**
@@ -250,6 +228,7 @@ public class ControlThread extends Thread {
 		Connection c = Configuration.getConnection();
 
 		PreparedStatement cStmt = null;
+		Integer ret = null;
 		try {
 			cStmt = c.prepareStatement("INSERT INTO tProcessor ( "
 					+ " threadId, payloadId, stage, plugin, tsStart, pInput "
@@ -268,35 +247,21 @@ public class ControlThread extends Thread {
 			cStmt.setTimestamp(5, new Timestamp(tsStart.getTime()));
 			cStmt.setBytes(6, input);
 
-			@SuppressWarnings("unused")
-			boolean hadResults = cStmt.execute();
+			cStmt.execute();
 			ResultSet newKey = cStmt.getGeneratedKeys();
 			newKey.next();
-			Integer ret = newKey.getInt(1);
+			ret = newKey.getInt(1);
 			newKey.close();
-			c.close();
-			return ret;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
-			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
-			return null;
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
+
+		return ret;
 	}
 
 	/**
@@ -324,33 +289,13 @@ public class ControlThread extends Thread {
 			cStmt.setInt(3, processorId);
 
 			cStmt.executeUpdate();
-			cStmt.close();
-
-			c.close();
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			if (c != null) {
-				try {
-					cStmt.close();
-				} catch (Exception ex) {
-				}
-			}
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			if (c != null) {
-				try {
-					cStmt.close();
-				} catch (Exception ex) {
-				}
-			}
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
 	}
 
@@ -377,9 +322,7 @@ public class ControlThread extends Thread {
 
 			cStmt.setTimestamp(1, new Timestamp(tsEnd.getTime()));
 			cStmt.setInt(2, processorId);
-
 			cStmt.executeUpdate();
-			cStmt.close();
 
 			cStmt2 = c
 					.prepareStatement("UPDATE tPayload SET payloadState = 'failed' "
@@ -387,41 +330,14 @@ public class ControlThread extends Thread {
 							+ " ( SELECT payloadId FROM tProcessor WHERE id = ? ); ");
 			cStmt2.setInt(1, processorId);
 			cStmt2.executeUpdate();
-			cStmt2.close();
-
-			c.close();
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			try {
-				cStmt2.close();
-			} catch (Exception ex) {
-			}
-			if (c != null) {
-				try {
-					cStmt.close();
-				} catch (Exception ex) {
-				}
-			}
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			try {
-				cStmt2.close();
-			} catch (Exception ex) {
-			}
-			if (c != null) {
-				try {
-					cStmt.close();
-				} catch (Exception ex) {
-				}
-			}
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(cStmt2);
+			DbUtil.closeSafely(c);
 		}
 	}
 
@@ -438,38 +354,18 @@ public class ControlThread extends Thread {
 			log.trace("UPDATE tProcessor SET " + " payloadState = 'completed' "
 					+ " WHERE id = " + payloadId + " ;");
 			cStmt = c.prepareStatement("UPDATE tPayload SET "
-					+ " payloadState = ? " + " WHERE id = ? " + ";");
+					+ " payloadState = 'completed' " + " WHERE id = ? " + ";");
 
 			cStmt.setInt(1, payloadId);
 
 			cStmt.executeUpdate();
-			cStmt.close();
-
-			c.close();
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			if (c != null) {
-				try {
-					cStmt.close();
-				} catch (Exception ex) {
-				}
-			}
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			if (c != null) {
-				try {
-					cStmt.close();
-				} catch (Exception ex) {
-				}
-			}
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
 	}
 
@@ -663,43 +559,22 @@ public class ControlThread extends Thread {
 			cStmt = c.prepareStatement("SELECT a.id AS id FROM tPayload AS a "
 					+ " WHERE a.id NOT IN "
 					+ " ( SELECT b.payloadId FROM tProcessor AS b ) "
-					+ " AND a.payloadState = 'queued' "
-					+ " ORDER BY a.insertId " + ";");
+					+ " AND a.payloadState = 'valid' "
+					+ " ORDER BY a.insert_stamp " + ";");
 
-			boolean hadResults = cStmt.execute();
-			if (hadResults) {
+			if (cStmt.execute()) {
 				ResultSet rs = cStmt.getResultSet();
-				while (!rs.isAfterLast()) {
-					rs.next();
+				while (rs.next()) {
 					r.add(rs.getInt("id"));
 				}
 				rs.close();
 			}
-			c.close();
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
 		} catch (Throwable e) {
-			// Attempt to close, no error logging since this would be an empty
-			// set.
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			try {
-				c.close();
-			} catch (SQLException e1) {
-			}
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
 
 		return (Integer[]) r.toArray(new Integer[0]);
@@ -724,6 +599,11 @@ public class ControlThread extends Thread {
 
 		// Search for unassigned payloads which are not being processed
 		Integer[] newWork = getUnassignedPayloads();
+		if (newWork.length == 0) {
+			log.trace("No new work found for this cycle");
+		} else {
+			log.debug("Found " + newWork.length + " payloads to process");
+		}
 
 		// For each payload ...
 		for (int iter = 0; iter < newWork.length; iter++) {

@@ -27,13 +27,13 @@ package org.remitt.datastore;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.remitt.prototype.UserDTO;
 import org.remitt.server.Configuration;
+import org.remitt.server.DbUtil;
 
 public class UserManagement {
 
@@ -74,30 +74,16 @@ public class UserManagement {
 			cStmt.execute();
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return false;
 		} catch (Throwable e) {
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			try {
-				c.close();
-			} catch (SQLException e1) {
-			}
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 			return false;
 		}
 
+		boolean status = false;
 		PreparedStatement cStmt2 = null;
 		try {
 			cStmt2 = c.prepareStatement("INSERT INTO tRole "
@@ -106,30 +92,13 @@ public class UserManagement {
 			cStmt2.setString(2, "default");
 			cStmt2.execute();
 			c.close();
+			status = true;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt2.close();
-			} catch (Exception ex) {
-			}
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
-			return false;
 		} catch (Throwable e) {
-			try {
-				cStmt2.close();
-			} catch (Exception ex) {
-			}
-			try {
-				c.close();
-			} catch (SQLException e1) {
-			}
-			return false;
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
 
 		return true;
@@ -172,32 +141,12 @@ public class UserManagement {
 				}
 				rs.close();
 			}
-			cStmt.close();
-			c.close();
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
-			return ret;
 		} catch (Throwable e) {
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			try {
-				c.close();
-			} catch (SQLException e1) {
-			}
-			return ret;
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
 
 		return ret;

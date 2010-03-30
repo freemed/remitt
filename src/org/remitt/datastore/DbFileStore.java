@@ -27,10 +27,10 @@ package org.remitt.datastore;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 import org.remitt.server.Configuration;
+import org.remitt.server.DbUtil;
 
 public class DbFileStore {
 
@@ -65,29 +65,12 @@ public class DbFileStore {
 				ret = rs.getBytes("content");
 				rs.close();
 			}
-			c.close();
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
 		} catch (Throwable e) {
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			try {
-				c.close();
-			} catch (SQLException e1) {
-			}
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
 
 		return ret;
@@ -133,30 +116,14 @@ public class DbFileStore {
 			cStmt.setInt(6, processorId);
 			cStmt.setInt(7, payloadId);
 			cStmt.execute();
-			c.close();
 			success = true;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
 		} catch (Throwable e) {
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			try {
-				c.close();
-			} catch (SQLException e1) {
-			}
+			log.error("Caught Throwable", e);
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
 
 		return success;

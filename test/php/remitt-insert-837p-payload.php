@@ -37,7 +37,7 @@ $sc = new SoapClient( $wsdl, array (
 ));
 
 if ($argv[1] != '') {
-	if (!file_exists( $argv[1] ) {
+	if (!file_exists( $argv[1] )) {
 		print "You need to specify a payload file that exists.\n";
 		die();
 	}
@@ -51,7 +51,7 @@ $a = array (
 	  "inputPayload" => file_get_contents( $argv[1] )
 	, "renderPlugin" => "org.remitt.plugin.render.XsltPlugin"
 	, "renderOption" => "837p"
-	, "transportPlugin" => "org.remitt.plugin.transmission.StoreFile"
+	, "transportPlugin" => "org.remitt.plugin.transport.StoreFile"
 	, "transportOption" => ""
 );
 print_r( $sc->insertPayload((object)$a) );

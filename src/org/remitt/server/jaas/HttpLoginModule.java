@@ -55,6 +55,8 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import javax.servlet.ServletContext;
 
+import org.remitt.server.DbUtil;
+
 public class HttpLoginModule implements LoginModule {
 
 	public class MyPrincipal implements Principal, Serializable {
@@ -217,6 +219,7 @@ public class HttpLoginModule implements LoginModule {
 		// Setup mysql connection
 		Connection c = getConnection();
 
+		boolean status = true;
 		PreparedStatement cStmt = null;
 		try {
 			cStmt = c.prepareStatement("SELECT COUNT(*) AS c FROM tUser "
@@ -229,29 +232,22 @@ public class HttpLoginModule implements LoginModule {
 			if (rs.getInt("c") < 1) {
 				System.out.println("Was not able to login user " + username
 						+ ", no user with that password found");
-				return false;
+				status = false;
 			}
 			rs.close();
-			c.close();
 		} catch (NullPointerException npe) {
 			System.out.println("Caught NullPointerException: " + npe);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					System.out.println(e1);
-				}
-			}
-			return false;
+			status = false;
 		} catch (SQLException e) {
 			System.out.println("Caught SQLException: " + e);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					System.out.println(e1);
-				}
-			}
+			status = false;
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
+		}
+
+		// Bomb out if not validated
+		if (!status) {
 			return false;
 		}
 
@@ -292,25 +288,13 @@ public class HttpLoginModule implements LoginModule {
 				}
 				rs.close();
 			}
-			c.close();
 		} catch (NullPointerException npe) {
 			System.out.println("Caught NullPointerException: " + npe);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					System.out.println(e1);
-				}
-			}
 		} catch (SQLException e) {
 			System.out.println("Caught SQLException: " + e);
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					System.out.println(e1);
-				}
-			}
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
 		return ret.toArray(new Principal[0]);
 	}

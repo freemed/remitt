@@ -110,7 +110,7 @@ DELIMITER ;
 DROP TABLE IF EXISTS `tPayload`;
 CREATE TABLE `tPayload` (
 	  id			SERIAL
-	, insert_stamp		TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+	, insert_stamp		TIMESTAMP(16) NOT NULL DEFAULT CURRENT_TIMESTAMP
 	, user			VARCHAR(50) NOT NULL
 	, payload		BLOB
 	, renderPlugin		VARCHAR(100) NOT NULL
@@ -131,8 +131,8 @@ CREATE TABLE `tProcessor` (
 	, payloadId	INT UNSIGNED NOT NULL
 	, stage		ENUM ( 'validation', 'render', 'translation', 'transport' )
 	, plugin	VARCHAR (100) NOT NULL
-	, tsStart	TIMESTAMP NULL DEFAULT NULL
-	, tsEnd		TIMESTAMP NULL DEFAULT NULL
+	, tsStart	TIMESTAMP(16) NULL DEFAULT NULL
+	, tsEnd		TIMESTAMP(16) NULL DEFAULT NULL
 	, pInput	BLOB
 	, pOutput	BLOB
 

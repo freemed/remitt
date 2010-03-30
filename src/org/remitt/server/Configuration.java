@@ -217,6 +217,7 @@ public class Configuration {
 
 		Connection c = Configuration.getConnection();
 		CallableStatement cStmt = null;
+		String ret = null;
 		try {
 			cStmt = c
 					.prepareCall("CALL p_ResolveTranslationPlugin( ?, ?, ?, ? );");
@@ -229,11 +230,9 @@ public class Configuration {
 			if (hasResult) {
 				ResultSet r = cStmt.getResultSet();
 				r.next();
-				String ret = r.getString(1);
+				ret = r.getString(1);
 				log.info("Resolved to class : " + ret);
-				DbUtil.closeSafely(cStmt);
-				DbUtil.closeSafely(c);
-				return ret;
+				DbUtil.closeSafely(r);
 			}
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
@@ -244,7 +243,7 @@ public class Configuration {
 			DbUtil.closeSafely(c);
 		}
 
-		return null;
+		return ret;
 	}
 
 	/**
@@ -330,6 +329,7 @@ public class Configuration {
 		}
 
 		PreparedStatement cStmt = null;
+		String ret = null;
 		try {
 			cStmt = c.prepareStatement("SELECT cValue FROM tUserConfig WHERE "
 					+ " cNamespace=? AND user=? AND cOption=?;");
@@ -341,26 +341,20 @@ public class Configuration {
 			if (hasResult) {
 				ResultSet r = cStmt.getResultSet();
 				r.next();
-				String ret = r.getString(1);
-				DbUtil.closeSafely(cStmt);
-				DbUtil.closeSafely(c);
-				return ret;
+				ret = r.getString(1);
+				DbUtil.closeSafely(r);
 			}
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			DbUtil.closeSafely(cStmt);
-			DbUtil.closeSafely(c);
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
 			log.info("Statement: SELECT cValue FROM tUserConfig WHERE "
 					+ "cNameSpace = '" + className + "' AND user = '"
 					+ userName + "' AND cOption = " + option);
+		} finally {
 			DbUtil.closeSafely(cStmt);
 			DbUtil.closeSafely(c);
 		}
-
-		DbUtil.closeSafely(cStmt);
-		DbUtil.closeSafely(c);
 		return "";
 	}
 
@@ -390,14 +384,11 @@ public class Configuration {
 				}
 				rs.close();
 			}
-			DbUtil.closeSafely(pStmt);
-			DbUtil.closeSafely(c);
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			DbUtil.closeSafely(pStmt);
-			DbUtil.closeSafely(c);
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+		} finally {
 			DbUtil.closeSafely(pStmt);
 			DbUtil.closeSafely(c);
 		}
@@ -428,14 +419,11 @@ public class Configuration {
 
 			cStmt.execute();
 			cStmt.getResultSet();
-			DbUtil.closeSafely(cStmt);
-			DbUtil.closeSafely(c);
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			DbUtil.closeSafely(cStmt);
-			DbUtil.closeSafely(c);
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+		} finally {
 			DbUtil.closeSafely(cStmt);
 			DbUtil.closeSafely(c);
 		}
@@ -476,14 +464,11 @@ public class Configuration {
 				}
 				rs.close();
 			}
-			DbUtil.closeSafely(pStmt);
-			DbUtil.closeSafely(c);
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			DbUtil.closeSafely(pStmt);
-			DbUtil.closeSafely(c);
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+		} finally {
 			DbUtil.closeSafely(pStmt);
 			DbUtil.closeSafely(c);
 		}
@@ -506,6 +491,7 @@ public class Configuration {
 		Connection c = Configuration.getConnection();
 
 		PreparedStatement cStmt = null;
+		Integer ret = null;
 		try {
 			cStmt = c.prepareStatement("INSERT INTO tScooper ( "
 					+ " scooperClass, user, host, path, filename, content "
@@ -521,22 +507,17 @@ public class Configuration {
 
 			cStmt.execute();
 			ResultSet newKey = cStmt.getGeneratedKeys();
-			Integer ret = newKey.getInt("id");
+			ret = newKey.getInt("id");
 			DbUtil.closeSafely(newKey);
-			DbUtil.closeSafely(cStmt);
-			DbUtil.closeSafely(c);
-			return ret;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			DbUtil.closeSafely(cStmt);
-			DbUtil.closeSafely(c);
-			return null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+		} finally {
 			DbUtil.closeSafely(cStmt);
 			DbUtil.closeSafely(c);
-			return null;
 		}
+		return ret;
 	}
 
 	/**
@@ -594,14 +575,11 @@ public class Configuration {
 				}
 				rs.close();
 			}
-			DbUtil.closeSafely(pStmt);
-			DbUtil.closeSafely(c);
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			DbUtil.closeSafely(pStmt);
-			DbUtil.closeSafely(c);
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
+		} finally {
 			DbUtil.closeSafely(pStmt);
 			DbUtil.closeSafely(c);
 		}

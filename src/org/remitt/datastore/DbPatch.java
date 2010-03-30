@@ -37,6 +37,7 @@ import java.util.Scanner;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.remitt.server.Configuration;
+import org.remitt.server.DbUtil;
 
 public class DbPatch {
 
@@ -64,39 +65,23 @@ public class DbPatch {
 		}
 
 		PreparedStatement cStmt = null;
+		boolean status = false;
 		try {
 			log.debug("Using patch length = " + patch.length());
 			cStmt = c.prepareStatement(patch);
 			cStmt.execute();
 			log.info("Patch succeeded");
-			c.close();
-			return true;
+			status = true;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
-			return false;
 		} catch (Throwable e) {
 			log.error(e.toString());
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			try {
-				c.close();
-			} catch (SQLException e1) {
-			}
-			return false;
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
+
+		return status;
 	}
 
 	/**
@@ -123,29 +108,12 @@ public class DbPatch {
 				found = rs.getInt(1);
 				rs.close();
 			}
-			c.close();
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
 		} catch (Throwable e) {
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			try {
-				c.close();
-			} catch (SQLException e1) {
-			}
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
 
 		return (boolean) (found > 0);
@@ -160,6 +128,7 @@ public class DbPatch {
 	public static boolean recordPatch(String patchName) {
 		Connection c = Configuration.getConnection();
 
+		boolean status = false;
 		PreparedStatement cStmt = null;
 		try {
 			cStmt = c.prepareStatement("INSERT INTO tPatch "
@@ -167,47 +136,18 @@ public class DbPatch {
 			cStmt.setString(1, patchName);
 
 			cStmt.execute();
-			c.close();
-			return true;
+			status = true;
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
-			return false;
 		} catch (SQLException sq) {
 			log.error("Caught SQLException", sq);
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e1) {
-					log.error(e1);
-				}
-			}
-			return false;
 		} catch (Throwable e) {
-			try {
-				cStmt.close();
-			} catch (Exception ex) {
-			}
-			try {
-				c.close();
-			} catch (SQLException e1) {
-			}
-			return false;
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
+
+		return status;
 	}
 
 	public static void dbPatcher(String patchLocation) {

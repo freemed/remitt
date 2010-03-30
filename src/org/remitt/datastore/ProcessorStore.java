@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 import org.remitt.prototype.JobThreadState;
 import org.remitt.prototype.ProcessorThread.ThreadType;
 import org.remitt.server.Configuration;
+import org.remitt.server.DbUtil;
 
 public class ProcessorStore {
 
@@ -79,13 +80,17 @@ public class ProcessorStore {
 					tS.setProcessorId(payloadId);
 					tS.setThreadType(tType);
 				}
+				r.close();
 			}
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
-			return null;
+			tS = null;
 		} catch (SQLException e) {
 			log.error("Caught SQLException", e);
-			return null;
+			tS = null;
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
 		}
 
 		return tS;
