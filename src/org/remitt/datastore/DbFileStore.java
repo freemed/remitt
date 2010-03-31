@@ -40,6 +40,53 @@ public class DbFileStore {
 	}
 
 	/**
+	 * Remove a file from database-backed file store.
+	 * 
+	 * @param username
+	 * @param category
+	 * @param filename
+	 * @return
+	 */
+	public static boolean deleteFile(String username, String category,
+			String filename) {
+		Connection c = Configuration.getConnection();
+
+		boolean success = false;
+
+		PreparedStatement cStmt = null;
+		try {
+			cStmt = c.prepareStatement("DELETE FROM tFileStore "
+					+ " WHERE user = ? " + " AND category = ? "
+					+ " AND filename = ?" + ";");
+			cStmt.setString(1, username);
+			cStmt.setString(2, category);
+			cStmt.setString(3, filename);
+			cStmt.execute();
+			success = true;
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+		} catch (Throwable e) {
+			log.error("Caught Throwable", e);
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
+		}
+
+		return success;
+	}
+
+	/**
+	 * Create new "unique" filename.
+	 * 
+	 * @param extension
+	 * @return
+	 */
+	public static synchronized String generateFilename(String extension) {
+		return new Long(System.currentTimeMillis()).toString() + "."
+				+ extension;
+	}
+
+	/**
 	 * Retrieve file contents from database-backed file store.
 	 * 
 	 * @param username
@@ -130,4 +177,5 @@ public class DbFileStore {
 
 		return success;
 	}
+
 }
