@@ -116,7 +116,7 @@ CREATE TABLE `tPayload` (
 	, renderPlugin		VARCHAR(100) NOT NULL
 	, renderOption		VARCHAR(100) NOT NULL
 	, transportPlugin	VARCHAR(100) NOT NULL
-	, transportOption	VARCHAR(100) NOT NULL
+	, transportOption	VARCHAR(100)
 	, payloadState		ENUM ( 'valid', 'failed', 'completed' ) DEFAULT 'valid'
 
 	, KEY			( payloadState )
