@@ -69,9 +69,9 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-codec-1.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-httpclient-3.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/htmlunit-2.6.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/htmlunit-core-js-2.6.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/nekohtml-1.9.13.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/htmlunit-2.7.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/htmlunit-core-js-2.7.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/nekohtml-1.9.14.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xercesImpl-2.9.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/cron4j-2.2.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/mysql-connector-java-5.1.12-bin.jar"/>
