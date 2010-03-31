@@ -57,9 +57,11 @@ public class DbFileStore {
 			cStmt = c.prepareStatement("SELECT content FROM tFileStore "
 					+ " WHERE username = ? AND category = ? and filename = ? "
 					+ ";");
+			cStmt.setString(1, username);
+			cStmt.setString(2, category);
+			cStmt.setString(3, file);
 
-			boolean hadResults = cStmt.execute();
-			if (hadResults) {
+			if (cStmt.execute()) {
 				ResultSet rs = cStmt.getResultSet();
 				rs.next();
 				ret = rs.getBytes("content");
