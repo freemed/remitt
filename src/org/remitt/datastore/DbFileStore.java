@@ -55,7 +55,7 @@ public class DbFileStore {
 		PreparedStatement cStmt = null;
 		try {
 			cStmt = c.prepareStatement("SELECT content FROM tFileStore "
-					+ " WHERE username = ? AND category = ? and filename = ? "
+					+ " WHERE user = ? AND category = ? and filename = ? "
 					+ ";");
 			cStmt.setString(1, username);
 			cStmt.setString(2, category);
