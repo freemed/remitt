@@ -37,7 +37,7 @@ import org.remitt.server.DbUtil;
 
 public class UserManagement {
 
-	static final Logger log = Logger.getLogger(DbFileStore.class);
+	static final Logger log = Logger.getLogger(UserManagement.class);
 
 	public UserManagement() {
 	}
@@ -96,12 +96,13 @@ public class UserManagement {
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
 		} catch (Throwable e) {
+			log.error(e);
 		} finally {
 			DbUtil.closeSafely(cStmt);
 			DbUtil.closeSafely(c);
 		}
 
-		return true;
+		return status;
 	}
 
 	/**
@@ -125,8 +126,7 @@ public class UserManagement {
 					+ " FROM tUser u "
 					+ " LEFT OUTER JOIN tRole r ON r.username = u.username "
 					+ " GROUP BY u.username " + ";");
-			boolean hasResults = cStmt.execute();
-			if (hasResults) {
+			if (cStmt.execute()) {
 				ResultSet rs = cStmt.getResultSet();
 				while (rs.next()) {
 					UserDTO u = new UserDTO();
