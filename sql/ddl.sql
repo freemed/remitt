@@ -180,25 +180,6 @@ END//
 
 DELIMITER ;
 
-DROP TABLE IF EXISTS `tThreadState`;
-CREATE TABLE `tThreadState` (
-	  threadId	INT UNSIGNED NOT NULL UNIQUE
-	, processorId	INT UNSIGNED DEFAULT NULL
-);
-
-DROP TABLE IF EXISTS `tOutput`;
-CREATE TABLE `tOutput` (
-	  id		SERIAL
-	, tsCreated	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-	, payloadId	INT UNSIGNED NOT NULL
-	, processorId	INT UNSIGNED NOT NULL
-	, filename	VARCHAR(150) NOT NULL
-	, filesize	INT UNSIGNED NOT NULL DEFAULT 0
-
-	, FOREIGN KEY ( payloadId ) REFERENCES tPayload.id ON DELETE CASCADE
-	, FOREIGN KEY ( processorId ) REFERENCES tProcessor.id ON DELETE CASCADE
-);
-
 ### Plugin Lookup ###
 
 DROP TABLE IF EXISTS `tPlugins`;
