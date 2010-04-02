@@ -108,7 +108,8 @@ public class ScriptedHttpTransport implements PluginInterface {
 		ScriptEngine engine = engineMgr.getEngineByName("JavaScript");
 
 		// Fetch and execute script.
-		String scriptPath = "/WEB-INF/scripts/" + scriptName + ".js";
+		String scriptPath = "/WEB-INF/scripts/org.remitt.plugin.transport.ScriptedHttpTransport/"
+				+ scriptName + ".js";
 		String realScriptPath = Configuration.getServletContext()
 				.getServletContext().getRealPath(scriptPath);
 
