@@ -169,7 +169,7 @@ public interface Service {
 	 * 
 	 * @return
 	 */
-	public Integer[] getOutputYears();
+	public Integer[][] getOutputYears();
 
 	/**
 	 * Get list of months in a target year for which the system has output

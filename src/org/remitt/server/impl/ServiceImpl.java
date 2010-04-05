@@ -398,30 +398,35 @@ public class ServiceImpl implements Service {
 	@Path("outputyears")
 	@Produces("application/json")
 	@Override
-	public Integer[] getOutputYears() {
+	public Integer[][] getOutputYears() {
 		Connection c = getConnection();
 
 		String userName = getCurrentUserName();
 
 		log.debug("getOutputYears for " + userName);
 
-		Integer[] returnValue = null;
+		Integer[][] returnValue = null;
 		PreparedStatement cStmt = null;
 		try {
-			cStmt = c.prepareStatement("SELECT DISTINCT(YEAR(stamp) AS year "
-					+ " FROM tFileStore " + "WHERE user = ?;");
+			cStmt = c.prepareStatement("SELECT "
+					+ " DISTINCT(YEAR(stamp)) AS year "
+					+ ", COUNT(YEAR(stamp)) AS c " + " FROM tFileStore "
+					+ "WHERE user = ? " + " GROUP BY YEAR(stamp) " + ";");
 			cStmt.setString(1, userName);
 
 			boolean hadResults = cStmt.execute();
-			List<Integer> results = new ArrayList<Integer>();
+			List<Integer[]> results = new ArrayList<Integer[]>();
 			if (hadResults) {
 				ResultSet rs = cStmt.getResultSet();
 				while (rs.next()) {
-					results.add(rs.getInt("year"));
+					List<Integer> atomicResult = new ArrayList<Integer>();
+					atomicResult.add(rs.getInt(1));
+					atomicResult.add(rs.getInt(2));
+					results.add(atomicResult.toArray(new Integer[0]));
 				}
 				rs.close();
 			}
-			returnValue = results.toArray(new Integer[0]);
+			returnValue = results.toArray(new Integer[0][0]);
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
 		} catch (SQLException e) {
