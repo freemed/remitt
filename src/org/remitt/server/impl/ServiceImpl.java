@@ -47,6 +47,7 @@ import org.remitt.datastore.UserManagement;
 import org.remitt.prototype.ConfigurationOption;
 import org.remitt.prototype.EligibilityInterface;
 import org.remitt.prototype.EligibilityResponse;
+import org.remitt.prototype.FileListingItem;
 import org.remitt.prototype.ParserInterface;
 import org.remitt.prototype.PluginInterface;
 import org.remitt.prototype.UserDTO;
@@ -293,7 +294,8 @@ public class ServiceImpl implements Service {
 	@Path("filelist/{category}/{criteria}/{value}")
 	@Produces("application/json")
 	@Override
-	public String[] getFileList(String category, String criteria, String value) {
+	public FileListingItem[] getFileList(String category, String criteria,
+			String value) {
 		Connection c = getConnection();
 
 		String userName = getCurrentUserName();
@@ -303,23 +305,24 @@ public class ServiceImpl implements Service {
 				+ (value == null ? "null" : value) + ", category = " + category
 				+ "]");
 
-		String[] returnValue = null;
+		FileListingItem[] returnValue = null;
 		PreparedStatement cStmt = null;
 		try {
 			if (criteria.equalsIgnoreCase("month")) {
-				cStmt = c.prepareStatement("SELECT filename "
-						+ " FROM tFileStore " + " WHERE user = ? "
-						+ " AND category = ? "
-						+ " AND DATE_FORMAT(stamp, '%Y-%m') = ? " + ";");
+				cStmt = c.prepareStatement("SELECT f.filename "
+						+ " , f.contentsize " + " FROM tFileStore f "
+						+ " WHERE f.user = ? " + " AND f.category = ? "
+						+ " AND DATE_FORMAT(f.stamp, '%Y-%m') = ? " + ";");
 			} else if (criteria.equalsIgnoreCase("year")) {
-				cStmt = c.prepareStatement("SELECT filename "
-						+ " FROM tFileStore " + " WHERE user = ? "
-						+ " AND category = ? "
-						+ " AND DATE_FORMAT(stamp, '%Y') = ? " + ";");
+				cStmt = c.prepareStatement("SELECT f.filename "
+						+ " , f.contentsize " + " FROM tFileStore f "
+						+ " WHERE f.user = ? " + " AND f.category = ? "
+						+ " AND DATE_FORMAT(f.stamp, '%Y') = ? " + ";");
 			} else if (criteria.equalsIgnoreCase("payload")) {
-				cStmt = c.prepareStatement("SELECT filename "
-						+ " FROM tFileStore " + " WHERE user = ? "
-						+ " AND category = ? " + " AND payloadId = ? " + ";");
+				cStmt = c.prepareStatement("SELECT f.filename "
+						+ " , f.contentsize " + " FROM tFileStore f "
+						+ " WHERE f.user = ? " + " AND f.category = ? "
+						+ " AND f.payloadId = ? " + ";");
 			} else {
 				DbUtil.closeSafely(cStmt);
 				DbUtil.closeSafely(c);
@@ -330,15 +333,18 @@ public class ServiceImpl implements Service {
 			cStmt.setString(3, value);
 
 			boolean hadResults = cStmt.execute();
-			List<String> results = new ArrayList<String>();
+			List<FileListingItem> results = new ArrayList<FileListingItem>();
 			if (hadResults) {
 				ResultSet rs = cStmt.getResultSet();
 				while (rs.next()) {
-					results.add(rs.getString(1));
+					FileListingItem i = new FileListingItem();
+					i.setFilename(rs.getString(1));
+					i.setFilesize(rs.getInt(2));
+					results.add(i);
 				}
 				rs.close();
 			}
-			returnValue = results.toArray(new String[0]);
+			returnValue = results.toArray(new FileListingItem[0]);
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
 		} catch (SQLException e) {

@@ -32,6 +32,7 @@ import javax.ws.rs.PathParam;
 
 import org.remitt.prototype.ConfigurationOption;
 import org.remitt.prototype.EligibilityResponse;
+import org.remitt.prototype.FileListingItem;
 import org.remitt.prototype.UserDTO;
 
 @WebService(targetNamespace = "http://server.remitt.org/")
@@ -137,7 +138,7 @@ public interface Service {
 	 * @param value
 	 * @return
 	 */
-	public String[] getFileList(
+	public FileListingItem[] getFileList(
 			@PathParam("category") @WebParam(name = "category") String category,
 			@PathParam("criteria") @WebParam(name = "criteria") String criteria,
 			@PathParam("value") @WebParam(name = "value") String value);
