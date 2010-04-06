@@ -78,7 +78,8 @@ public class TransportProcessorThread extends ProcessorThread {
 			return false;
 		}
 
-		byte[] input = payload.getPayload();
+		byte[] input = Configuration.getControlThread()
+				.getPayloadForProcessorStage(payload, getThreadType());
 		byte[] output = null;
 		try {
 			output = p.render(jobId, input, payload.getTransportOption());

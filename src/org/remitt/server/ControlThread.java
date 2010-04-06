@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.remitt.datastore.ProcessorStore;
 import org.remitt.prototype.JobThreadState;
 import org.remitt.prototype.PayloadDto;
 import org.remitt.prototype.ProcessorThread;
@@ -676,6 +677,41 @@ public class ControlThread extends Thread {
 	}
 
 	/**
+	 * Determine payload to be used by stage from either tPayload or tProcessor,
+	 * depending on where the data is supposed to source from.
+	 * 
+	 * @param payload
+	 *            <PayloadDto> object with information regarding current
+	 *            processing payload.
+	 * @param type
+	 *            Current thread type.
+	 * @return Input payload to be used by plugin/stage.
+	 */
+	public byte[] getPayloadForProcessorStage(PayloadDto payload,
+			ThreadType type) {
+		ProcessorStore s = new ProcessorStore(payload.getId());
+		byte[] ret = null;
+		if (type == ThreadType.RENDER) {
+			log.info("getPayloadForProcessor using original payload");
+			ret = payload.getPayload();
+			log.info("getPayloadForProcessor get payload size = " + ret.length);
+		}
+		if (type == ThreadType.TRANSLATION) {
+			log.info("getPayloadForProcessor using RENDER payload");
+			ret = s.getProcessorOutputPayload(ThreadType.RENDER);
+			log.info("getPayloadForProcessor get payload size = " + ret.length);
+		}
+		if (type == ThreadType.TRANSPORT) {
+			log.info("getPayloadForProcessor using TRANSLATION payload");
+			ret = s.getProcessorOutputPayload(ThreadType.TRANSLATION);
+			log.info("getPayloadForProcessor get payload size = " + ret.length);
+		}
+		log.trace("getPayloadForProcessor " + type.toString() + " returned : "
+				+ ret);
+		return ret;
+	}
+
+	/**
 	 * "Move" a tProcessor entry into the next queue stage.
 	 * 
 	 * @param tS
@@ -701,7 +737,8 @@ public class ControlThread extends Thread {
 				PayloadDto payload = getPayloadFromProcessor(tS
 						.getProcessorId());
 				Integer processorId = migratePayloadToProcessor(
-						payload.getId(), availThread, payload.getPayload(),
+						payload.getId(), availThread,
+						getPayloadForProcessorStage(payload, nextType),
 						nextType, resolvePlugin(payload, nextType), new Date(
 								System.currentTimeMillis()));
 

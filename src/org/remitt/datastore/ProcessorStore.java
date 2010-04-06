@@ -65,8 +65,9 @@ public class ProcessorStore {
 
 		PreparedStatement cStmt = null;
 		try {
-			cStmt = c
-					.prepareCall("{ SELECT * FROM tProcessor WHERE payloadId=? AND stage=? AND ISNULL(tsEnd) LIMIT 1 }");
+			cStmt = c.prepareCall("SELECT * FROM tProcessor "
+					+ " WHERE payloadId=? " + " AND stage=? "
+					+ " AND ISNULL(tsEnd) LIMIT 1;");
 
 			cStmt.setInt(1, payloadId);
 			cStmt.setString(2, tType.toString());
@@ -95,4 +96,49 @@ public class ProcessorStore {
 
 		return tS;
 	}
+
+	/**
+	 * Retrieve payload from tProcessor table to be used in subsequent stages.
+	 * 
+	 * @param tType
+	 *            Thread type to check for, using stored payload info.
+	 * @return
+	 */
+	public byte[] getProcessorOutputPayload(ThreadType tType) {
+		Connection c = Configuration.getConnection();
+
+		byte[] output = null;
+
+		PreparedStatement cStmt = null;
+		try {
+			cStmt = c.prepareStatement("SELECT pOutput " + " FROM tProcessor "
+					+ " WHERE payloadId=? AND stage=? "
+					+ " AND NOT ISNULL(tsEnd) " + " LIMIT 1 ;");
+
+			cStmt.setInt(1, payloadId);
+			cStmt.setString(2, tType.toString());
+
+			boolean hadResults = cStmt.execute();
+			if (hadResults) {
+				ResultSet r = cStmt.getResultSet();
+				r.next();
+				output = r.getBytes(1);
+				log.info("getProcessorOutputPayload got " + output.length
+						+ " bytes from " + tType + " stage");
+				r.close();
+			}
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+			output = null;
+		} catch (SQLException e) {
+			log.error("Caught SQLException", e);
+			output = null;
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
+		}
+
+		return output;
+	}
+
 }
