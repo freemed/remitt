@@ -84,7 +84,7 @@ public class ClaimInformation implements X12DTO {
 		}
 		this.lineItemChargeAmount = Double.parseDouble(SVC.getElement(2));
 		try {
-			this.quantity = Integer.parseInt(SVC.getElement(5));
+			this.quantity = Integer.parseInt(SVC.getElement(5).trim());
 			if (this.quantity < 1) {
 				this.quantity = 1;
 			}
@@ -92,7 +92,14 @@ public class ClaimInformation implements X12DTO {
 			if (this.quantity < 1) {
 				this.quantity = 1;
 			}
-
+		} catch (NumberFormatException ex) {
+			if (this.quantity < 1) {
+				this.quantity = 1;
+			}
+		} catch (NullPointerException ex) {
+			if (this.quantity < 1) {
+				this.quantity = 1;
+			}
 		}
 
 		List<Segment> DTMs = X12Message.findSegmentsByComparator(in,
