@@ -109,6 +109,12 @@ public class ClaimAdjustment implements X12DTO {
 	public ClaimAdjustment() {
 	}
 
+	public ClaimAdjustment(Segment inAtomic) {
+		List<Segment> in = new ArrayList<Segment>();
+		in.add(inAtomic);
+		processSegmentList(in);
+	}
+
 	public ClaimAdjustment(List<Segment> in) {
 		processSegmentList(in);
 	}

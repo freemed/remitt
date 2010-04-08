@@ -24,6 +24,7 @@
 
 package org.remitt.parser.x12dto;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +36,7 @@ import org.remitt.prototype.X12DTO;
 import org.remitt.prototype.X12Message;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementArray;
+import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
 @Root(name = "claimInformation")
@@ -58,8 +60,14 @@ public class ClaimInformation implements X12DTO {
 	@Element(name = "lineItemChargeAmount")
 	private Double lineItemChargeAmount;
 
+	@Element(name = "lineItemProviderPaymentAmount")
+	private Double lineItemProviderPaymentAmount;
+
 	@Element(name = "quantity")
 	private Integer quantity = 1;
+
+	@ElementList(name = "claimAdjustments", required = false)
+	private List<ClaimAdjustment> claimAdjustments = new ArrayList<ClaimAdjustment>();
 
 	public ClaimInformation(List<Segment> in) {
 		processSegmentList(in);
@@ -82,7 +90,15 @@ public class ClaimInformation implements X12DTO {
 					this.serviceCodeModifiers, serviceCodeComposite
 							.get(iter - 1));
 		}
-		this.lineItemChargeAmount = Double.parseDouble(SVC.getElement(2));
+		try {
+			setLineItemChargeAmount(Double.parseDouble(SVC.getElement(2)));
+		} catch (Exception ex) {
+		}
+		try {
+			setLineItemProviderPaymentAmount(Double.parseDouble(SVC
+					.getElement(3)));
+		} catch (Exception ex) {
+		}
 		try {
 			this.quantity = Integer.parseInt(SVC.getElement(5).trim());
 			if (this.quantity < 1) {
@@ -121,6 +137,14 @@ public class ClaimInformation implements X12DTO {
 			default:
 				break;
 			}
+		}
+
+		// Handle adjustments
+		List<Segment> CASs = X12Message.findSegmentsByComparator(in,
+				new SegmentComparator("CAS", 1, new String[] { "CO", "CR",
+						"OA", "PI", "PR" }));
+		for (Segment CAS : CASs) {
+			getClaimAdjustments().add(new ClaimAdjustment(CAS));
 		}
 	}
 
@@ -170,6 +194,27 @@ public class ClaimInformation implements X12DTO {
 
 	public Double getProcedureAmount() {
 		return lineItemChargeAmount;
+	}
+
+	public void setLineItemChargeAmount(Double lineItemChargeAmount) {
+		this.lineItemChargeAmount = lineItemChargeAmount;
+	}
+
+	public void setLineItemProviderPaymentAmount(
+			Double lineItemProviderPaymentAmount) {
+		this.lineItemProviderPaymentAmount = lineItemProviderPaymentAmount;
+	}
+
+	public Double getLineItemProviderPaymentAmount() {
+		return lineItemProviderPaymentAmount;
+	}
+
+	public void setClaimAdjustments(List<ClaimAdjustment> claimAdjustments) {
+		this.claimAdjustments = claimAdjustments;
+	}
+
+	public List<ClaimAdjustment> getClaimAdjustments() {
+		return claimAdjustments;
 	}
 
 }
