@@ -106,6 +106,53 @@ public class UserManagement {
 	}
 
 	/**
+	 * Retrieve a single <UserDTO> object for a named user.
+	 * 
+	 * @param username
+	 * @return
+	 */
+	public static UserDTO getUser(String username) {
+		Connection c = Configuration.getConnection();
+
+		UserDTO ret = new UserDTO();
+
+		PreparedStatement cStmt = null;
+		try {
+			cStmt = c.prepareStatement("SELECT " + " u.username AS username "
+					+ " , u.callbackserviceuri AS callbackserviceuri "
+					+ " , u.callbackservicewsdluri AS callbackservicewsdluri "
+					+ " , u.callbackusername AS callbackusername"
+					+ " , u.callbackpassword AS callbackpassword "
+					+ " , GROUP_CONCAT(r.rolename) AS roles "
+					+ " FROM tUser u "
+					+ " LEFT OUTER JOIN tRole r ON r.username = u.username "
+					+ " WHERE u.username = ? " + " GROUP BY u.username "
+					+ " LIMIT 1 " + ";");
+			cStmt.setString(1, username);
+			if (cStmt.execute()) {
+				ResultSet rs = cStmt.getResultSet();
+				rs.next();
+				ret.setUsername(rs.getString("username"));
+				ret.setCallbackServiceUri(rs.getString("callbackserviceuri"));
+				ret.setCallbackServiceWsdlUri(rs
+						.getString("callbackservicewsdluri"));
+				ret.setCallbackUsername(rs.getString("callbackusername"));
+				ret.setCallbackPassword(rs.getString("callbackpassword"));
+				ret.setRoles(rs.getString("roles").split(","));
+				rs.close();
+			}
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+		} catch (Throwable e) {
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
+		}
+
+		return ret;
+	}
+
+	/**
 	 * Get list of all users in the system.
 	 * 
 	 * @return

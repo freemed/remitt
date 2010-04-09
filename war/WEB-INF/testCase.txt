@@ -22,4 +22,5 @@
 
 org.remitt.test.ConfigurationTest
 org.remitt.test.DbFileStoreTest
+org.remitt.test.RemittanceTest
 

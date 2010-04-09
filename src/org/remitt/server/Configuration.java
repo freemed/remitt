@@ -27,6 +27,9 @@ package org.remitt.server;
 import it.sauronsoftware.cron4j.Scheduler;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.rmi.RemoteException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,15 +39,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServlet;
+import javax.xml.rpc.ServiceException;
 
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Stub;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.log4j.Logger;
+import org.remitt.client.RemittCallback.RemittCallback_PortType;
+import org.remitt.client.RemittCallback.RemittCallback_Service;
+import org.remitt.client.RemittCallback.RemittCallback_ServiceLocator;
+import org.remitt.datastore.UserManagement;
 import org.remitt.prototype.ConfigurationOption;
 import org.remitt.prototype.EligibilityInterface;
 import org.remitt.prototype.PluginInterface;
+import org.remitt.prototype.UserDTO;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -518,6 +529,82 @@ public class Configuration {
 			DbUtil.closeSafely(c);
 		}
 		return ret;
+	}
+
+	/**
+	 * Push a remittance payload obtained from a scooper back to the
+	 * "callback url" specified for the user who owns the payload.
+	 * 
+	 * @param scooperId
+	 */
+	public static void pushScoopedData(Integer scooperId) {
+		Connection c = Configuration.getConnection();
+
+		String user = null;
+		byte[] content = null;
+
+		PreparedStatement cStmt = null;
+		try {
+			cStmt = c.prepareStatement("SELECT "
+					+ " user, host, path, filename, content"
+					+ " FROM tScooper AS a " + " WHERE id = ? " + ";");
+			cStmt.setInt(1, scooperId);
+
+			if (cStmt.execute()) {
+				ResultSet rs = cStmt.getResultSet();
+				rs.next();
+				user = rs.getString(1);
+				content = rs.getBytes(5);
+				rs.close();
+			}
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+		} catch (Throwable e) {
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
+		}
+
+		// Bomb the hell out if we somehow fail.
+		if (user == null || content == null) {
+			log.error("Unable to pull scooper content for id = "
+					+ scooperId.toString());
+			return;
+		}
+
+		UserDTO u = UserManagement.getUser(user);
+
+		RemittCallback_Service locator = new RemittCallback_ServiceLocator();
+		RemittCallback_PortType service = null;
+
+		try {
+			service = locator.getRemittCallbackSOAP(new URL(u
+					.getCallbackServiceUri()));
+		} catch (ServiceException e) {
+			log.error(e);
+			return;
+		} catch (MalformedURLException e) {
+			log.error(e);
+			return;
+		}
+
+		// Override with basic authentication for callback
+		((Stub) service).setUsername(u.getCallbackUsername());
+		((Stub) service).setPassword(u.getCallbackPassword());
+		((Stub) service)._setProperty(Call.USERNAME_PROPERTY, u
+				.getCallbackUsername());
+		((Stub) service)._setProperty(Call.PASSWORD_PROPERTY, u
+				.getCallbackPassword());
+
+		log
+				.info("TODO: Need to pull original reference from payloads to pass back");
+		int response = -1;
+		try {
+			response = service.sendRemittancePayload(0, "", content.toString());
+		} catch (RemoteException e) {
+			log.error(e);
+		}
+		log.info("Received response of " + response);
 	}
 
 	/**
