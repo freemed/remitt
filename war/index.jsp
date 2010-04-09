@@ -57,6 +57,8 @@
 	interface</li>
 	<li><a href="configurationDisplay.jsp">Configuration</a> - Edit
 	per-user configuration</li>
+	<li><a href="threadStatus.jsp">Thread Status</a> - Display status
+	of individual processing threads.</li>
 	<li><a href="TestServlet">Unit Tests</a> - Test internal REMITT
 	functionality. Pretty much useless for end-users.</li>
 </ul>

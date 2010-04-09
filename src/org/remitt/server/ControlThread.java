@@ -100,6 +100,10 @@ public class ControlThread extends Thread {
 		servletContext = mc;
 	}
 
+	public List<JobThreadState> getThreadPool() {
+		return this.threadPool;
+	}
+
 	/**
 	 * Find the current running payload.
 	 * 
@@ -412,7 +416,6 @@ public class ControlThread extends Thread {
 			RenderProcessorThread t = new RenderProcessorThread();
 			t.start();
 			workerThreads.put(t.getId(), t);
-			threadPool.add(t.getJobThreadState());
 			addThreadToPool(t);
 
 			// Create a small delay to avoid pig-piling on threads
