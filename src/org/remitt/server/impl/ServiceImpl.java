@@ -210,6 +210,8 @@ public class ServiceImpl implements Service {
 							returnValue = 3; // translation
 						} else if (stage.equalsIgnoreCase("transport")) {
 							returnValue = 4; // transport
+						} else if (stage.equalsIgnoreCase("failed")) {
+							returnValue = 6; // failed
 						}
 					} else {
 						returnValue = 0; // completed

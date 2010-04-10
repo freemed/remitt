@@ -113,7 +113,7 @@ public interface Service {
 	 * @param jobId
 	 * @return Integer indicating current status. 0 = completed, 1 =
 	 *         verification, 2 = rendering, 3 = translation, 4 = transport, 5 =
-	 *         unknown
+	 *         unknown, 6 = failed
 	 */
 	public Integer getStatus(
 			@PathParam("jobId") @WebParam(name = "jobId") Integer jobId);
