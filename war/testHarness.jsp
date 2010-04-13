@@ -131,11 +131,17 @@ function populateFieldFromFrame(f) {
 
 			<hr/>
 
-			<h1>Parser</h1>
+			<h1>Remittance Callback/Parser</h1>
 
 			<form action="TestHarness" method="POST" target="_targetFrame">
-			<input type="hidden" name="type" value="parser" />
 			<table border="0">
+				<tr>
+					<td>Action:</td>
+					<td><select name="type">
+						<option value="parser">Test Parser</option>
+						<option value="callback">Test Callback</option>
+					</select></td>
+				</tr>
 				<tr>
 					<td>Parser Class:</td>
 					<td><select name="plugin">

@@ -573,7 +573,15 @@ public class Configuration {
 		}
 
 		UserDTO u = UserManagement.getUser(user);
+		pushDataCallback(u, content);
+	}
 
+	public static void pushRemittanceData(String username, byte[] content) {
+		UserDTO u = UserManagement.getUser(username);
+		pushDataCallback(u, content);
+	}
+
+	private static void pushDataCallback(UserDTO u, byte[] content) {
 		RemittCallback_Service locator = new RemittCallback_ServiceLocator();
 		RemittCallback_PortType service = null;
 
