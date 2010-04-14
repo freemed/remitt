@@ -140,7 +140,7 @@ public class UserManagement {
 		PreparedStatement cStmt = null;
 		try {
 			cStmt = c.prepareStatement(SQL_GET_USER);
-			log.info(SQL_GET_USER + " with param " + username);
+			log.debug(SQL_GET_USER + " with param " + username);
 			cStmt.setString(1, username);
 			cStmt.execute();
 			ResultSet rs = cStmt.getResultSet();

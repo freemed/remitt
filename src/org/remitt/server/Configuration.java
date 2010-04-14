@@ -48,10 +48,12 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.log4j.Logger;
+import org.pb.x12.FormatException;
 import org.remitt.client.RemittCallback.RemittCallback_PortType;
 import org.remitt.client.RemittCallback.RemittCallback_Service;
 import org.remitt.client.RemittCallback.RemittCallback_ServiceLocator;
 import org.remitt.datastore.UserManagement;
+import org.remitt.parser.X12Message835;
 import org.remitt.prototype.ConfigurationOption;
 import org.remitt.prototype.EligibilityInterface;
 import org.remitt.prototype.PluginInterface;
@@ -572,13 +574,41 @@ public class Configuration {
 			return;
 		}
 
+		X12Message835 parser = new X12Message835();
+		String parsedMessage = null;
+		try {
+			parser.parse(new String(content));
+			parsedMessage = parser.getRemittance().toString();
+		} catch (FormatException e) {
+			log.error(e);
+			return;
+		}
+		if (parsedMessage == null) {
+			log.error("Null message, cannot process any further");
+			return;
+		}
+
 		UserDTO u = UserManagement.getUser(user);
 		pushDataCallback(u, content);
 	}
 
 	public static void pushRemittanceData(String username, byte[] content) {
+		X12Message835 parser = new X12Message835();
+		String parsedMessage = null;
+		try {
+			parser.parse(new String(content));
+			parsedMessage = parser.getRemittance().toString();
+		} catch (FormatException e) {
+			log.error(e);
+			return;
+		}
+		if (parsedMessage == null) {
+			log.error("Null message, cannot process any further");
+			return;
+		}
+
 		UserDTO u = UserManagement.getUser(username);
-		pushDataCallback(u, content);
+		pushDataCallback(u, parsedMessage.getBytes());
 	}
 
 	private static void pushDataCallback(UserDTO u, byte[] content) {
