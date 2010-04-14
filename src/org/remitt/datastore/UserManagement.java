@@ -39,6 +39,27 @@ public class UserManagement {
 
 	static final Logger log = Logger.getLogger(UserManagement.class);
 
+	public static final String SQL_GET_USER = "SELECT "
+			+ " u.username AS username "
+			+ " , u.callbackserviceuri AS callbackserviceuri "
+			+ " , u.callbackservicewsdluri AS callbackservicewsdluri "
+			+ " , u.callbackusername AS callbackusername"
+			+ " , u.callbackpassword AS callbackpassword "
+			+ " , GROUP_CONCAT(r.rolename) AS roles " + " FROM tUser u "
+			+ " LEFT OUTER JOIN tRole r ON r.username = u.username "
+			+ " WHERE u.username = ? " + " GROUP BY u.username " + " LIMIT 1 "
+			+ ";";
+
+	public static final String SQL_LIST_USERS = "SELECT "
+			+ " u.username AS username "
+			+ " , u.callbackserviceuri AS callbackserviceuri "
+			+ " , u.callbackservicewsdluri AS callbackservicewsdluri "
+			+ " , u.callbackusername AS callbackusername"
+			+ " , u.callbackpassword AS callbackpassword "
+			+ " , GROUP_CONCAT(r.rolename) AS roles " + " FROM tUser u "
+			+ " LEFT OUTER JOIN tRole r ON r.username = u.username "
+			+ " GROUP BY u.username " + ";";
+
 	public UserManagement() {
 	}
 
@@ -118,32 +139,23 @@ public class UserManagement {
 
 		PreparedStatement cStmt = null;
 		try {
-			cStmt = c.prepareStatement("SELECT " + " u.username AS username "
-					+ " , u.callbackserviceuri AS callbackserviceuri "
-					+ " , u.callbackservicewsdluri AS callbackservicewsdluri "
-					+ " , u.callbackusername AS callbackusername"
-					+ " , u.callbackpassword AS callbackpassword "
-					+ " , GROUP_CONCAT(r.rolename) AS roles "
-					+ " FROM tUser u "
-					+ " LEFT OUTER JOIN tRole r ON r.username = u.username "
-					+ " WHERE u.username = ? " + " GROUP BY u.username "
-					+ " LIMIT 1 " + ";");
+			cStmt = c.prepareStatement(SQL_GET_USER);
+			log.info(SQL_GET_USER + " with param " + username);
 			cStmt.setString(1, username);
-			if (cStmt.execute()) {
-				ResultSet rs = cStmt.getResultSet();
-				rs.next();
-				ret.setUsername(rs.getString("username"));
-				ret.setCallbackServiceUri(rs.getString("callbackserviceuri"));
-				ret.setCallbackServiceWsdlUri(rs
-						.getString("callbackservicewsdluri"));
-				ret.setCallbackUsername(rs.getString("callbackusername"));
-				ret.setCallbackPassword(rs.getString("callbackpassword"));
-				ret.setRoles(rs.getString("roles").split(","));
-				rs.close();
-			}
+			cStmt.execute();
+			ResultSet rs = cStmt.getResultSet();
+			rs.next();
+			ret.setUsername(rs.getString(1));
+			ret.setCallbackServiceUri(rs.getString(2));
+			ret.setCallbackServiceWsdlUri(rs.getString(3));
+			ret.setCallbackUsername(rs.getString(4));
+			ret.setCallbackPassword(rs.getString(5));
+			ret.setRoles(rs.getString(6).split(","));
+			rs.close();
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
 		} catch (Throwable e) {
+			log.error(e);
 		} finally {
 			DbUtil.closeSafely(cStmt);
 			DbUtil.closeSafely(c);
@@ -164,15 +176,7 @@ public class UserManagement {
 
 		PreparedStatement cStmt = null;
 		try {
-			cStmt = c.prepareStatement("SELECT " + " u.username AS username "
-					+ " , u.callbackserviceuri AS callbackserviceuri "
-					+ " , u.callbackservicewsdluri AS callbackservicewsdluri "
-					+ " , u.callbackusername AS callbackusername"
-					+ " , u.callbackpassword AS callbackpassword "
-					+ " , GROUP_CONCAT(r.rolename) AS roles "
-					+ " FROM tUser u "
-					+ " LEFT OUTER JOIN tRole r ON r.username = u.username "
-					+ " GROUP BY u.username " + ";");
+			cStmt = c.prepareStatement(SQL_LIST_USERS);
 			if (cStmt.execute()) {
 				ResultSet rs = cStmt.getResultSet();
 				while (rs.next()) {

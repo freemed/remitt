@@ -79,7 +79,7 @@ public class TestHarnessServlet extends HttpServlet {
 		// Handle parser tests
 		if (type.equals("callback")) {
 			String input = request.getParameter("input");
-			String user = request.getRemoteUser();
+			String user = request.getUserPrincipal().getName();
 			Configuration.pushRemittanceData(user, input.getBytes());
 			return;
 		}

@@ -585,9 +585,11 @@ public class Configuration {
 		RemittCallback_Service locator = new RemittCallback_ServiceLocator();
 		RemittCallback_PortType service = null;
 
+		String serviceUrl = u.getCallbackServiceUri();
+		log.debug("pushDataCallback(): Using callback service URI : "
+				+ u.getCallbackServiceUri());
 		try {
-			service = locator.getRemittCallbackSOAP(new URL(u
-					.getCallbackServiceUri()));
+			service = locator.getRemittCallbackSOAP(new URL(serviceUrl));
 		} catch (ServiceException e) {
 			log.error(e);
 			return;
@@ -605,14 +607,15 @@ public class Configuration {
 				.getCallbackPassword());
 
 		log
-				.info("TODO: Need to pull original reference from payloads to pass back");
+				.info("pushDataCallback(): TODO: Need to pull original reference from payloads to pass back");
 		int response = -1;
 		try {
-			response = service.sendRemittancePayload(0, "", content.toString());
+			response = service
+					.sendRemittancePayload(0, "", new String(content));
 		} catch (RemoteException e) {
 			log.error(e);
 		}
-		log.info("Received response of " + response);
+		log.info("pushDataCallback(): received response of " + response);
 	}
 
 	/**
