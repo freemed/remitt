@@ -90,6 +90,19 @@ public class RenderProcessorThread extends ProcessorThread {
 		Configuration.getControlThread().commitPayloadRun(jobId, output,
 				getThreadType(), tsEnd);
 
+		// If we can't resolve the translation plugin, we have to fail out now,
+		// otherwise REMITT will attempt to pass a null value to the
+		// <TranslationProcessorThread> and will more or less let the user know
+		// that something failed.
+		if (Configuration.getControlThread().resolvePlugin(payload,
+				ThreadType.TRANSLATION) == null) {
+			log
+					.error("Translation plugin unavailable, setting payload as failed.");
+			Configuration.getControlThread().setFailedPayloadRun(jobId,
+					new Date(System.currentTimeMillis()));
+			return false;
+		}
+
 		// Push to next state
 		Configuration.getControlThread().moveProcessorEntry(
 				getJobThreadState(),
