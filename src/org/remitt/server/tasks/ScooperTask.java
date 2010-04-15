@@ -67,6 +67,8 @@ public class ScooperTask extends Task {
 					for (Integer id : ids) {
 						log.debug("Scooped file for user " + user + " with id "
 								+ id.toString());
+						Configuration.pushScoopedData(id);
+						log.debug("Pushed scooped file id = " + id.toString());
 					}
 				} catch (Exception e) {
 					log.error(e);
