@@ -36,7 +36,7 @@
 <table border="1" width="100%">
 <tr>
 	<th>Thread ID</th>
-	<!-- <th>Type</th> -->
+	<th>Type</th>
 	<th>Processor ID</th>
 	<th>Plugin Class</th>
 </tr>
@@ -46,9 +46,9 @@
 	for (JobThreadState s : pool) {
 		out.println("<tr>");
 		out.println("<td>" + s.getThreadId() + "</td>");		
-		//out.println("<td>" + s.getThreadType().toString() + "</td>");		
+		out.println("<td>" + s.getThreadType().toString() + "</td>");		
 		out.println("<td>" + s.getProcessorId() + "</td>");		
-		out.println("<td>" + s.getPlugin() + "</td>");		
+		out.println("<td>" + s.getPlugin() + "&nbsp;</td>");		
 		out.println("</tr>");
 	}
 %>
