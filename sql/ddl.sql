@@ -147,34 +147,48 @@ CREATE PROCEDURE p_GetStatus (
 	, IN jobId INT UNSIGNED
 	)
 BEGIN
+	DECLARE s ENUM ( 'valid', 'failed', 'completed' );
 	DECLARE c ENUM ( 'validation', 'render', 'translation', 'transport' );
 	DECLARE x ENUM ( 'validation', 'render', 'translation', 'transport' );
 
 	SELECT NULL INTO c;
+	SELECT NULL INTO s;
 
-	#--- Find a stage with a null timestamp, which indicates work in progress
+	#--- Check for "completed" status
 	SELECT
-		stage INTO c
-	FROM tProcessor p
-		LEFT OUTER JOIN tPayload a ON p.payloadId = a.id
-	WHERE ISNULL( tsEnd ) AND a.id = jobId AND a.user = username;
+		payloadState INTO s
+	FROM tPayload p
+	WHERE p.id = jobId AND p.user = username;
 
-	#--- If we can't find anything that looks like work in progress ...
-	IF ISNULL( c ) THEN
-		#---- Check to see if latest stage is completed
-		SELECT p.stage INTO x
+	IF s = 'completed' THEN
+		SELECT 1 AS 'status', 'completed' AS 'stage';
+	ELSEIF s = 'failed' THEN
+		SELECT 1 AS 'status', 'failed' AS 'stage';
+	ELSE
+		#--- Find a stage with a null timestamp, which indicates work in progress
+		SELECT
+			stage INTO c
 		FROM tProcessor p
 			LEFT OUTER JOIN tPayload a ON p.payloadId = a.id
-		WHERE a.id = jobId AND a.user = username
-		ORDER BY p.tsStart DESC LIMIT 1;
+		WHERE ISNULL( tsEnd ) AND a.id = jobId AND a.user = username;
 
-		IF x = 'transport' THEN
-			SELECT 1 AS 'status', 'completed' AS 'stage';
+		#--- If we can't find anything that looks like work in progress ...
+		IF ISNULL( c ) THEN
+			#---- Check to see if latest stage is completed
+			SELECT p.stage INTO x
+			FROM tProcessor p
+				LEFT OUTER JOIN tPayload a ON p.payloadId = a.id
+			WHERE a.id = jobId AND a.user = username
+			ORDER BY p.tsStart DESC LIMIT 1;
+	
+			IF x = 'transport' THEN
+				SELECT 1 AS 'status', 'completed' AS 'stage';
+			ELSE
+				SELECT 0 AS 'status', NULL AS 'stage';
+			END IF;
 		ELSE
-			SELECT 0 AS 'status', NULL AS 'stage';
+			SELECT 0 AS 'status', c AS 'stage';		
 		END IF;
-	ELSE
-		SELECT 0 AS 'status', c AS 'stage';		
 	END IF;
 END//
 
