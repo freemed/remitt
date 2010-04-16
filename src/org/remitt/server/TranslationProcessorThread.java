@@ -55,12 +55,24 @@ public class TranslationProcessorThread extends ProcessorThread {
 			p = (PluginInterface) Class.forName(pluginClass).newInstance();
 		} catch (InstantiationException e) {
 			log.error(e);
+
+			// Clear thread
+			Configuration.getControlThread().clearProcessorForThread(getId());
+
 			return false;
 		} catch (IllegalAccessException e) {
 			log.error(e);
+
+			// Clear thread
+			Configuration.getControlThread().clearProcessorForThread(getId());
+
 			return false;
 		} catch (ClassNotFoundException e) {
 			log.error(e);
+
+			// Clear thread
+			Configuration.getControlThread().clearProcessorForThread(getId());
+
 			return false;
 		}
 
@@ -75,6 +87,9 @@ public class TranslationProcessorThread extends ProcessorThread {
 			// Update with error status so that frontend can inform "client"
 			Configuration.getControlThread().setFailedPayloadRun(jobId,
 					new Date(System.currentTimeMillis()));
+
+			// Clear thread
+			Configuration.getControlThread().clearProcessorForThread(getId());
 
 			return false;
 		}
