@@ -74,11 +74,11 @@ public class SftpScooper implements ScooperInterface {
 
 		SshClient ssh = new SshClient();
 
-		String host = parameters.get(SFTP_HOST);
-		Integer port = Integer.parseInt(parameters.get(SFTP_PORT));
+		String host = getHost();
+		Integer port = getPort();
 		String sftpUser = parameters.get(SFTP_USERNAME);
 		String sftpPassword = parameters.get(SFTP_PASSWORD);
-		String sftpPath = parameters.get(SFTP_PATH);
+		String sftpPath = getPath();
 
 		List<String> previouslyScoopedFiles = Configuration.getScoopedFiles(
 				username, SCOOPER_CLASS, host, sftpPath);
