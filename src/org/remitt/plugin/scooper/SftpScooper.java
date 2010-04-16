@@ -124,8 +124,11 @@ public class SftpScooper implements ScooperInterface {
 			client.get(file.getFilename(), out);
 			log.info("Completed receiving " + file.getFilename());
 
+			byte[] processedOut = postprocess(out.toByteArray(), file
+					.getFilename());
+
 			Integer id = Configuration.addScoopedFile(SCOOPER_CLASS, username,
-					host, sftpPath, file.getFilename(), out.toByteArray());
+					host, sftpPath, file.getFilename(), processedOut);
 			log.info("Added to tScooper [id = " + id.toString() + "]");
 			results.add(id);
 		}
@@ -136,6 +139,29 @@ public class SftpScooper implements ScooperInterface {
 		ssh.disconnect();
 
 		return results;
+	}
+
+	/**
+	 * Post processing stub.
+	 * 
+	 * @param in
+	 * @param filename
+	 * @return
+	 */
+	public byte[] postprocess(byte[] in, String filename) {
+		return in;
+	}
+
+	public String getHost() {
+		return parameters.get(SFTP_HOST);
+	}
+
+	public Integer getPort() {
+		return Integer.parseInt(parameters.get(SFTP_PORT));
+	}
+
+	public String getPath() {
+		return parameters.get(SFTP_PATH);
 	}
 
 	@Override

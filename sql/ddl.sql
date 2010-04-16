@@ -223,6 +223,7 @@ INSERT INTO `tPlugins` VALUES
 		### Eligibility plugins ###
 	, ( 'org.remitt.plugin.eligibility.GatewayEDIEligibility', '0.1', 'jeff@freemedsoftware.org', 'eligibility', NULL, NULL )
 		### Scooper plugins ###
+	, ( 'org.remitt.plugin.scooper.GatewayEdiSftpScooper', '0.1', 'jeff@freemedsoftware.org', 'scooper', NULL, NULL )
 	, ( 'org.remitt.plugin.scooper.SftpScooper', '0.1', 'jeff@freemedsoftware.org', 'scooper', NULL, NULL )
 ;
 

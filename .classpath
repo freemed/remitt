@@ -55,7 +55,8 @@
 	<classpathentry kind="lib" path="lib/jsr311-api-0.11-SNAPSHOT-javadoc.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/c3p0-0.9.1.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/sojo-1.0.0.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/bcprov-jdk15-1.43.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/bcprov-jdk16-145.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/bcpg-jdk16-145.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/cxf-2.2.6.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/FastInfoset-1.2.7.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jaxb-api-2.1.jar"/>
