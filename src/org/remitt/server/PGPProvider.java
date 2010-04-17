@@ -203,10 +203,33 @@ public class PGPProvider {
 		return null;
 	}
 
-	public static byte[] encryptMessage(String fileName, PGPPublicKey encKey)
-			throws IOException, NoSuchProviderException {
+	/**
+	 * 
+	 * @param data
+	 * @param encKeyName
+	 * @return
+	 * @throws IOException
+	 * @throws NoSuchProviderException
+	 * @throws PGPException
+	 */
+	public static byte[] encryptMessage(byte[] data, String encKeyName)
+			throws IOException, NoSuchProviderException, PGPException {
+		return encryptMessage(data, readPublicKey(encKeyName));
+	}
+
+	/**
+	 * 
+	 * @param data
+	 * @param encKey
+	 * @return
+	 * @throws IOException
+	 * @throws NoSuchProviderException
+	 */
+	public static byte[] encryptMessage(byte[] data, PGPPublicKey encKey)
+			throws IOException, NoSuchProviderException, PGPException {
 		boolean armor = true;
 		boolean withIntegrityCheck = true;
+		byte[] ret = null;
 
 		OutputStream out = new ByteArrayOutputStream();
 
@@ -214,13 +237,18 @@ public class PGPProvider {
 			out = new ArmoredOutputStream(out);
 		}
 
+		File tempfile = null;
+
 		try {
+			tempfile = File.createTempFile("pgp", null);
+			FileUtils.writeByteArrayToFile(tempfile, data);
+
 			ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 
 			PGPCompressedDataGenerator comData = new PGPCompressedDataGenerator(
 					PGPCompressedData.ZIP);
 			PGPUtil.writeFileToLiteralData(comData.open(bOut),
-					PGPLiteralData.BINARY, new File(fileName));
+					PGPLiteralData.BINARY, tempfile);
 			comData.close();
 
 			PGPEncryptedDataGenerator cPk = new PGPEncryptedDataGenerator(
@@ -228,14 +256,24 @@ public class PGPProvider {
 					new SecureRandom(), "BC");
 			cPk.addMethod(encKey);
 
-			return bOut.toByteArray();
+			ret = bOut.toByteArray();
 		} catch (PGPException e) {
 			log.error(e);
 			if (e.getUnderlyingException() != null) {
 				log.error(e.getUnderlyingException());
 			}
-			return null;
+			// Clean up
+			if (tempfile != null) {
+				tempfile.delete();
+			}
+			throw e;
+		} finally {
+			// Clean up
+			if (tempfile != null) {
+				tempfile.delete();
+			}
 		}
+		return ret;
 	}
 
 }

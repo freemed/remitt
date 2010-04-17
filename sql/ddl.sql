@@ -120,6 +120,7 @@ CREATE TABLE `tPayload` (
 	, payloadState		ENUM ( 'valid', 'failed', 'completed' ) DEFAULT 'valid'
 
 	, KEY			( payloadState )
+	, FOREIGN KEY		( user ) REFERENCES tUser.username ON DELETE CASCADE
 );
 
 ##### Processor Tables #####
@@ -376,6 +377,22 @@ CREATE TABLE `tScooper` (
 	, content	BLOB
 
 	, KEY		( scooperClass, user, host, path, filename )
+	, FOREIGN KEY	( user ) REFERENCES tUser.username ON DELETE CASCADE
+);
+
+### Key Ring ###
+
+DROP TABLE IF EXISTS `tKeyring`;
+
+CREATE TABLE `tKeyring` (
+	  id		SERIAL
+	, user		VARCHAR (50) NOT NULL
+	, keyname	VARCHAR (150) NOT NULL
+	, privatekey	BLOB
+	, publickey	BLOB
+
+	, KEY		( user, keyname )
+	, FOREIGN KEY	( user ) REFERENCES tUser.username ON DELETE CASCADE
 );
 
 ### Database Patches ###

@@ -235,4 +235,17 @@ public interface Service {
 	 */
 	public UserDTO[] listRemittUsers();
 
+	/**
+	 * Add an encryption key to the REMITT user's key ring.
+	 * 
+	 * @param keyname
+	 * @param privatekey
+	 * @param publickey
+	 * @return
+	 */
+	public boolean addKeyToKeyring(
+			@PathParam("keyname") @WebParam(name = "keyname") String keyname,
+			@PathParam("privatekey") @WebParam(name = "privatekey") byte[] privatekey,
+			@PathParam("publickey") @WebParam(name = "publickey") byte[] publickey);
+
 }

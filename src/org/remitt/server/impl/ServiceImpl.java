@@ -43,6 +43,7 @@ import javax.xml.ws.WebServiceContext;
 
 import org.apache.log4j.Logger;
 import org.remitt.datastore.DbFileStore;
+import org.remitt.datastore.KeyringStore;
 import org.remitt.datastore.UserManagement;
 import org.remitt.prototype.ConfigurationOption;
 import org.remitt.prototype.EligibilityInterface;
@@ -501,6 +502,16 @@ public class ServiceImpl implements Service {
 			log.error(e);
 			return null;
 		}
+	}
+
+	@POST
+	@Path("addkey/{keyname}/{privatekey}/{publickey}")
+	@Produces("application/json")
+	@Override
+	public boolean addKeyToKeyring(String keyname, byte[] privatekey,
+			byte[] publickey) {
+		return KeyringStore.putKey(getCurrentUserName(), keyname, privatekey,
+				publickey);
 	}
 
 	@POST
