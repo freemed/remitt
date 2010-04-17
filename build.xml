@@ -2,6 +2,9 @@
 <!-- $Id$ -->
 <project name="RemittServer" default="build" basedir=".">
 
+  <!-- Include property file with version, etc -->
+  <property file="build.properties" />
+
   <path id="project.class.path">
     <pathelement location="war/WEB-INF/classes"/>
     <!-- Add any additional non-server libs (such as JUnit) -->
@@ -34,7 +37,40 @@
   </target>
 
   <target name="clean" description="Cleans this project">
+    <delete file="Changelog" failonerror="false" />
+    <delete dir="build" failonerror="false" />
     <delete dir="war/WEB-INF/classes" failonerror="false" />
+    <delete file="remitt-${remitt.version}-dist.zip" failonerror="false" />
+  </target>
+
+  <target name="changelog" description="Create Changelog from subversion">
+    <echo message="Building changelog from Subversion" />
+    <exec executable="svn" output="Changelog">
+      <arg value="log"/>
+      <arg value="--verbose"/>
+    </exec>
+  </target>
+
+  <target name="dist" depends="clean,war,changelog" description="Build distribution bundle">
+    <echo message="Building REMITT v${remitt.version} for distribution" />
+    <mkdir dir="dist" />
+    <copy file="Changelog" todir="dist" />
+    <copy file="LICENSE" todir="dist" />
+    <copy file="README" todir="dist" />
+    <copy file="remitt.war" todir="dist" />
+    <mkdir dir="dist/doc" />
+    <copy todir="dist/doc">
+      <fileset dir="doc">
+        <exclude name="**/.svn/**"/>
+      </fileset>
+    </copy>
+    <mkdir dir="dist/sql" />
+    <copy todir="dist/sql">
+      <fileset dir="sql">
+        <exclude name="**/.svn/**"/>
+      </fileset>
+    </copy>
+    <zip destfile="remitt-${remitt.version}-dist.zip" basedir="dist"/>
   </target>
 
 </project>
