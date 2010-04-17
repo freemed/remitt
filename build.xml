@@ -73,4 +73,16 @@
     <zip destfile="remitt-${remitt.version}-dist.zip" basedir="dist"/>
   </target>
 
+  <target name="testrun" depends="war">
+    <exec executable="${tomcat.base}/bin/catalina.sh">
+      <arg value="stop"/>
+    </exec>
+    <delete dir="${tomcat.base}/webapps/remitt" failonerror="false" />
+    <delete file="${tomcat.base}/webapps/remitt.war" failonerror="false" />
+    <copy file="remitt.war" todir="${tomcat.base}/webapps" />
+    <exec executable="/opt/tomcat/bin/catalina.sh">
+      <arg value="run"/>
+    </exec>
+  </target>
+
 </project>

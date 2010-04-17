@@ -148,7 +148,7 @@ public class SftpScooper implements ScooperInterface {
 	 * @param filename
 	 * @return
 	 */
-	public byte[] postprocess(byte[] in, String filename) {
+	public byte[] postprocess(byte[] in, String filename) throws Exception {
 		return in;
 	}
 

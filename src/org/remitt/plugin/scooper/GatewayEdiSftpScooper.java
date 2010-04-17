@@ -24,7 +24,12 @@
 
 package org.remitt.plugin.scooper;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import org.apache.log4j.Logger;
+import org.remitt.datastore.KeyringStore;
+import org.remitt.server.PGPProvider;
 
 public class GatewayEdiSftpScooper extends SftpScooper {
 
@@ -36,13 +41,32 @@ public class GatewayEdiSftpScooper extends SftpScooper {
 	public static String SFTP_USERNAME = "org.remitt.plugin.scooper.GatewayEdiSftpScooper.sftpUsername";
 	public static String SFTP_PASSWORD = "org.remitt.plugin.scooper.GatewayEdiSftpScooper.sftpPassword";
 
+	/**
+	 * Name of the tKeyring entry which contains the key for this scooper.
+	 */
+	public static String GEDI_KEYNAME = "GatewayEDI";
+
+	/**
+	 * Host name for this SFTP provider.
+	 */
 	public static String GEDI_SCOOPER_HOST = "sftp.gatewayedi.com";
+
+	/**
+	 * Port number for this SFTP provider.
+	 */
 	public static Integer GEDI_SCOOPER_PORT = 22;
+
+	/**
+	 * Path for the scooper to search on the SFTP host.
+	 */
 	public static String GEDI_SCOOPER_PATH = "remits";
 
 	@Override
-	public byte[] postprocess(byte[] in, String filename) {
-		return in;
+	public byte[] postprocess(byte[] in, String filename) throws Exception {
+		return PGPProvider.decryptMessage(
+				(InputStream) new ByteArrayInputStream(in),
+				(InputStream) new ByteArrayInputStream(KeyringStore.getKey(
+						username, GEDI_KEYNAME, true)), null);
 	}
 
 	@Override
