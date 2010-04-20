@@ -27,8 +27,11 @@ package org.remitt.datastore;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.remitt.prototype.KeyringItem;
 import org.remitt.server.Configuration;
 import org.remitt.server.DbUtil;
 
@@ -69,6 +72,88 @@ public class KeyringStore {
 		}
 
 		return success;
+	}
+
+	/**
+	 * Get a key from a user's keyring.
+	 * 
+	 * @param username
+	 *            User name
+	 * @param keyname
+	 *            Canonical key name
+	 * @return
+	 */
+	public static KeyringItem getKey(String username, String keyname) {
+		Connection c = Configuration.getConnection();
+
+		KeyringItem ret = null;
+
+		PreparedStatement cStmt = null;
+		try {
+			cStmt = c.prepareStatement("SELECT " + " privatekey "
+					+ " , publickey " + " FROM tKeyring "
+					+ " WHERE user = ? AND keyname = ? " + ";");
+			cStmt.setString(1, username);
+			cStmt.setString(2, keyname);
+
+			if (cStmt.execute()) {
+				ResultSet rs = cStmt.getResultSet();
+				rs.next();
+				ret = new KeyringItem();
+				ret.setKeyname(keyname);
+				ret.setPrivatekey(rs.getBytes(1));
+				ret.setPublickey(rs.getBytes(2));
+				rs.close();
+			}
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+		} catch (Throwable e) {
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
+		}
+
+		return ret;
+	}
+
+	/**
+	 * Get keyring for user.
+	 * 
+	 * @param username
+	 * @return
+	 */
+	public static KeyringItem[] getKeys(String username) {
+		Connection c = Configuration.getConnection();
+
+		List<KeyringItem> ret = new ArrayList<KeyringItem>();
+
+		PreparedStatement cStmt = null;
+		try {
+			cStmt = c.prepareStatement("SELECT " + " keyname "
+					+ ", privatekey " + " , publickey " + " FROM tKeyring "
+					+ " WHERE user = ? " + ";");
+			cStmt.setString(1, username);
+
+			if (cStmt.execute()) {
+				ResultSet rs = cStmt.getResultSet();
+				while (rs.next()) {
+					KeyringItem i = new KeyringItem();
+					i.setKeyname(rs.getString(1));
+					i.setPrivatekey(rs.getBytes(2));
+					i.setPublickey(rs.getBytes(3));
+					ret.add(i);
+				}
+				rs.close();
+			}
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+		} catch (Throwable e) {
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
+		}
+
+		return ret.toArray(new KeyringItem[0]);
 	}
 
 	/**
@@ -144,7 +229,7 @@ public class KeyringStore {
 					+ " VALUES ( ?, ?, ?, ? ) " + ";");
 			cStmt.setString(1, username);
 			cStmt.setString(2, keyname);
-			cStmt.setBytes(4, privatekey);
+			cStmt.setBytes(3, privatekey);
 			cStmt.setBytes(4, publickey);
 			cStmt.execute();
 			success = true;

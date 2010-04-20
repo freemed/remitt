@@ -57,6 +57,8 @@
 	interface</li>
 	<li><a href="configurationDisplay.jsp">Configuration</a> - Edit
 	per-user configuration</li>
+	<li><a href="keyring.jsp">Keyring</a> - Edit per-user
+	secure key ring</li>
 	<li><a href="threadStatus.jsp">Thread Status</a> - Display status
 	of individual processing threads.</li>
 	<li><a href="TestServlet">Unit Tests</a> - Test internal REMITT

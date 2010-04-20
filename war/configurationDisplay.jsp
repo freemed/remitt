@@ -24,6 +24,7 @@
 
 <%@ page import="java.sql.*"%>
 <%@ page import="org.remitt.server.Configuration"%>
+<%@ page import="org.remitt.server.DbUtil"%>
 <%@ page import="org.apache.log4j.Logger"%>
 
 <%@ include file="/WEB-INF/jsp/header.jsp"%>
@@ -44,9 +45,10 @@
 			Logger log = Logger.getLogger(this.getClass());
 			String username = request.getUserPrincipal().getName();
 			Connection c = null;
+			PreparedStatement p = null;
 			try {
 				c = Configuration.getConnection();
-				PreparedStatement p = c
+				p = c
 						.prepareStatement("SELECT * FROM tUserConfig "
 								+ " WHERE user = ?");
 				p.setString(1, username);
@@ -77,20 +79,12 @@
 									+ "delete" + "\" /></td>");
 					out.println("</form></tr>");
 				}
-				try {
-					p.close();
-				} catch (Exception ex) {
-				}
-				c.close();
 			} catch (SQLException se) {
 				out.println("<tr><td colspan=\"4\"><b>Exception: "
 						+ se.toString() + "</b></tr></tr>");
-				if (c != null) {
-					try {
-						c.close();
-					} catch (Exception ex) {
-					}
-				}
+			} finally {
+				DbUtil.closeSafely(p);
+				DbUtil.closeSafely(c);
 			}
 		%>
 		<tr>

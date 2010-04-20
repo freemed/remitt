@@ -22,9 +22,9 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  --%>
 
-<%@ page import="java.sql.*"%>
+<%@ page import="org.remitt.datastore.KeyringStore"%>
+<%@ page import="org.remitt.prototype.KeyringItem"%>
 <%@ page import="org.remitt.server.Configuration"%>
-<%@ page import="org.remitt.server.DbUtil"%>
 <%@ page import="org.apache.log4j.Logger"%>
 
 <%@ include file="/WEB-INF/jsp/header.jsp"%>
@@ -34,48 +34,26 @@
 	Logger log = Logger.getLogger(this.getClass());
 	String username = request.getUserPrincipal().getName();
 	try {
-		Connection c = Configuration.getConnection();
-		PreparedStatement p = null;
-
 		if (request.getParameter("action").compareTo("add") == 0) {
-			p = c.prepareStatement("INSERT INTO tUserConfig "
-					+ " ( user, cNamespace, cOption, cValue ) "
-					+ " VALUES ( ?, ?, ?, ? ) ");
-			p.setString(1, username);
-			p.setString(2, request.getParameter("namespace"));
-			p.setString(3, request.getParameter("option"));
-			p.setString(4, request.getParameter("value"));
+			KeyringStore.putKey(username, 
+				request.getParameter("keyname"),
+				request.getParameter("privatekey").getBytes(),
+				request.getParameter("publickey").getBytes());
 		} else if (request.getParameter("action").compareTo("save") == 0) {
-			p = c.prepareStatement("UPDATE tUserConfig "
- 					+ " SET cValue = ? "
-					+ " WHERE "
-					+ " user = ? " + " AND cNamespace = ? "
-					+ " AND cOption = ? ");
-			p.setString(1, request.getParameter("value"));
-			p.setString(2, username);
-			p.setString(3, request.getParameter("namespace"));
-			p.setString(4, request.getParameter("option"));
+			KeyringStore.putKey(username, 
+				request.getParameter("keyname"),
+				request.getParameter("privatekey").getBytes(),
+				request.getParameter("publickey").getBytes());
 		} else if (request.getParameter("action").compareTo("delete") == 0) {
-			p = c.prepareStatement("DELETE FROM tUserConfig WHERE "
-					+ " user = ? " + " AND cNamespace = ? "
-					+ " AND cOption = ? ");
-			p.setString(1, username);
-			p.setString(2, request.getParameter("namespace"));
-			p.setString(3, request.getParameter("option"));
+			KeyringStore.deleteKey(username, request.getParameter("keyname"));
 		} else {
 			throw new Exception("No valid action given.");
 		}
-
-		p.execute();
-	} catch (SQLException se) {
-		out.println("<b>Exception: " + se.toString() + "</b>");
 	} catch (Exception ex) {
 		out.println("<b>Bad request. ( " + ex.toString() + " )</b>");
 	} finally {
 		out
-				.println("<br/><br/><a href=\"configurationDisplay.jsp\">Configuration</a>");
-		DbUtil.closeSafely(p);
-		DbUtil.closeSafely(c);
+				.println("<br/><br/><a href=\"keyring.jsp\">Keyring Maintenance</a>");
 	}
 %>
 
