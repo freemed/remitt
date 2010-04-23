@@ -112,7 +112,7 @@ CREATE TABLE `tPayload` (
 	  id			SERIAL
 	, insert_stamp		TIMESTAMP(16) NOT NULL DEFAULT CURRENT_TIMESTAMP
 	, user			VARCHAR(50) NOT NULL
-	, payload		BLOB
+	, payload		LONGBLOB
 	, renderPlugin		VARCHAR(100) NOT NULL
 	, renderOption		VARCHAR(100) NOT NULL
 	, transportPlugin	VARCHAR(100) NOT NULL
@@ -374,7 +374,7 @@ CREATE TABLE `tScooper` (
 	, host		VARCHAR(50) NOT NULL
 	, path		VARCHAR(150) NOT NULL DEFAULT '/'
 	, filename	VARCHAR(150) NOT NULL
-	, content	BLOB
+	, content	LONGBLOB
 
 	, KEY		( scooperClass, user, host, path, filename )
 	, FOREIGN KEY	( user ) REFERENCES tUser.username ON DELETE CASCADE
