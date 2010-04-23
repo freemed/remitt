@@ -134,8 +134,8 @@ CREATE TABLE `tProcessor` (
 	, plugin	VARCHAR (100) NOT NULL
 	, tsStart	TIMESTAMP(16) NULL DEFAULT NULL
 	, tsEnd		TIMESTAMP(16) NULL DEFAULT NULL
-	, pInput	BLOB
-	, pOutput	BLOB
+	, pInput	LONGBLOB
+	, pOutput	LONGBLOB
 
 	, FOREIGN KEY ( payloadId ) REFERENCES tPayload.id ON DELETE CASCADE
 );
@@ -352,7 +352,7 @@ CREATE TABLE `tFileStore` (
 	, filename	VARCHAR(150) NOT NULL
 	, payloadId	INT UNSIGNED NOT NULL
 	, processorId	INT UNSIGNED NOT NULL
-	, content	BLOB
+	, content	LONGBLOB
 	, contentsize	BIGINT NOT NULL DEFAULT 0
 
 	# Force db constraint to avoid multiple files for users

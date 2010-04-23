@@ -33,9 +33,10 @@
 <%
 	Logger log = Logger.getLogger(this.getClass());
 	String username = request.getUserPrincipal().getName();
+	Connection c = null;
+	PreparedStatement p = null;
 	try {
-		Connection c = Configuration.getConnection();
-		PreparedStatement p = null;
+		c = Configuration.getConnection();
 
 		if (request.getParameter("action").compareTo("add") == 0) {
 			p = c.prepareStatement("INSERT INTO tUserConfig "
