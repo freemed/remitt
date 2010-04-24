@@ -368,7 +368,7 @@ public class Configuration {
 			DbUtil.closeSafely(cStmt);
 			DbUtil.closeSafely(c);
 		}
-		return "";
+		return ret;
 	}
 
 	/**
