@@ -129,8 +129,12 @@ public class ScriptedHttpTransport implements PluginInterface {
 		engine.put("jobId", jobId);
 		engine.put("input", input);
 		engine.put("webClient", webClient);
+		log.info("username = " + Configuration.getPluginOption(this, userName,
+				"username"));
 		engine.put("username", Configuration.getPluginOption(this, userName,
 				"username"));
+		log.info("password = " + Configuration.getPluginOption(this, userName,
+				"password"));
 		engine.put("password", Configuration.getPluginOption(this, userName,
 				"password"));
 
@@ -140,7 +144,11 @@ public class ScriptedHttpTransport implements PluginInterface {
 		try {
 			Reader reader = new InputStreamReader(is);
 			Object output = engine.eval(reader);
-			return output.toString().getBytes();
+			if (output != null) {
+				return output.toString().getBytes();
+			} else {
+				return new String("").getBytes();
+			}
 		} catch (ScriptException ex) {
 			log.error(ex);
 			return new String("").getBytes();

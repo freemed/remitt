@@ -55,7 +55,7 @@ if (validLogin) {
 	uploadForm.getInputByName("file1").setData(input);
 
 	// Force upload submit
-	uploadedPage = uploadPage.getByXPath("//INPUT[@name='submit1'").get(0).click();
+	uploadedPage = uploadPage.getByXPath("//INPUT[@name='submit1']").get(0).click();
 } else {
 	log.error("Failed to login with username '" + username + "'");
 }
