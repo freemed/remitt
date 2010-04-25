@@ -21,6 +21,10 @@
  * Ave, Cambridge, MA 02139, USA.
  */
 
+// Includes to deal with files
+importClass(java.io.File);
+importClass(org.apache.commons.io.FileUtils);
+
 log.info("Executing ClaimLogic.js");
 
 log.info("Loading login page");
@@ -64,13 +68,22 @@ if (validLogin) {
 	uploadForm.getSelectByName("test_mode").setSelectedAttribute("Test", true);
 	//uploadForm.getInputByName("test_mode").setSelectedAttribute("Production", true);
 
-	// Assign content to upload_file field
-	uploadForm.getInputByName("upload_file").setData(input);
+	// Upload using full file upload method from temp file
+	log.info("Dumping byte array to temporary file for upload");
+	f = File.createTempFile("claimlogic",".x12");
+	FileUtils.writeByteArrayToFile(f, input);
+
+	// Set the path to the temporary file for upload
+	uploadForm.getInputByName("upload_file").setValueAttribute(f.getAbsolutePath());
 
 	// Click on A tag for send_file
 	log.info("Submitting upload form");
 	uploadedPage = uploadPage.getAnchorByHref("javascript:send_file()").click();
 
+	// Clean up
+	f.delete();
+
+	log.info("Got response page : " + uploadedPage.asXml());
 } else {
 	log.error("Failed to login with username '" + username + "'");
 }
