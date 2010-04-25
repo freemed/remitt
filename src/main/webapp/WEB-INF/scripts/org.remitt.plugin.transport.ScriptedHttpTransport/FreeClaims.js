@@ -21,6 +21,10 @@
  * Ave, Cambridge, MA 02139, USA.
  */
 
+// Includes to deal with files
+importClass(java.io.File);
+importClass(org.apache.commons.io.FileUtils);
+
 log.info("Executing FreeClaims.js");
 
 log.info("Loading login page");
@@ -51,11 +55,26 @@ if (validLogin) {
 			.getPage("https://sfreeclaims.anvicare.com/docs/upload.asp");
 	uploadForm = uploadPage.getFormByName("Upload");
 
+	// Upload using full file upload method from temp file
+	log.info("Dumping byte array to temporary file for upload");
+	f = File.createTempFile("freeclaims",".x12");
+	FileUtils.writeByteArrayToFile(f, input);
+
+	// Set the path to the temporary file for upload
+	uploadForm.getInputByName("file1").setValueAttribute(f.getAbsolutePath());
+
+	/*
 	// Assign content to file1 field
-	uploadForm.getInputByName("file1").setData(input);
+	//uploadForm.getInputByName("file1").setData(input);
+	*/
 
 	// Force upload submit
 	uploadedPage = uploadPage.getByXPath("//INPUT[@name='submit1']").get(0).click();
+
+	// Clean up
+	f.delete();
+
+	log.info("Upload response page: " + uploadedPage.asXml());
 } else {
 	log.error("Failed to login with username '" + username + "'");
 }
