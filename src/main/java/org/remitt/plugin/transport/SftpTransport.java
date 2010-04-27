@@ -35,6 +35,7 @@ import com.sshtools.j2ssh.SftpClient;
 import com.sshtools.j2ssh.SshClient;
 import com.sshtools.j2ssh.authentication.AuthenticationProtocolState;
 import com.sshtools.j2ssh.authentication.PasswordAuthenticationClient;
+import com.sshtools.j2ssh.transport.IgnoreHostKeyVerification;
 
 public class SftpTransport implements PluginInterface {
 
@@ -97,7 +98,7 @@ public class SftpTransport implements PluginInterface {
 		String sftpPath = getSftpPath(userName);
 
 		// Perform initial connection
-		ssh.connect(host, port);
+		ssh.connect(host, port, new IgnoreHostKeyVerification());
 
 		// Authenticate
 		PasswordAuthenticationClient passwordAuthenticationClient = new PasswordAuthenticationClient();
