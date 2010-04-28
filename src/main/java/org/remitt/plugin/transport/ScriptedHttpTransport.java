@@ -32,11 +32,13 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.HashMap;
 
+import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
+import org.remitt.datastore.DbFileStore;
 import org.remitt.prototype.PluginInterface;
 import org.remitt.server.Configuration;
 
@@ -110,6 +112,9 @@ public class ScriptedHttpTransport implements PluginInterface {
 		// Fetch and execute script.
 		String scriptPath = "/WEB-INF/scripts/org.remitt.plugin.transport.ScriptedHttpTransport/"
 				+ scriptName + ".js";
+		String commonScriptPath = "/WEB-INF/scripts/org.remitt.plugin.transport.ScriptedHttpTransport/Common.js";
+		String realCommonScriptPath = Configuration.getServletContext()
+				.getServletContext().getRealPath(commonScriptPath);
 		String realScriptPath = Configuration.getServletContext()
 				.getServletContext().getRealPath(scriptPath);
 
@@ -129,30 +134,52 @@ public class ScriptedHttpTransport implements PluginInterface {
 		engine.put("jobId", jobId);
 		engine.put("input", input);
 		engine.put("webClient", webClient);
-		log.info("username = " + Configuration.getPluginOption(this, userName,
-				"username"));
+		log.info("username = "
+				+ Configuration.getPluginOption(this, userName, "username"));
 		engine.put("username", Configuration.getPluginOption(this, userName,
 				"username"));
-		log.info("password = " + Configuration.getPluginOption(this, userName,
-				"password"));
+		log.info("password = "
+				+ Configuration.getPluginOption(this, userName, "password"));
 		engine.put("password", Configuration.getPluginOption(this, userName,
 				"password"));
 
 		log.info("Leaving Transport for job #" + jobId.toString());
 
 		InputStream is = new FileInputStream(realScriptPath);
+		InputStream cis = new FileInputStream(realCommonScriptPath);
+		byte[] out = null;
 		try {
+			// Evaluate common code
+			Reader cReader = new InputStreamReader(cis);
+			engine.eval(cReader);
+
+			// Evaluate plugin
 			Reader reader = new InputStreamReader(is);
-			Object output = engine.eval(reader);
+			engine.eval(reader);
+
+			Invocable invocableEngine = (Invocable) engine;
+			Object output = invocableEngine.invokeFunction("transport");
 			if (output != null) {
-				return output.toString().getBytes();
+				if (output instanceof String) {
+					return ((String) output).getBytes();
+				}
+				out = output.toString().getBytes();
 			} else {
-				return new String("").getBytes();
+				out = new String("").getBytes();
 			}
 		} catch (ScriptException ex) {
 			log.error(ex);
-			return new String("").getBytes();
+			out = new String("").getBytes();
 		}
+
+		String tempPathName = new Long(System.currentTimeMillis()).toString()
+				+ ".log";
+
+		// Store this file
+		DbFileStore.putFile(userName, "output", tempPathName, out, jobId);
+
+		// .. and return it.
+		return out;
 	}
 
 	@Override

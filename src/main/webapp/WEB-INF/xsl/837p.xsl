@@ -1042,21 +1042,28 @@
 				<content><xsl:value-of select="translate($patientobj/sex, $lowercase, $uppercase)" /></content>
 			</element>
 			<element>
+				<!-- 2010CA DMG04: Marital Status Code -->
+				<!-- K = unknown, M = married, S = separated -->
+				<content><xsl:choose><xsl:when test="$patient/ismarried = 1">M</xsl:when><xsl:otherwise>K</xsl:otherwise></xsl:choose></content>
+			</element>
+			<element>
+				<!-- 2010CA DMG05: Race or Ethnicity Code -->
 				<content></content>
 			</element>
 			<element>
+				<!-- 2010CA DMG06: Citizenship Status Code -->
 				<content></content>
 			</element>
 			<element>
+				<!-- 2010CA DMG07: Country Code -->
 				<content></content>
 			</element>
 			<element>
+				<!-- 2010CA DMG08: Basis of Verification Code -->
 				<content></content>
 			</element>
 			<element>
-				<content></content>
-			</element>
-			<element>
+				<!-- 2010CA DMG09: Quantity -->
 				<content></content>
 			</element>
 		</x12segment>
