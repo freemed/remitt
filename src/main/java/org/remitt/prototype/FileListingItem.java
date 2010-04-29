@@ -25,6 +25,7 @@
 package org.remitt.prototype;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class FileListingItem implements Serializable {
 
@@ -32,6 +33,8 @@ public class FileListingItem implements Serializable {
 
 	private String filename;
 	private Integer filesize;
+	private Date inserted;
+	private String originalId;
 
 	public FileListingItem() {
 	}
@@ -50,6 +53,22 @@ public class FileListingItem implements Serializable {
 
 	public Integer getFilesize() {
 		return filesize;
+	}
+
+	public void setInserted(Date inserted) {
+		this.inserted = inserted;
+	}
+
+	public Date getInserted() {
+		return inserted;
+	}
+
+	public void setOriginalId(String originalId) {
+		this.originalId = originalId;
+	}
+
+	public String getOriginalId() {
+		return originalId;
 	}
 
 }

@@ -113,6 +113,7 @@ CREATE TABLE `tPayload` (
 	, insert_stamp		TIMESTAMP(16) NOT NULL DEFAULT CURRENT_TIMESTAMP
 	, user			VARCHAR(50) NOT NULL
 	, payload		LONGBLOB
+	, originalId		VARCHAR(100)
 	, renderPlugin		VARCHAR(100) NOT NULL
 	, renderOption		VARCHAR(100) NOT NULL
 	, transportPlugin	VARCHAR(100) NOT NULL

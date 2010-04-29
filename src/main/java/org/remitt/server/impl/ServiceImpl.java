@@ -110,8 +110,9 @@ public class ServiceImpl implements Service {
 	@POST
 	@Path("submit")
 	@Produces("application/json")
-	public Integer insertPayload(String inputPayload, String renderPlugin,
-			String renderOption, String transportPlugin, String transportOption) {
+	public Integer insertPayload(String originalId, String inputPayload,
+			String renderPlugin, String renderOption, String transportPlugin,
+			String transportOption) {
 		Connection c = getConnection();
 
 		String userName = getCurrentUserName();
@@ -124,8 +125,8 @@ public class ServiceImpl implements Service {
 		try {
 			cStmt = c.prepareStatement("INSERT INTO tPayload ( "
 					+ "user, payload, renderPlugin, renderOption, "
-					+ "transportPlugin, transportOption "
-					+ " ) VALUES ( ?, ?, ?, ?, ?, ? );",
+					+ "transportPlugin, transportOption, originalId "
+					+ " ) VALUES ( ?, ?, ?, ?, ?, ?, ? );",
 					PreparedStatement.RETURN_GENERATED_KEYS);
 
 			cStmt.setString(1, userName);
@@ -134,6 +135,7 @@ public class ServiceImpl implements Service {
 			cStmt.setString(4, renderOption);
 			cStmt.setString(5, transportPlugin);
 			cStmt.setString(6, transportOption);
+			cStmt.setString(7, originalId);
 
 			@SuppressWarnings("unused")
 			boolean hadResults = cStmt.execute();
@@ -310,22 +312,21 @@ public class ServiceImpl implements Service {
 
 		FileListingItem[] returnValue = null;
 		PreparedStatement cStmt = null;
+		String queryBase = "SELECT f.filename " + " , f.contentsize "
+				+ " , p.originalId " + " , p.insert_stamp "
+				+ " FROM tFileStore f "
+				+ " LEFT OUTER JOIN tPayload p ON p.id = f.payloadId "
+				+ " WHERE f.user = ? " + " AND f.category = ? " + " AND ";
 		try {
 			if (criteria.equalsIgnoreCase("month")) {
-				cStmt = c.prepareStatement("SELECT f.filename "
-						+ " , f.contentsize " + " FROM tFileStore f "
-						+ " WHERE f.user = ? " + " AND f.category = ? "
-						+ " AND DATE_FORMAT(f.stamp, '%Y-%m') = ? " + ";");
+				cStmt = c.prepareStatement(queryBase
+						+ " DATE_FORMAT(f.stamp, '%Y-%m') = ? " + ";");
 			} else if (criteria.equalsIgnoreCase("year")) {
-				cStmt = c.prepareStatement("SELECT f.filename "
-						+ " , f.contentsize " + " FROM tFileStore f "
-						+ " WHERE f.user = ? " + " AND f.category = ? "
-						+ " AND DATE_FORMAT(f.stamp, '%Y') = ? " + ";");
+				cStmt = c.prepareStatement(queryBase
+						+ " DATE_FORMAT(f.stamp, '%Y') = ? " + ";");
 			} else if (criteria.equalsIgnoreCase("payload")) {
-				cStmt = c.prepareStatement("SELECT f.filename "
-						+ " , f.contentsize " + " FROM tFileStore f "
-						+ " WHERE f.user = ? " + " AND f.category = ? "
-						+ " AND f.payloadId = ? " + ";");
+				cStmt = c.prepareStatement(queryBase + " f.payloadId = ? "
+						+ ";");
 			} else {
 				DbUtil.closeSafely(cStmt);
 				DbUtil.closeSafely(c);
@@ -343,6 +344,8 @@ public class ServiceImpl implements Service {
 					FileListingItem i = new FileListingItem();
 					i.setFilename(rs.getString(1));
 					i.setFilesize(rs.getInt(2));
+					i.setOriginalId(rs.getString(3));
+					i.setInserted(rs.getDate(4));
 					results.add(i);
 				}
 				rs.close();

@@ -32,6 +32,7 @@ public class PayloadDto {
 	private String transportPlugin;
 	private String transportOption;
 	private byte[] payload;
+	private String originalId;
 	private String userName;
 
 	public void setId(Integer i) {
@@ -88,6 +89,14 @@ public class PayloadDto {
 
 	public String getUserName() {
 		return userName;
+	}
+
+	public void setOriginalId(String originalId) {
+		this.originalId = originalId;
+	}
+
+	public String getOriginalId() {
+		return originalId;
 	}
 
 }

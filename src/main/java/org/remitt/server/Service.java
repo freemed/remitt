@@ -65,6 +65,8 @@ public interface Service {
 	/**
 	 * Insert payload into the system for processing.
 	 * 
+	 * @param originalId
+	 *            Foreign system id for this payload
 	 * @param inputPayload
 	 *            XML text payload
 	 * @param renderPlugin
@@ -78,6 +80,7 @@ public interface Service {
 	 * @return tPayload unique identifier for this job.
 	 */
 	public Integer insertPayload(
+			@PathParam("originalId") @WebParam(name = "originalId") String originalId,
 			@PathParam("inputPayload") @WebParam(name = "inputPayload") String inputPayload,
 			@PathParam("renderPlugin") @WebParam(name = "renderPlugin") String renderPlugin,
 			@PathParam("renderOption") @WebParam(name = "renderOption") String renderOption,
