@@ -396,6 +396,22 @@ CREATE TABLE `tKeyring` (
 	, FOREIGN KEY	( user ) REFERENCES tUser.username ON DELETE CASCADE
 );
 
+### Host Keys ###
+
+DROP TABLE IF EXISTS `tSshHostKeys`;
+
+CREATE TABLE `tSshHostKeys` (
+	  id		SERIAL
+	, hostname	VARCHAR (150) NOT NULL
+	, port		INT UNSIGNED NOT NULL DEFAULT 22
+	, hostkey	TEXT
+
+	, CONSTRAINT UNIQUE KEY ( hostname, port )
+);
+
+###INSERT INTO `tSshHostKeys` ( hostname, hostkey ) VALUES ( 'sftp.claimlogic.com', '' );
+INSERT INTO `tSshHostKeys` ( hostname, hostkey ) VALUES ( 'sftp.gatewayedi.com', 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDCh9qdcv1i9Y6nDwpspLaW1OosdrrtOl0t7uiof2/QYs0RTmT1DVRz0D0SNweNjtB/5069pFaNMthEh591gNrnipxy2FA2Zz7x5fv0v/AbTjmTujK14GYDBvMQTA58jGf1NWRn0+CkJvhCqY4eylkYgXdn4Y5QgGQYoEvN9P6zdQ==' );
+
 ### Database Patches ###
 
 DROP TABLE IF EXISTS `tPatch`;
