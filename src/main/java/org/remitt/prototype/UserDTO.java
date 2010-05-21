@@ -32,6 +32,7 @@ public class UserDTO {
 
 	private String username;
 	private String password;
+	private String contactEmail;
 	private String callbackServiceUri;
 	private String callbackServiceWsdlUri;
 	private String callbackUsername;
@@ -75,6 +76,21 @@ public class UserDTO {
 	 */
 	public String getPassword() {
 		return password;
+	}
+
+	/**
+	 * @param contactEmail
+	 *            the contactEmail to set
+	 */
+	public void setContactEmail(String contactEmail) {
+		this.contactEmail = contactEmail;
+	}
+
+	/**
+	 * @return the contactEmail
+	 */
+	public String getContactEmail() {
+		return contactEmail;
 	}
 
 	/**

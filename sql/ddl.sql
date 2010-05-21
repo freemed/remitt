@@ -25,6 +25,7 @@ CREATE TABLE `tUser` (
 	  id				SERIAL
 	, username			VARCHAR(50) NOT NULL UNIQUE KEY
 	, passhash			CHAR(32) NOT NULL
+	, contactemail			VARCHAR(150)
 	, callbackserviceuri		VARCHAR(150) COMMENT 'RemittCallback service URL'
 	, callbackservicewsdluri	VARCHAR(150) COMMENT 'WSDL for RemittCallback service'
 	, callbackusername		VARCHAR(50)

@@ -41,6 +41,7 @@ public class UserManagement {
 
 	public static final String SQL_GET_USER = "SELECT "
 			+ " u.username AS username "
+			+ " , u.contactemail AS contactemail "
 			+ " , u.callbackserviceuri AS callbackserviceuri "
 			+ " , u.callbackservicewsdluri AS callbackservicewsdluri "
 			+ " , u.callbackusername AS callbackusername"
@@ -52,6 +53,7 @@ public class UserManagement {
 
 	public static final String SQL_LIST_USERS = "SELECT "
 			+ " u.username AS username "
+			+ " , u.contactemail AS contactemail "
 			+ " , u.callbackserviceuri AS callbackserviceuri "
 			+ " , u.callbackservicewsdluri AS callbackservicewsdluri "
 			+ " , u.callbackusername AS callbackusername"
@@ -146,11 +148,12 @@ public class UserManagement {
 			ResultSet rs = cStmt.getResultSet();
 			rs.next();
 			ret.setUsername(rs.getString(1));
-			ret.setCallbackServiceUri(rs.getString(2));
-			ret.setCallbackServiceWsdlUri(rs.getString(3));
-			ret.setCallbackUsername(rs.getString(4));
-			ret.setCallbackPassword(rs.getString(5));
-			ret.setRoles(rs.getString(6).split(","));
+			ret.setContactEmail(rs.getString(2));
+			ret.setCallbackServiceUri(rs.getString(3));
+			ret.setCallbackServiceWsdlUri(rs.getString(4));
+			ret.setCallbackUsername(rs.getString(5));
+			ret.setCallbackPassword(rs.getString(6));
+			ret.setRoles(rs.getString(7).split(","));
 			rs.close();
 		} catch (NullPointerException npe) {
 			log.error("Caught NullPointerException", npe);
@@ -182,6 +185,7 @@ public class UserManagement {
 				while (rs.next()) {
 					UserDTO u = new UserDTO();
 					u.setUsername(rs.getString("username"));
+					u.setContactEmail(rs.getString("contactemail"));
 					u.setCallbackServiceUri(rs.getString("callbackserviceuri"));
 					u.setCallbackServiceWsdlUri(rs
 							.getString("callbackservicewsdluri"));
