@@ -67,7 +67,7 @@ public class ProviderClaimGroup implements X12DTO {
 	@ElementList(name = "claimInformations", required = false)
 	private List<ClaimInformation> claimInformations = new ArrayList<ClaimInformation>();
 
-	private SimpleDateFormat x12dateFormat = new SimpleDateFormat("yyyyMMdd");
+	private static final SimpleDateFormat x12dateFormat = new SimpleDateFormat("yyyyMMdd");
 
 	static final Logger log = Logger.getLogger(ProviderClaimGroup.class);
 
@@ -86,8 +86,10 @@ public class ProviderClaimGroup implements X12DTO {
 			this.providerId = X12Message.getSafeElement(TS3, 1);
 			this.facilityId = X12Message.getSafeElement(TS3, 2);
 			try {
-				this.fiscalPeriodDate = x12dateFormat.parse(X12Message
-						.getSafeElement(TS3, 3));
+				synchronized (x12dateFormat) {
+					this.fiscalPeriodDate = x12dateFormat.parse(X12Message
+							.getSafeElement(TS3, 3));
+				};
 			} catch (ParseException e) {
 				log.error(e);
 			}

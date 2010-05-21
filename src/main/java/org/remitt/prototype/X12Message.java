@@ -61,7 +61,7 @@ abstract public class X12Message {
 	private int x12segmentCount = 0;
 	protected int position = 0;
 
-	private static SimpleDateFormat x12dateFormat = new SimpleDateFormat(
+	private static final SimpleDateFormat x12dateFormat = new SimpleDateFormat(
 			"yyyyMMdd");
 
 	public X12Message() {
@@ -343,7 +343,9 @@ abstract public class X12Message {
 	 */
 	public static Date parseDate(String date) {
 		try {
-			return x12dateFormat.parse(date);
+			synchronized (x12dateFormat) {
+				return x12dateFormat.parse(date);
+			}
 		} catch (ParseException ex) {
 			log.error(ex);
 			return null;
