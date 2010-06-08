@@ -45,7 +45,7 @@ public class DbFileStore {
 	 * @param username
 	 * @param category
 	 * @param filename
-	 * @return
+	 * @return Success.
 	 */
 	public static boolean deleteFile(String username, String category,
 			String filename) {
@@ -79,7 +79,7 @@ public class DbFileStore {
 	 * Create new "unique" filename.
 	 * 
 	 * @param extension
-	 * @return
+	 * @return String representation of the filename.
 	 */
 	public static synchronized String generateFilename(String extension) {
 		return new Long(System.currentTimeMillis()).toString() + "."
@@ -92,7 +92,7 @@ public class DbFileStore {
 	 * @param username
 	 * @param category
 	 * @param file
-	 * @return
+	 * @return Contents of file.
 	 */
 	public static byte[] getFile(String username, String category, String file) {
 		Connection c = Configuration.getConnection();

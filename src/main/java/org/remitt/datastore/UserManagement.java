@@ -40,8 +40,7 @@ public class UserManagement {
 	static final Logger log = Logger.getLogger(UserManagement.class);
 
 	public static final String SQL_GET_USER = "SELECT "
-			+ " u.username AS username "
-			+ " , u.contactemail AS contactemail "
+			+ " u.username AS username " + " , u.contactemail AS contactemail "
 			+ " , u.callbackserviceuri AS callbackserviceuri "
 			+ " , u.callbackservicewsdluri AS callbackservicewsdluri "
 			+ " , u.callbackusername AS callbackusername"
@@ -52,8 +51,7 @@ public class UserManagement {
 			+ ";";
 
 	public static final String SQL_LIST_USERS = "SELECT "
-			+ " u.username AS username "
-			+ " , u.contactemail AS contactemail "
+			+ " u.username AS username " + " , u.contactemail AS contactemail "
 			+ " , u.callbackserviceuri AS callbackserviceuri "
 			+ " , u.callbackservicewsdluri AS callbackservicewsdluri "
 			+ " , u.callbackusername AS callbackusername"
@@ -74,7 +72,7 @@ public class UserManagement {
 	 * @param callbackServiceWsdlUri
 	 * @param callbackUsername
 	 * @param callbackPassword
-	 * @return
+	 * @return Success.
 	 */
 	public static boolean addUser(String username, String password,
 			String callbackServiceUri, String callbackServiceWsdlUri,
@@ -132,7 +130,7 @@ public class UserManagement {
 	 * Retrieve a single <UserDTO> object for a named user.
 	 * 
 	 * @param username
-	 * @return
+	 * @return User object.
 	 */
 	public static UserDTO getUser(String username) {
 		Connection c = Configuration.getConnection();
@@ -170,7 +168,7 @@ public class UserManagement {
 	/**
 	 * Get list of all users in the system.
 	 * 
-	 * @return
+	 * @return List of user objects.
 	 */
 	public static List<UserDTO> listUsers() {
 		Connection c = Configuration.getConnection();

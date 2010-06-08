@@ -51,6 +51,14 @@ public class LoggerServlet extends HttpServlet {
 
 	public void init() throws ServletException {
 		System.out.println("LogggerServlet init() starting.");
+
+		// Attempt to divine base install, and if we're using jetty, shim it
+		if (System.getProperty("jetty.home") != null
+				&& System.getProperty("jetty.home") != "") {
+			System.setProperty("catalina.home", System
+					.getProperty("jetty.home"));
+		}
+
 		String log4jfile = getInitParameter("log4j-properties");
 		System.out.println("log4j-properties: " + log4jfile);
 		if (log4jfile != null) {

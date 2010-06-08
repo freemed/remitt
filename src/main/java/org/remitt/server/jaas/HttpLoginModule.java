@@ -268,7 +268,7 @@ public class HttpLoginModule implements LoginModule {
 	 * 
 	 * @param username
 	 *            String name of the user.
-	 * @return
+	 * @return Array of principal objects.
 	 */
 	public Principal[] getRolesForUser(String username) {
 		List<Principal> ret = new ArrayList<Principal>();
@@ -306,7 +306,7 @@ public class HttpLoginModule implements LoginModule {
 	 * on the J2EE container of having to have all of the libraries to make that
 	 * work.
 	 * 
-	 * @return
+	 * @return Servlet properties.
 	 */
 	public Properties getProperties() {
 		if (config == null) {

@@ -59,7 +59,7 @@ public interface ScooperInterface {
 	/**
 	 * Get configuration variable which indicates a user is using this scooper.
 	 * 
-	 * @return
+	 * @return Textual represnetation of configuration value.
 	 */
 	public String getEnabledConfigValue();
 

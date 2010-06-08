@@ -100,7 +100,7 @@ abstract public class X12Message {
 	 * 
 	 * @param segments
 	 * @param c
-	 * @return
+	 * @return X12 segment object.
 	 */
 	public static Segment findSegmentByComparator(List<Segment> segments,
 			SegmentComparator c) {
@@ -168,7 +168,7 @@ abstract public class X12Message {
 	/**
 	 * Get number of segments in the current <X12> message.
 	 * 
-	 * @return
+	 * @return Count of total segments in message.
 	 */
 	public int getSegmentCount() {
 		return x12segmentCount;
@@ -178,7 +178,7 @@ abstract public class X12Message {
 	 * Static method to create XML serialization of <X12DTO> object.
 	 * 
 	 * @param dto
-	 * @return
+	 * @return XML representation of <X12DTO> object.
 	 */
 	public static String serializeDTO(X12DTO dto) {
 		Serializer serializer = new Persister();

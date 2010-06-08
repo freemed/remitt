@@ -47,7 +47,7 @@ public class KeyringStore {
 	 * 
 	 * @param username
 	 * @param keyname
-	 * @return
+	 * @return Success.
 	 */
 	public static boolean deleteKey(String username, String keyname) {
 		Connection c = Configuration.getConnection();
@@ -81,7 +81,7 @@ public class KeyringStore {
 	 *            User name
 	 * @param keyname
 	 *            Canonical key name
-	 * @return
+	 * @return Keyring item object.
 	 */
 	public static KeyringItem getKey(String username, String keyname) {
 		Connection c = Configuration.getConnection();
@@ -120,7 +120,7 @@ public class KeyringStore {
 	 * Get keyring for user.
 	 * 
 	 * @param username
-	 * @return
+	 * @return All items on keyring as array.
 	 */
 	public static KeyringItem[] getKeys(String username) {
 		Connection c = Configuration.getConnection();
@@ -166,7 +166,7 @@ public class KeyringStore {
 	 * @param privateKey
 	 *            Whether or not the key being requested is a private key. If
 	 *            false, the public key will be returned.
-	 * @return
+	 * @return Contents of key.
 	 */
 	public static byte[] getKey(String username, String keyname,
 			boolean privateKey) {
@@ -207,7 +207,7 @@ public class KeyringStore {
 	 * @param keyname
 	 * @param privatekey
 	 * @param publickey
-	 * @return
+	 * @return Success.
 	 */
 	public static boolean putKey(String username, String keyname,
 			byte[] privatekey, byte[] publickey) {

@@ -162,6 +162,10 @@ public class ClaimPayment implements X12DTO {
 		return this.claimPatientResponsibilityAmount;
 	}
 
+	public String getClaimStatus() {
+		return this.claimStatus;
+	}
+
 	public String getClaimType() {
 		return this.claimType;
 	}

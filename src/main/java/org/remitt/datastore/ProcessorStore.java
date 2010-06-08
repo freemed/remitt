@@ -56,7 +56,7 @@ public class ProcessorStore {
 	 * descriptor information.
 	 * 
 	 * @param tType
-	 * @return
+	 * @return Thread state object.
 	 */
 	public JobThreadState getJobThreadState(ThreadType tType) {
 		JobThreadState tS = new JobThreadState();
@@ -102,7 +102,7 @@ public class ProcessorStore {
 	 * 
 	 * @param tType
 	 *            Thread type to check for, using stored payload info.
-	 * @return
+	 * @return Payload content in byte array.
 	 */
 	public byte[] getProcessorOutputPayload(ThreadType tType) {
 		Connection c = Configuration.getConnection();

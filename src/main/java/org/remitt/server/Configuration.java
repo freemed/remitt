@@ -181,7 +181,11 @@ public class Configuration {
 	 */
 	public static String getInstallLocation() {
 		String home = System.getenv("REMITT_HOME");
-		return (home == "") ? System.getProperty("catalina.home") : home;
+		home = (home == null || home == "") ? System
+				.getProperty("catalina.home") : home;
+		home = (home == null || home == "") ? System.getProperty("jetty.home")
+				: home;
+		return home;
 	}
 
 	/**

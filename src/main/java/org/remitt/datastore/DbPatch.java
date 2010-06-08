@@ -47,7 +47,7 @@ public class DbPatch {
 	 * Attempt to run a database patch.
 	 * 
 	 * @param patchFilename
-	 * @return
+	 * @return Success.
 	 */
 	public static boolean applyPatch(String patchFilename) {
 		Connection c = Configuration.getConnection();
@@ -88,7 +88,7 @@ public class DbPatch {
 	 * Determine if a patch has been applied yet.
 	 * 
 	 * @param patchName
-	 * @return
+	 * @return Success.
 	 */
 	public static boolean isPatchApplied(String patchName) {
 		Connection c = Configuration.getConnection();
@@ -123,7 +123,7 @@ public class DbPatch {
 	 * Record record of patch into tPatch table so that patches only run once.
 	 * 
 	 * @param patchName
-	 * @return
+	 * @return Success.
 	 */
 	public static boolean recordPatch(String patchName) {
 		Connection c = Configuration.getConnection();

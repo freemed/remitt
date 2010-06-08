@@ -69,7 +69,7 @@ public abstract class ProcessorThread extends Thread {
 	/**
 	 * Produce string representation of thread type.
 	 * 
-	 * @return
+	 * @return Textual representation of thread type.
 	 */
 	public String getThreadTypeString() {
 		ThreadType t = getThreadType();
