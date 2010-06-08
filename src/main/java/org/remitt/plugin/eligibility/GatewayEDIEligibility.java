@@ -81,23 +81,39 @@ public class GatewayEDIEligibility implements EligibilityInterface {
 		}
 
 		List<MyNameValue> params = new ArrayList<MyNameValue>();
-		addNameValue(params, values, "npi", "NPI");
-		addNameValue(params, values, "insuranceId", "InsuranceNum");
-		addNameValue(params, values, "insuredLastName", "InsuredLastName");
-		addNameValue(params, values, "insuredFirstName", "InsuredFirstName");
-		addNameValue(params, values, "insuredDateOfBirth", "InsuredDob");
-		addNameValue(params, values, "insuredGender", "InsuredGender");
-		addNameValue(params, values, "insuredState", "InsuredState");
-		addNameValue(params, values, "insuredSsn", "InsuredSsn");
-		addNameValue(params, values, "dependentLastName", "DependentLastName");
-		addNameValue(params, values, "dependentFirstName", "DependentFirstName");
-		addNameValue(params, values, "dependentDateOfBirth", "DependentDob");
-		addNameValue(params, values, "dependentGender", "DependentGender");
-		addNameValue(params, values, "dependentRelationship",
+		addNameValue(params, values, ELIGIBILITY_PARAMETER_NPI, "NPI");
+		addNameValue(params, values, ELIGIBILITY_PARAMETER_INSURANCE_ID,
+				"InsuranceNum");
+		addNameValue(params, values, ELIGIBILITY_PARAMETER_INSURED_LAST_NAME,
+				"InsuredLastName");
+		addNameValue(params, values, ELIGIBILITY_PARAMETER_INSURED_FIRST_NAME,
+				"InsuredFirstName");
+		addNameValue(params, values, ELIGIBILITY_PARAMETER_INSURED_DOB,
+				"InsuredDob");
+		addNameValue(params, values, ELIGIBILITY_PARAMETER_INSURED_GENDER,
+				"InsuredGender");
+		addNameValue(params, values, ELIGIBILITY_PARAMETER_INSURED_STATE,
+				"InsuredState");
+		addNameValue(params, values, ELIGIBILITY_PARAMETER_INSURED_SSN,
+				"InsuredSsn");
+		addNameValue(params, values, ELIGIBILITY_PARAMETER_DEPENDENT_LAST_NAME,
+				"DependentLastName");
+		addNameValue(params, values,
+				ELIGIBILITY_PARAMETER_DEPENDENT_FIRST_NAME,
+				"DependentFirstName");
+		addNameValue(params, values, ELIGIBILITY_PARAMETER_DEPENDENT_DOB,
+				"DependentDob");
+		addNameValue(params, values, ELIGIBILITY_PARAMETER_DEPENDENT_GENDER,
+				"DependentGender");
+		addNameValue(params, values,
+				ELIGIBILITY_PARAMETER_DEPENDENT_RELATIONSHIP,
 				"DependentRelationshipCode");
-		addNameValue(params, values, "serviceType", "ServiceTypeCode");
-		addNameValue(params, values, "cardIssueDate", "CardIssueDate");
-		addNameValue(params, values, "groupId", "GroupNumber");
+		addNameValue(params, values, ELIGIBILITY_PARAMETER_SERVICE_TYPE,
+				"ServiceTypeCode");
+		addNameValue(params, values, ELIGIBILITY_PARAMETER_CARD_ISSUE_DATE,
+				"CardIssueDate");
+		addNameValue(params, values, ELIGIBILITY_PARAMETER_GROUP_NUMBER,
+				"GroupNumber");
 
 		// Set HTTP Authentication:
 		((Stub) service)._setProperty(Call.USERNAME_PROPERTY, Configuration
