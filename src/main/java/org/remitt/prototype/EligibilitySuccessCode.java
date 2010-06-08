@@ -1,5 +1,5 @@
 /*
- * $Id $
+ * $Id$
  *
  * Authors:
  *      Jeff Buchbinder <jeff@freemedsoftware.org>
@@ -24,49 +24,25 @@
 
 package org.remitt.prototype;
 
-import java.io.Serializable;
+public enum EligibilitySuccessCode {
+	SUCCESS("SUCCESS"), VALIDATION_FAILURE("VALIDATION_FAILURE"), PAYER_TIMEOUT(
+			"PAYER_TIMEOUT"), PAYER_NOT_SUPPORTED("PAYER_NOT_SUPPORTED"), SYSTEM_ERROR(
+			"SYSTEM_ERROR"), PAYER_ENROLLMENT_REQUIRED(
+			"PAYER_ENROLLMENT_REQUIRED"), PROVIDER_ENROLLMENT_REQUIRED(
+			"PROVIDER_ENROLLMENT_REQUIRED"), PRODUCT_REQUIRED(
+			"PRODUCT_REQUIRED");
 
-public class EligibilityResponse implements Serializable {
+	private final String value;
 
-	private static final long serialVersionUID = 80195456387213L;
-
-	private EligibilityStatus status;
-	private EligibilitySuccessCode successCode;
-	private String rawResponse;
-	private String[] messages;
-
-	public EligibilityResponse() {
+	private EligibilitySuccessCode(String value) {
+		this.value = value;
 	}
 
-	public String[] getMessages() {
-		return messages;
+	public String getValue() {
+		return this.value;
 	}
 
-	public void setMessages(String[] m) {
-		messages = m;
-	}
-
-	public String getRawResponse() {
-		return rawResponse;
-	}
-
-	public void setRawResponse(String r) {
-		rawResponse = r;
-	}
-
-	public EligibilityStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(EligibilityStatus s) {
-		status = s;
-	}
-
-	public EligibilitySuccessCode getSuccessCode() {
-		return successCode;
-	}
-
-	public void setSuccessCode(EligibilitySuccessCode s) {
-		successCode = s;
+	public String toString() {
+		return this.value;
 	}
 }

@@ -37,6 +37,7 @@ import org.apache.log4j.Logger;
 import org.remitt.prototype.EligibilityInterface;
 import org.remitt.prototype.EligibilityResponse;
 import org.remitt.prototype.EligibilityStatus;
+import org.remitt.prototype.EligibilitySuccessCode;
 import org.remitt.server.Configuration;
 
 import WebServices.GatewayEDI.Eligibility;
@@ -137,7 +138,7 @@ public class GatewayEDIEligibility implements EligibilityInterface {
 		String rawResponse = response.getResponseAsRawString();
 		log.info(rawResponse);
 		er.setRawResponse(rawResponse);
-		er.setSuccessCode(response.getSuccessCode());
+		er.setSuccessCode(getSuccessCode(response.getSuccessCode()));
 
 		// Try to pass on all processing messages as well, just in case.
 		try {
@@ -198,6 +199,40 @@ public class GatewayEDIEligibility implements EligibilityInterface {
 	@Override
 	public String[] getPluginConfigurationOptions() {
 		return new String[] { "gatewayEdiUsername", "gatewayEdiPassword" };
+	}
+
+	/**
+	 * Resolve <SuccessCode> into <EligibilitySuccessCode>
+	 * 
+	 * @param s
+	 * @return
+	 */
+	private EligibilitySuccessCode getSuccessCode(SuccessCode s) {
+		if (s.getValue().equalsIgnoreCase("Success")) {
+			return EligibilitySuccessCode.SUCCESS;
+		}
+		if (s.getValue().equalsIgnoreCase("ValidationFailure")) {
+			return EligibilitySuccessCode.VALIDATION_FAILURE;
+		}
+		if (s.getValue().equalsIgnoreCase("PayerTimeout")) {
+			return EligibilitySuccessCode.PAYER_TIMEOUT;
+		}
+		if (s.getValue().equalsIgnoreCase("PayerNotSupported")) {
+			return EligibilitySuccessCode.PAYER_NOT_SUPPORTED;
+		}
+		if (s.getValue().equalsIgnoreCase("SystemError")) {
+			return EligibilitySuccessCode.SYSTEM_ERROR;
+		}
+		if (s.getValue().equalsIgnoreCase("PayerEnrollmentRequired")) {
+			return EligibilitySuccessCode.PAYER_ENROLLMENT_REQUIRED;
+		}
+		if (s.getValue().equalsIgnoreCase("ProviderEnrollmentRequired")) {
+			return EligibilitySuccessCode.PROVIDER_ENROLLMENT_REQUIRED;
+		}
+		if (s.getValue().equalsIgnoreCase("ProductRequired")) {
+			return EligibilitySuccessCode.PRODUCT_REQUIRED;
+		}
+		return EligibilitySuccessCode.SYSTEM_ERROR;
 	}
 
 }
