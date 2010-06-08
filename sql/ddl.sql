@@ -224,6 +224,7 @@ INSERT INTO `tPlugins` VALUES
 	, ( 'org.remitt.plugin.transport.StoreFile', '0.1', 'jeff@freemedsoftware.org', 'transport', 'text', NULL )
 	, ( 'org.remitt.plugin.transport.StoreFilePdf', '0.1', 'jeff@freemedsoftware.org', 'transport', 'pdf', NULL )
 		### Eligibility plugins ###
+	, ( 'org.remitt.plugin.eligibility.DummyEligibility', '0.1', 'jeff@freemedsoftware.org', 'eligibility', NULL, NULL )
 	, ( 'org.remitt.plugin.eligibility.GatewayEDIEligibility', '0.1', 'jeff@freemedsoftware.org', 'eligibility', NULL, NULL )
 		### Scooper plugins ###
 	, ( 'org.remitt.plugin.scooper.GatewayEdiSftpScooper', '0.1', 'jeff@freemedsoftware.org', 'scooper', NULL, NULL )
