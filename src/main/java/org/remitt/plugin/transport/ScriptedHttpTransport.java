@@ -161,9 +161,10 @@ public class ScriptedHttpTransport implements PluginInterface {
 			Object output = invocableEngine.invokeFunction("transport");
 			if (output != null) {
 				if (output instanceof String) {
-					return ((String) output).getBytes();
+					out = ((String) output).getBytes();
+				} else {
+					out = output.toString().getBytes();
 				}
-				out = output.toString().getBytes();
 			} else {
 				out = new String("").getBytes();
 			}
