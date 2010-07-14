@@ -125,6 +125,9 @@ CREATE TABLE `tPayload` (
 	, FOREIGN KEY		( user ) REFERENCES tUser.username ON DELETE CASCADE
 );
 
+DROP VIEW IF EXISTS vPayload;
+CREATE VIEW vPayload AS SELECT id, insert_stamp, user, originalId, renderPlugin, renderOption, transportPlugin, transportOption, payloadState FROM tPayload;
+
 ##### Processor Tables #####
 
 DROP TABLE IF EXISTS `tProcessor`;
@@ -364,6 +367,9 @@ CREATE TABLE `tFileStore` (
 	, FOREIGN KEY		( payloadId ) REFERENCES tPayload.id ON DELETE CASCADE
 	, FOREIGN KEY		( processorId ) REFERENCES tProcessor.id ON DELETE CASCADE
 );
+
+DROP VIEW IF EXISTS vFileStore;
+CREATE VIEW vFileStore AS SELECT id, user, stamp, category, filename, payloadId, processorId, contentsize FROM tFileStore;
 
 ### Scooper ###
 
