@@ -22,11 +22,9 @@
  */
 
 function transport() {
-	var s = "";
+	loginfo("Executing FreeClaims.js");
 
-	loginfo(s, "Executing FreeClaims.js");
-
-	loginfo(s, "Loading login page");
+	loginfo("Loading login page");
 
 	// Disable javascript due to bum login page
 	webClient.setJavaScriptEnabled(false);
@@ -42,7 +40,7 @@ function transport() {
 
 	// Check for nav page for login
 	body = loggedInPage.asXml();
-	loginfo(s, body);
+	loginfo(body);
 	if (body.indexOf('/docs/mynav.htm') != -1) {
 		loginfo("Successfully logged in with username " + username);
 		validLogin = true;
@@ -50,13 +48,13 @@ function transport() {
 
 	// TODO: validate form submission
 	if (validLogin) {
-		loginfo(s, "Loading upload page");
+		loginfo("Loading upload page");
 		uploadPage = webClient
 				.getPage("https://sfreeclaims.anvicare.com/docs/upload.asp");
 		uploadForm = uploadPage.getFormByName("Upload");
 
 		// Upload using full file upload method from temp file
-		loginfo(s, "Dumping byte array to temporary file for upload");
+		loginfo("Dumping byte array to temporary file for upload");
 		f = File.createTempFile("freeclaims", ".x12");
 		FileUtils.writeByteArrayToFile(f, input);
 
@@ -71,12 +69,13 @@ function transport() {
 		// Clean up
 		// f.delete();
 
-		loginfo(s, "Upload response page: " + uploadedPage.asXml());
+		loginfo("Upload response page: " + uploadedPage.asXml());
 	} else {
-		logerror(s, "Failed to login with username '" + username + "'");
+		logerror("Failed to login with username '" + username + "'");
 	}
 
-	loginfo(s, "Ending FreeClaims.js script");
+	loginfo("Ending FreeClaims.js script");
 
-	return s;
+	return _log;
 }
+

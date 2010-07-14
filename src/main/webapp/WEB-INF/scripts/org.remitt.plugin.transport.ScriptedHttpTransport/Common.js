@@ -25,14 +25,17 @@
 importClass(java.io.File);
 importClass(org.apache.commons.io.FileUtils);
 
-function loginfo(o, s) {
+var _log = "";
+
+function loginfo(s) {
 	log.info(s);
 	d = new Date();
-	o += d.toString() + ": " + s + "\n";
+	_log += d.toString() + ": " + s + "\n";
 }
 
-function logerror(o, s) {
+function logerror(s) {
 	log.error(s);
 	d = new Date();
-	o += d.toString() + ": " + s + "\n";
+	_log += d.toString() + ": " + s + "\n";
 }
+
