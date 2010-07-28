@@ -14,7 +14,9 @@ REMITT ROADMAP
 	Process and return data for claims from clearinghouses (X12 835)
 	Self-patching/maintaining database
 	Unit tests
+	Support for ANSI 5010 X12 837 changes
 
 0.6.x	Support all X12 837x formats
 	Validation using XSL to produce error codes and descriptions
+	Reporting functionality, usage and others
 

@@ -99,7 +99,7 @@ public class StoreFile implements PluginInterface {
 		// Store this file
 		DbFileStore.putFile(userName, "output", tempPathName, input, jobId);
 
-		log.info("Lraving Transport for job #" + jobId.toString());
+		log.info("Leaving Transport for job #" + jobId.toString());
 
 		// Return filename
 		return tempPathName.getBytes();

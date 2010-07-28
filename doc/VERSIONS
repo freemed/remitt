@@ -2,6 +2,11 @@ $Id$
 Versions of dependent software for REMITT build
 ------------------------------------------------------------------------------
 
+------------------------------------------------------------------------------
+NOTE THAT THESE VERSIONS ARE PRESENT IN THE MAVEN2 BUILD FILE (pom.xml) AND
+THEREFORE THIS INFORMATION IS MOST LIKELY OUT OF DATE....
+------------------------------------------------------------------------------
+
 Apache Commons Configuration [http://commons.apache.org/configuration/] v1.6
 	(no rss feed)
 Apache CXF [http://cxf.apache.org/] v2.2.6
