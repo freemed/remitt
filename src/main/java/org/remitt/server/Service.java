@@ -30,11 +30,13 @@ import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.ws.rs.PathParam;
 
+import org.apache.cxf.annotations.GZIP;
 import org.remitt.prototype.ConfigurationOption;
 import org.remitt.prototype.EligibilityResponse;
 import org.remitt.prototype.FileListingItem;
 import org.remitt.prototype.UserDTO;
 
+@GZIP
 @WebService(targetNamespace = "http://server.remitt.org/")
 public interface Service {
 
