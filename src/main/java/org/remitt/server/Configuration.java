@@ -64,7 +64,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class Configuration {
 
 	public static String DEFAULT_CONFIG = "/WEB-INF/remitt.properties";
-	public static String OVERRIDE_CONFIG = System.getProperty("properties");
+	public static String OVERRIDE_CONFIG = System.getProperty("remitt.properties");
 
 	static final Logger log = Logger.getLogger(Configuration.class);
 
