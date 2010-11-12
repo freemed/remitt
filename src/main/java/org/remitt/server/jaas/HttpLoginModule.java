@@ -333,11 +333,11 @@ public class HttpLoginModule implements LoginModule {
 			}
 
 			// Load all "override" properties, only if it exists
-			if (System.getProperty("properties") != null) {
+			if (System.getProperty("remitt.properties") != null) {
 				Properties overrides = new Properties();
 				try {
 					overrides.load(new FileInputStream(System
-							.getProperty("properties")));
+							.getProperty("remitt.properties")));
 				} catch (FileNotFoundException e) {
 					System.out
 							.println("getProperties(): no override file found");
