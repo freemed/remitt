@@ -10,7 +10,7 @@
  *    http://chrisdail.com/2008/03/31/apache-cxf-with-http-basic-authentication
  *
  * REMITT Electronic Medical Information Translation and Transmission
- * Copyright (C) 1999-2010 FreeMED Software Foundation
+ * Copyright (C) 1999-2011 FreeMED Software Foundation
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
