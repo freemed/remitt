@@ -215,6 +215,28 @@
                </configuration>
            </plugin>
 
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <descriptors>
+            <descriptor>assembly/dist.xml</descriptor>
+          </descriptors>
+          <finalName>remitt</finalName>
+          <outputDirectory>.</outputDirectory>
+          <workDirectory>target/assembly/work</workDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
         </plugins>
     </build>
 
