@@ -17,6 +17,7 @@
         <include>NOTICE*</include>
       </includes>
     </fileSet>
+    <!-- Generated WAR -->
     <fileSet>
       <directory>target</directory>
       <outputDirectory>/</outputDirectory>
@@ -24,11 +25,20 @@
         <include>*.war</include>
       </includes>
     </fileSet>
+    <!-- Default properties file -->
     <fileSet>
       <directory>src/main/webapp/WEB-INF</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>remitt.properties</include>
+      </includes>
+    </fileSet>
+    <!-- Client callback WSDL file -->
+    <fileSet>
+      <directory>src/main/java/org/remitt/client</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>RemittCallback.wsdl</include>
       </includes>
     </fileSet>
     <fileSet>
