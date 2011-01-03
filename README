@@ -14,9 +14,14 @@ written in Java as a J2EE application.
 
 This application should be able to be dropped into a Servlet container
 like Apache Tomcat and run with little to no configuration. The
-system property "properties" can point at a configuration file to
+system property "remitt.properties" can point at a configuration file to
 override default config properties which are defined inside the war
 file.
+
+(In Debian or Ubuntu packaged tomcat instances, you would add
+"-Dremitt.properties=/path/to/my/remitt.properties" to the options passed
+to tomcat in /etc/defaults/tomcat or /etc/defaults/tomcat55, depending on
+the version you're using.)
 
 The only prerequisite for installing this software is importing the
 database definitions from sql/*.sql into your working database server.

@@ -25,8 +25,19 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>src/main/webapp/WEB-INF</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>remitt.properties</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>doc</directory>
       <outputDirectory>/doc/</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/site/apidocs</directory>
+      <outputDirectory>/javadoc/</outputDirectory>
     </fileSet>
     <fileSet>
       <directory>sql</directory>
