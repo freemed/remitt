@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.remitt</groupId>
-    <version>0.5.0</version>
+    <version>0.5.1</version>
     <artifactId>remitt</artifactId>
     <name>REMITT Electronic Medical Information Translation and Transmission</name>
     <packaging>war</packaging>
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpg-jdk16</artifactId>
-            <version>1.45</version>
+            <version>1.46</version>
         </dependency>
 
         <dependency>

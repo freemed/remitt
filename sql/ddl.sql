@@ -215,10 +215,12 @@ CREATE TABLE `tPlugins` (
 INSERT INTO `tPlugins` VALUES
 		### Render plugins ###
 	  ( 'org.remitt.plugin.render.XsltPlugin', '0.1', 'jeff@freemedsoftware.org', 'render', NULL, 'various' )
+	, ( 'org.remitt.plugin.render.PreRenderedPlugin', '0.1', 'jeff@freemedsoftware.org', 'render', NULL, 'x12' )
 		### Translation plugins ###
 	, ( 'org.remitt.plugin.translation.FixedFormPdf', '0.1', 'jeff@freemedsoftware.org', 'translation', 'fixedformxml', 'pdf' )
 	, ( 'org.remitt.plugin.translation.FixedFormXml', '0.1', 'jeff@freemedsoftware.org', 'translation', 'fixedformxml', 'text' )
 	, ( 'org.remitt.plugin.translation.X12Xml', '0.1', 'jeff@freemedsoftware.org', 'translation', 'x12xml', 'text' )
+	, ( 'org.remitt.plugin.translation.X12Passthrough', '0.1', 'jeff@freemedsoftware.org', 'translation', 'x12', 'text' )
 		### Transport plugins ###
 	, ( 'org.remitt.plugin.transport.ClaimLogicTransport', '0.1', 'jeff@freemedsoftware.org', 'transport', 'text', NULL )
 	, ( 'org.remitt.plugin.transport.GatewayEdiTransport', '0.1', 'jeff@freemedsoftware.org', 'transport', 'text', NULL )
