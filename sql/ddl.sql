@@ -60,6 +60,7 @@ CREATE TABLE `tUserConfig` (
 
 INSERT INTO `tUserConfig` VALUES
 	  ( 'Administrator', 'org.remitt.plugin.transport.SftpTransport', 'sftpHost', '' )
+	, ( 'Administrator', 'org.remitt.plugin.transport.SftpTransport', 'sftpPath', '' )
 	, ( 'Administrator', 'org.remitt.plugin.transport.SftpTransport', 'sftpPort', '22' )
 	, ( 'Administrator', 'org.remitt.plugin.transport.SftpTransport', 'sftpUsername', '' )
 	, ( 'Administrator', 'org.remitt.plugin.transport.SftpTransport', 'sftpPassword', '' )

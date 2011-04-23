@@ -50,6 +50,7 @@ function populateFieldFromFrame(f) {
 					<td>Plugin :</td>
 					<td><select name="plugin">
 						<option value="org.remitt.plugin.render.XsltPlugin">org.remitt.plugin.render.XsltPlugin</option>
+						<option value="org.remitt.plugin.render.PreRenderedPlugin">org.remitt.plugin.render.PreRenderedPlugin</option>
 					</select></td>
 				</tr>
 				<tr>
@@ -80,6 +81,7 @@ function populateFieldFromFrame(f) {
 						<option value="org.remitt.plugin.translation.FixedFormPdf">org.remitt.plugin.translation.FixedFormPdf</option>
 						<option value="org.remitt.plugin.translation.FixedFormXml">org.remitt.plugin.translation.FixedFormXml</option>
 						<option value="org.remitt.plugin.translation.X12Xml">org.remitt.plugin.translation.X12Xml</option>
+						<option value="org.remitt.plugin.translation.X12Passthrough">org.remitt.plugin.translation.X12Passthrough</option>
 					</select></td>
 				</tr>
 				<tr>
@@ -109,6 +111,8 @@ function populateFieldFromFrame(f) {
 					<td><select name="plugin">
 						<option
 							value="org.remitt.plugin.transport.ScriptedHttpTransport">org.remitt.plugin.transport.ScriptedHttpTransport</option>
+						<option
+							value="org.remitt.plugin.transport.SftpTransport">org.remitt.plugin.transport.SftpTransport</option>
 					</select></td>
 				</tr>
 				<tr>
