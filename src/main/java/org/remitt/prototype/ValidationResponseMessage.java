@@ -26,6 +26,8 @@ package org.remitt.prototype;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 public class ValidationResponseMessage implements Serializable {
 
 	private static final long serialVersionUID = 2248349311468644252L;
@@ -66,6 +68,12 @@ public class ValidationResponseMessage implements Serializable {
 
 	public String getMessage() {
 		return message;
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).append("type", type).append("code",
+				code).append("message", message).toString();
 	}
 
 }

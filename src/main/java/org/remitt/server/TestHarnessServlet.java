@@ -35,6 +35,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.pb.x12.FormatException;
 import org.remitt.prototype.PluginInterface;
+import org.remitt.prototype.ValidationInterface;
+import org.remitt.prototype.ValidationResponse;
 import org.remitt.prototype.X12Message;
 
 /**
@@ -81,6 +83,14 @@ public class TestHarnessServlet extends HttpServlet {
 			String input = request.getParameter("input");
 			String user = request.getUserPrincipal().getName();
 			Configuration.pushRemittanceData(user, input.getBytes());
+			return;
+		}
+
+		// Handle parser tests
+		if (type.equals("validate")) {
+			String plugin = request.getParameter("plugin");
+			String input = request.getParameter("input");
+			validatorTest(plugin, input, response.getOutputStream());
 			return;
 		}
 
@@ -156,6 +166,36 @@ public class TestHarnessServlet extends HttpServlet {
 			return;
 		}
 		out.println(p.toString());
+	}
+
+	public void validatorTest(String validatorClass, String input,
+			ServletOutputStream out) throws IOException {
+		ValidationInterface v = null;
+		try {
+			v = (ValidationInterface) Class.forName(validatorClass)
+					.newInstance();
+		} catch (InstantiationException e) {
+			log.error(e);
+			out.println(e.toString());
+			return;
+		} catch (IllegalAccessException e) {
+			log.error(e);
+			out.println(e.toString());
+			return;
+		} catch (ClassNotFoundException e) {
+			log.error(e);
+			out.println(e.toString());
+			return;
+		}
+		try {
+			ValidationResponse vr = v.validate("", input.getBytes());
+			out.println(vr.toString());
+			return;
+		} catch (Exception e) {
+			log.error(e);
+			out.println(e.toString());
+			return;
+		}
 	}
 
 }

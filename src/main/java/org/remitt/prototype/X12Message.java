@@ -115,6 +115,20 @@ abstract public class X12Message {
 	}
 
 	/**
+	 * Get all <Segment> objects in an X12 message.
+	 * 
+	 * @return List of all segments in an X12 message.
+	 */
+	public static List<Segment> getSegments(X12 message) {
+		List<Segment> segments = new ArrayList<Segment>();
+		Iterator<Segment> iter = message.iterator();
+		while (iter.hasNext()) {
+			segments.add(iter.next());
+		}
+		return segments;
+	}
+
+	/**
 	 * Use a <SegmentComparator> to find matching X12 segments in a <List> of
 	 * <Segment> objects.
 	 * 

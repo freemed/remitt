@@ -28,6 +28,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 public class ValidationResponse implements Serializable {
 
 	private static final long serialVersionUID = 7874460334444969370L;
@@ -56,6 +58,12 @@ public class ValidationResponse implements Serializable {
 
 	public ValidationStatus getStatus() {
 		return status;
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).append("status", status).append(
+				"messages", messages).toString();
 	}
 
 }

@@ -225,6 +225,28 @@ IEA*1*000006020
 
 			<input type="submit" name="submit" value="Test" /></form>
 
+			<hr/>
+
+			<h1>Validator</h1>
+
+			<form action="TestHarness" method="POST" target="_targetFrame">
+			<input type="hidden" name="type" value="validate" />
+			<table border="0">
+				<tr>
+					<td>Parser Class:</td>
+					<td><select name="plugin">
+						<option value="org.remitt.plugin.validation.X12Validator">org.remitt.plugin.validation.X12Validator</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td>Input :</td>
+					<td><textarea name="input" rows="10" cols="60"></textarea></td>
+				</tr>
+			</table>
+
+			<input type="submit" name="submit" value="Test" /></form>
+
+
 			</td>
 			<td>
 			<td style="border: 1px solid #000000;"><iframe id="outputFrame"

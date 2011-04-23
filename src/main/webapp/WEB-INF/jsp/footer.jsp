@@ -24,10 +24,12 @@
 
 <!-- begin footer.jsp -->
 
-<%@ page import="java.util.*"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.util.Date"%>
 
-<div align="center"><i>&copy; 1999-<%=new java.util.Date().getYear() + 1900%>
+<div align="center"><i>&copy; 1999-<%= new SimpleDateFormat("yyyy").format(new Date()) %>
 by the FreeMED Software Foundation</i></div>
 
 </body>
+
 </html>

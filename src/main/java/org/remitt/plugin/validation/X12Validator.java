@@ -13,11 +13,16 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
+import org.pb.x12.Parser;
+import org.pb.x12.Segment;
+import org.pb.x12.X12;
+import org.remitt.prototype.SegmentComparator;
 import org.remitt.prototype.ValidationInterface;
 import org.remitt.prototype.ValidationMessageType;
 import org.remitt.prototype.ValidationResponse;
 import org.remitt.prototype.ValidationResponseMessage;
 import org.remitt.prototype.ValidationStatus;
+import org.remitt.prototype.X12Message;
 import org.remitt.server.Configuration;
 
 public class X12Validator implements ValidationInterface, Serializable {
@@ -47,8 +52,11 @@ public class X12Validator implements ValidationInterface, Serializable {
 			throws Exception {
 		ValidationResponse response = new ValidationResponse();
 
-		// FIXME: TODO: Determine the type of X12 document by input
-		String validatorScript = "4010_837p";
+		// Determine the type of X12 document by input
+		String validatorScript = getX12DocumentType(input);
+		// Remove path separators, etc
+		validatorScript = validatorScript.replace("/", "").replace("\\", "")
+				.replace(".", "").replace(",", "").replace(" ", "");
 
 		ScriptEngineManager engineMgr = new ScriptEngineManager();
 		ScriptEngine engine = engineMgr.getEngineByName("JavaScript");
@@ -87,7 +95,7 @@ public class X12Validator implements ValidationInterface, Serializable {
 				} else if (output instanceof List<?>) {
 					response
 							.setMessages((List<ValidationResponseMessage>) output);
-					
+
 					// See what we're returning, form and return it properly.
 					ValidationStatus status = ValidationStatus.OK;
 					for (ValidationResponseMessage vrm : response.getMessages()) {
@@ -127,4 +135,11 @@ public class X12Validator implements ValidationInterface, Serializable {
 		return null;
 	}
 
+	protected String getX12DocumentType(byte[] input) throws Exception {
+		Parser parser = new Parser();
+		X12 message = parser.parse(new String(input));
+		Segment GS = X12Message.findSegmentByComparator(X12Message
+				.getSegments(message), new SegmentComparator("GS"));
+		return GS.getElement(8);
+	}
 }
