@@ -35,6 +35,7 @@ import org.remitt.prototype.ConfigurationOption;
 import org.remitt.prototype.EligibilityResponse;
 import org.remitt.prototype.FileListingItem;
 import org.remitt.prototype.UserDTO;
+import org.remitt.prototype.ValidationResponse;
 
 @GZIP
 @WebService(targetNamespace = "http://server.remitt.org/")
@@ -223,6 +224,19 @@ public interface Service {
 	public String parseData(
 			@PathParam("parserClass") @WebParam(name = "parserClass") String parserClass,
 			@PathParam("data") @WebParam(name = "data") String data);
+
+	/**
+	 * Validate an arbitrary
+	 * 
+	 * @param validatorClass
+	 *            <ValidationPlugin> descendent class name
+	 * @param data
+	 *            Raw data to be validated.
+	 * @return Payload describing validator output
+	 */
+	public ValidationResponse validatePayload(
+			@PathParam("parserClass") @WebParam(name = "validatorClass") String validatorClass,
+			@PathParam("data") @WebParam(name = "data") byte[] data);
 
 	/**
 	 * Add a REMITT user.

@@ -52,6 +52,8 @@ import org.remitt.prototype.FileListingItem;
 import org.remitt.prototype.ParserInterface;
 import org.remitt.prototype.PluginInterface;
 import org.remitt.prototype.UserDTO;
+import org.remitt.prototype.ValidationInterface;
+import org.remitt.prototype.ValidationResponse;
 import org.remitt.server.Configuration;
 import org.remitt.server.DbUtil;
 import org.remitt.server.Service;
@@ -541,6 +543,35 @@ public class ServiceImpl implements Service {
 			return null;
 		}
 		return UserManagement.listUsers().toArray(new UserDTO[0]);
+	}
+
+	@POST
+	@Path("validate/{validatorClass}")
+	@Produces("application/json")
+	@Override
+	public ValidationResponse validatePayload(String validatorClass, byte[] data) {
+		String userName = getCurrentUserName();
+
+		ValidationInterface v = null;
+		try {
+			v = (ValidationInterface) Class.forName(validatorClass)
+					.newInstance();
+		} catch (InstantiationException e) {
+			log.error(e);
+			return null;
+		} catch (IllegalAccessException e) {
+			log.error(e);
+			return null;
+		} catch (ClassNotFoundException e) {
+			log.error(e);
+			return null;
+		}
+		try {
+			return v.validate(userName, data);
+		} catch (Exception e) {
+			log.error(e);
+			return null;
+		}
 	}
 
 	/**
