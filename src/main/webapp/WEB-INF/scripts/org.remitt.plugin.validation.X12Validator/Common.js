@@ -23,6 +23,7 @@
 
 // Includes for dealing with responses
 
+importClass(java.util.ArrayList);
 importClass(java.util.List);
 importClass(org.remitt.prototype.ValidationMessageType);
 importClass(org.remitt.prototype.ValidationResponseMessage);

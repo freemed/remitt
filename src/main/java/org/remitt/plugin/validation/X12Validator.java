@@ -122,6 +122,7 @@ public class X12Validator implements ValidationInterface, Serializable {
 			}
 		} catch (ScriptException ex) {
 			log.error(ex);
+			ex.printStackTrace();
 			out = new String("").getBytes();
 			log.info("Plugin returned output of " + out);
 			response.setStatus(ValidationStatus.SERVER_ERROR);

@@ -23,8 +23,15 @@
 
 function validate() {
 	log.info("In validate()");
-	var response = new ValidationResponseMessage();
-	response.setType(ValidationMessageType.OK);
+
+	// Boilerplate
+	var response = new ArrayList();
+
+	// Add a dummy message to prove that this works.
+	var msg = new ValidationResponseMessage(ValidationMessageType.INFO, "0000",
+			"Dummy validation message, succeeded");
+	response.add(msg);
+
+	// Return list of messages.
 	return response;
 }
-
