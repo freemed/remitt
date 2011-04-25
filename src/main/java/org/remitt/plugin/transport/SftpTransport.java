@@ -166,7 +166,7 @@ public class SftpTransport implements PluginInterface {
 	}
 
 	protected String getSftpUser(String userName) {
-		return Configuration.getPluginOption(this, userName, "sftpUser");
+		return Configuration.getPluginOption(this, userName, "sftpUsername");
 	}
 
 	protected String getSftpPassword(String userName) {
