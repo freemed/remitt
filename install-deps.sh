@@ -22,7 +22,6 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 mvn install:install-file -DgroupId=cron4j -DartifactId=cron4j -Dversion=2.2.2 -Dpackaging=jar -Dfile=dependencies/cron4j-2.2.2.jar
-mvn install:install-file -DgroupId=itext -DartifactId=itext -Dversion=5.0.2 -Dpackaging=jar -Dfile=dependencies/iText-5.0.2.jar
 mvn install:install-file -DgroupId=j2ssh -DartifactId=j2ssh-core -Dversion=0.2.9 -Dpackaging=jar -Dfile=dependencies/j2ssh-core-0.2.9.jar
 mvn install:install-file -DgroupId=j2ssh -DartifactId=j2ssh-common -Dversion=0.2.9 -Dpackaging=jar -Dfile=dependencies/j2ssh-common-0.2.9.jar
 mvn install:install-file -DgroupId=junitee -DartifactId=junitee -Dversion=1.11 -Dpackaging=jar -Dfile=dependencies/junitee-1.11.jar
