@@ -14,6 +14,6 @@ http://cxf.apache.org/schemas/jaxws.xsd">
 	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
 	<jaxws:endpoint id="RemittService" implementor="org.remitt.server.impl.ServiceImpl"
-		address="http://remitt.org/server/Service" />
+		address="/Service" />
 
 </beans>
