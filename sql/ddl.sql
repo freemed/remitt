@@ -251,12 +251,23 @@ CREATE TABLE `tPluginOptions` (
 
 INSERT INTO `tPluginOptions` VALUES
 		### Render plugin options ###
-	  ( '837p', 'org.remitt.plugin.render.XsltPlugin', 'ANSI X12 4010 837 Professional', '0.1', 'jeff@freemedsoftware.org', 'render', NULL, 'x12xml' )
+	  ( '4010_837p', 'org.remitt.plugin.render.XsltPlugin', 'ANSI X12 4010 837 Professional', '0.1', 'jeff@freemedsoftware.org', 'render', NULL, 'x12xml' )
 	, ( 'cms1500', 'org.remitt.plugin.render.XsltPlugin', 'CMS HCFA-1500', '0.1', 'jeff@freemedsoftware.org', 'render', NULL, 'fixedformxml' )
 	, ( 'statement', 'org.remitt.plugin.render.XsltPlugin', 'Patient Statement', '0.1', 'jeff@freemedsoftware.org', 'render', NULL, 'statementxml' )
 		### Transport plugin options ###
 	, ( 'ClaimLogic', 'org.remitt.plugin.transport.ScriptedHttpTransport', 'ClaimLogic', '0.1', 'jeff@freemedsoftware.org', 'transport', 'text', NULL )
 	, ( 'FreeClaims', 'org.remitt.plugin.transport.ScriptedHttpTransport', 'FreeClaims', '0.1', 'jeff@freemedsoftware.org', 'transport', 'text', NULL )
+;
+
+DROP TABLE IF EXISTS `tPluginOptionTransform`;
+CREATE TABLE `tPluginOptionTransform` (
+	  poptionold	VARCHAR( 100 ) NOT NULL
+	, poption	VARCHAR( 100 ) NOT NULL
+	, plugin	VARCHAR( 100 ) NOT NULL
+);
+
+INSERT INTO `tPluginOptionTransform` VALUES
+	  ( '837p', '4010_837p', 'org.remitt.plugin.render.XsltPlugin' )
 ;
 
 ### Plugin helper functions ###
@@ -435,4 +446,8 @@ CREATE TABLE `tPatch` (
 	# Ensure patches are unique entries
 	, CONSTRAINT UNIQUE KEY ( patchName )
 );
+
+INSERT INTO tPatch VALUES
+	  ( NULL, "00-schema", NOW() )
+;
 

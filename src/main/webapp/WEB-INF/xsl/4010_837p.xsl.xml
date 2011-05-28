@@ -7,7 +7,7 @@
  	Jeff Buchbinder <jeff@freemedsoftware.org>
  
   REMITT Electronic Medical Information Translation and Transmission
-  Copyright (C) 1999-2008 FreeMED Software Foundation
+  Copyright (C) 1999-2011 FreeMED Software Foundation
  
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@
 
 -->
 <PluginOption>
-	<PluginFile>837p.xsl</PluginFile>
-	<Description>X12 NSF 837 Professional</Description>
+	<PluginFile>4010_837p.xsl</PluginFile>
+	<Description>X12 4010 NSF 837 Professional</Description>
 	<InputFormat>payerxml</InputFormat>
 	<OutputFormat>x12xml</OutputFormat>
 	<Media>Electronic</Media>

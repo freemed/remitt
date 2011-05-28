@@ -7,7 +7,7 @@
  	Jeff Buchbinder <jeff@freemedsoftware.org>
  
   REMITT Electronic Medical Information Translation and Transmission
-  Copyright (C) 1999-2008 FreeMED Software Foundation
+  Copyright (C) 1999-2011 FreeMED Software Foundation
  
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -120,7 +120,7 @@
 			</element>
 			<element>
 				<!-- ISA09: Interchange Date, YYMMDD -->
-                                <content><xsl:value-of select="concat(substring(//global/currentdate/year,3,2),//global/currentdate/month,//global/currentdate/day)" /></content>
+                <content><xsl:value-of select="concat(substring(//global/currentdate/year,3,2),//global/currentdate/month,//global/currentdate/day)" /></content>
 			</element>
 			<element>
 				<!-- ISA10: Interchange Time, HHMM -->
@@ -208,13 +208,12 @@
 			</element>
 			<element>
 				<!-- ST02: -->
-				<!-- <content>0021</content> -->
 				<content><xsl:value-of select="$interchangeControlNumber" /></content>
 			</element>
 		</x12segment>
 
 		<x12segment sid="BHT">
-			<comment>BHT Beginning of Heirachical Transaction</comment>
+			<comment>BHT Beginning of Hierarchical Transaction</comment>
 			<element>
 				<!-- BHT01: -->
 				<content>0019</content>
@@ -455,7 +454,8 @@
 		<xsl:comment>Loop 2010AA: Billing/Pay-to Provider</xsl:comment>
 
 		<!-- This is a horrible misnomer; it's actually billing
-			services ... -->
+			services ...
+-->
 
 		<x12segment sid="NM1">
 			<comment>2010AA NM1: Billing Provider Name</comment>
@@ -615,7 +615,8 @@
 		<xsl:variable name="payerobj" select="//payer[@id=$payer]" />
 
 		<!-- determine HLpatient status 0 or 1 
-			if relationship = S, status = 0 -->
+			if relationship = S, status = 0
+-->
 		<xsl:variable name="hlpatient">
 			<xsl:choose>
 				<xsl:when test="translate($insuredobj/relationship, $lowercase, $uppercase) = 'S'">0</xsl:when>
@@ -656,7 +657,8 @@
 				<content>22</content>
 			</element>
 			<element>
-				<!-- HL04: 0 = subscriber level is patient level, 1 = extra patient level -->
+				<!-- HL04: 0 = subscriber level is patient level, 1 = extra patient level
+-->
 				<content><xsl:value-of select="$hlpatient" /></content>
 			</element>
 		</x12segment>
@@ -839,7 +841,8 @@
 				<content/>
 			</element>
 			<element>
-				<!-- 2010BB NM108: ID Code Qualifier ( PI = payor id, XV = HCFA PIN ) -->
+				<!-- 2010BB NM108: ID Code Qualifier ( PI = payor id, XV = HCFA PIN )
+-->
 				<content>PI</content>
 			</element>
 			<element>
@@ -1074,7 +1077,8 @@
 			<!-- REF (Loop 2010BA p126) -->
 			<!-- REF segment required to give SSN or secondary
 			     identifier. Should probably be insured, not
-			     patient. FIXME FIXME -->
+			     patient. FIXME FIXME
+-->
 			<element>
 				<comment>REF01 - Social Security Number</comment>
 				<content>SY</content>
@@ -1090,7 +1094,8 @@
 
 		<!-- For 2300 loop, we're going to farm out to another
 			template so that we don't have to deal with multiple
-			facilities in here -->
+			facilities in here
+-->
 		<xsl:for-each select="$facilities">
 			<xsl:call-template name="process-facility-claims">
 				<xsl:with-param name="procs" select="$procs" />
@@ -1260,7 +1265,8 @@
 			<xsl:for-each select="$diags">
 				<element>
 					<!-- 2300 HI01: Diagnosis Code -->
-					<!-- <content><xsl:choose><xsl:when test="position() = 1">BK</xsl:when><xsl:otherwise>BF</xsl:otherwise></xsl:choose>:<xsl:value-of select="//diagnosis[@id=$code]/icd9code" /> (<xsl:value-of select="$code" />)</content> -->
+					<!-- <content><xsl:choose><xsl:when test="position() = 1">BK</xsl:when><xsl:otherwise>BF</xsl:otherwise></xsl:choose>:<xsl:value-of select="//diagnosis[@id=$code]/icd9code" /> (<xsl:value-of select="$code" />)</content>
+-->
 					<content><xsl:choose><xsl:when test="position() = 1">BK</xsl:when><xsl:otherwise>BF</xsl:otherwise></xsl:choose>:<xsl:call-template name="display-diagnosis">
 						<xsl:with-param name="diag" select="." />
 					</xsl:call-template></content>
@@ -1471,7 +1477,8 @@
 
 		<!-- Deal with prior authorization number if given -->
 		<!-- Black magic trick #133: boolean(string(x)) is the same
-			as PHP's !empty(x) ... -->
+			as PHP's !empty(x) ...
+-->
 		<xsl:if test="boolean(string($procobj/priorauth))">
 		<x12segment sid="REF">
 			<element>
@@ -1568,7 +1575,8 @@
 		<!-- Stupid pet trick #441: translate, normalize-space and
 			translate again to use ':' as spacers. Due to it
 			not putting enough space in, I inserted a '-'
-			character, which is removed in this step. -->
+			character, which is removed in this step.
+-->
 		<xsl:value-of select="translate(normalize-space(translate($resultset, '-', '')), ' ', ':')" />
 	</xsl:template>
 

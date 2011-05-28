@@ -40,6 +40,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
+import org.remitt.datastore.DbPlugin;
 import org.remitt.prototype.PluginInterface;
 import org.remitt.server.Configuration;
 
@@ -81,8 +82,14 @@ public class XsltPlugin implements PluginInterface {
 
 		TransformerFactory tFactory = TransformerFactory.newInstance();
 
+		String transformedOption = DbPlugin.resolvePluginOption(
+				"org.remitt.plugin.render.XsltPlugin", option);
+
+		log.info("Original plugin option = " + option + ", transformed to "
+				+ transformedOption);
+
 		String xsltPath = Configuration.getServletContext().getServletContext()
-				.getRealPath("/WEB-INF/xsl/" + option + ".xsl");
+				.getRealPath("/WEB-INF/xsl/" + transformedOption + ".xsl");
 
 		// Input data, load
 		Source xmlInput = new StreamSource(new StringReader(new String(input)));
