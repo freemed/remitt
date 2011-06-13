@@ -43,8 +43,8 @@ public class DbFileStoreTest extends TestCase {
 		assertNotNull("generateFilename != null", filename);
 		assertTrue("putFile", DbFileStore.putFile(USERNAME, CATEGORY, filename,
 				TEST_CONTENT, 0));
-		assertEquals(TEST_CONTENT, DbFileStore.getFile(USERNAME, CATEGORY,
-				filename));
+		assertEquals(new String(TEST_CONTENT), new String(DbFileStore.getFile(
+				USERNAME, CATEGORY, filename)));
 		assertTrue("deleteFile", DbFileStore.deleteFile(USERNAME, CATEGORY,
 				filename));
 		assertNull("Successfully deleted file.", DbFileStore.getFile(USERNAME,
