@@ -54,7 +54,7 @@ public class ConfigurationTest extends TestCase {
 				Configuration
 						.resolveTranslationPlugin(
 								"org.remitt.plugin.render.XsltPlugin",
-								"837p",
+								"4010_837p",
 								"org.remitt.plugin.transport.ScriptedHttpTransport",
 								""));
 		assertEquals("org.remitt.plugin.translation.FixedFormXml",
