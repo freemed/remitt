@@ -28,7 +28,16 @@ body {
 	margin: 0 0 0 0;
 	padding-left: 1em;
 	padding-right: 1em;
-	}
+	background-image: -moz-linear-gradient(top, #ffffff, #bbbbff);
+	background-image: -ms-linear-gradient(top, #ffffff, #bbbbff);
+	background-image: -o-linear-gradient(top, #ffffff, #bbbbff);
+	background-image: -webkit-linear-gradient(top, #ffffff, #bbbbff);
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff),
+		to(#bbbbff) );
+	background-image: linear-gradient(top, #ffffff, #bbbbff);
+	filter: progid :   DXImageTransform.Microsoft.gradient (   startColorStr
+		= 
+		 '#ffffff', EndColorStr =   '#bbbbff' );}
 
 h1 {
 	margin: 0 0 0 0;
@@ -36,21 +45,21 @@ h1 {
 	padding-bottom: 0;
 	font-size: 18pt;
 	border-bottom: 1px solid #5555ff;
-	}
+}
 
 a {
 	color: #000000;
 	font-weight: bold;
 	text-decoration: none;
-	}
+}
 
 a:hover {
 	color: #0000ff;
-	}
+}
 
 a:visited {
 	color: #000000;
-	}
+}
 
 UL#menubar {
 	margin-top: 0;
@@ -66,9 +75,28 @@ UL#menubar LI {
 	border-bottom: 1px solid #0000ff;
 	padding-left: 5px;
 	padding-right: 5px;
+	background-image: -moz-linear-gradient(top, #eeeeee, #aaaaaa);
+	background-image: -ms-linear-gradient(top, #eeeeee, #aaaaaa);
+	background-image: -o-linear-gradient(top, #eeeeee, #aaaaaa);
+	background-image: -webkit-linear-gradient(top, #eeeeee, #aaaaaa);
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#eeeeee),
+		to(#aaaaaa) );
+	background-image: linear-gradient(top, #eeeeee, #aaaaaa);
+	filter: progid :   DXImageTransform.Microsoft.gradient (   startColorStr
+		= 
+		 '#eeeeee', EndColorStr =   '#aaaaaa' );
 }
 
 UL#menubar LI:hover {
 	background-color: #aaaaff;
+	background-image: -moz-linear-gradient(top, #eeeeee, #8888ff);
+	background-image: -ms-linear-gradient(top, #eeeeee, #8888ff);
+	background-image: -o-linear-gradient(top, #eeeeee, #8888ff);
+	background-image: -webkit-linear-gradient(top, #eeeeee, #8888ff);
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#eeeeee),
+		to(#8888ff) );
+	background-image: linear-gradient(top, #eeeeee, #8888ff);
+	filter: progid :   DXImageTransform.Microsoft.gradient (   startColorStr
+		= 
+		 '#eeeeee', EndColorStr =   '#8888ff' );
 }
-
