@@ -25,6 +25,9 @@
 importClass(java.io.File);
 importClass(org.apache.commons.io.FileUtils);
 
+// HTML parsing with JSoup
+importClass(org.jsoup.Jsoup);
+
 var _log = "";
 
 function loginfo(s) {
