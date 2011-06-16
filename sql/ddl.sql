@@ -252,7 +252,7 @@ CREATE TABLE `tPluginOptions` (
 INSERT INTO `tPluginOptions` VALUES
 		### Render plugin options ###
 	  ( '4010_837p', 'org.remitt.plugin.render.XsltPlugin', 'ANSI X12 4010 837 Professional', '0.1', 'jeff@freemedsoftware.org', 'render', NULL, 'x12xml' )
-	  ( '5010_837p', 'org.remitt.plugin.render.XsltPlugin', 'ANSI X12 5010 837 Professional', '0.1', 'jeff@freemedsoftware.org', 'render', NULL, 'x12xml' )
+	, ( '5010_837p', 'org.remitt.plugin.render.XsltPlugin', 'ANSI X12 5010 837 Professional', '0.1', 'jeff@freemedsoftware.org', 'render', NULL, 'x12xml' )
 	, ( 'cms1500', 'org.remitt.plugin.render.XsltPlugin', 'CMS HCFA-1500', '0.1', 'jeff@freemedsoftware.org', 'render', NULL, 'fixedformxml' )
 	, ( 'statement', 'org.remitt.plugin.render.XsltPlugin', 'Patient Statement', '0.1', 'jeff@freemedsoftware.org', 'render', NULL, 'statementxml' )
 		### Transport plugin options ###
