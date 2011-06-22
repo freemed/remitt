@@ -56,7 +56,8 @@ function populateFieldFromFrame(f) {
 				<tr>
 					<td>Option :</td>
 					<td><select name="option">
-						<option value="837p">837P</option>
+						<option value="4010_837p">4010 X12 837P</option>
+						<option value="5010_837p">5010 X12 837P</option>
 						<option value="hcfa1500">HCFA-1500/CMS-1500</option>
 					</select></td>
 				</tr>
