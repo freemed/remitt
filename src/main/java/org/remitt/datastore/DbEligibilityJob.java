@@ -31,6 +31,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.remitt.prototype.EligibilityJob;
@@ -44,7 +45,7 @@ public class DbEligibilityJob {
 	static final Logger log = Logger.getLogger(DbEligibilityJob.class);
 
 	public static boolean addEligibilityJob(String username, String plugin,
-			HashMap<EligibilityParameter, String> payload) {
+			Map<EligibilityParameter, String> payload) {
 		Connection c = Configuration.getConnection();
 
 		boolean success = false;

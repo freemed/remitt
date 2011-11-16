@@ -30,7 +30,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -48,7 +47,7 @@ import org.remitt.datastore.KeyringStore;
 import org.remitt.datastore.UserManagement;
 import org.remitt.prototype.ConfigurationOption;
 import org.remitt.prototype.EligibilityInterface;
-import org.remitt.prototype.EligibilityParameter;
+import org.remitt.prototype.EligibilityRequest;
 import org.remitt.prototype.EligibilityResponse;
 import org.remitt.prototype.FileListingItem;
 import org.remitt.prototype.ParserInterface;
@@ -459,7 +458,7 @@ public class ServiceImpl implements Service {
 	@Produces("application/json")
 	@Override
 	public EligibilityResponse getEligibility(String plugin,
-			HashMap<EligibilityParameter, String> parameters) {
+			EligibilityRequest parameters) {
 		String userName = getCurrentUserName();
 
 		EligibilityInterface p = null;
@@ -476,7 +475,7 @@ public class ServiceImpl implements Service {
 			return null;
 		}
 		try {
-			return p.checkEligibility(userName, parameters);
+			return p.checkEligibility(userName, parameters.getRequest());
 		} catch (Exception e) {
 			log.error(e);
 			return null;
@@ -488,10 +487,11 @@ public class ServiceImpl implements Service {
 	@Produces("application/json")
 	@Override
 	public Integer batchEligibilityCheck(String plugin,
-			HashMap<EligibilityParameter, String>[] parameters) {
+			EligibilityRequest[] parameters) {
 		String userName = getCurrentUserName();
-		for (HashMap<EligibilityParameter, String> param : parameters) {
-			DbEligibilityJob.addEligibilityJob(userName, plugin, param);
+		for (EligibilityRequest param : parameters) {
+			DbEligibilityJob.addEligibilityJob(userName, plugin,
+					param.getRequest());
 		}
 		return 1;
 	}

@@ -26,8 +26,8 @@ package org.remitt.plugin.eligibility;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.rpc.ServiceException;
 
@@ -66,7 +66,7 @@ public class GatewayEDIEligibility implements EligibilityInterface {
 
 	@Override
 	public EligibilityResponse checkEligibility(String userName,
-			HashMap<EligibilityParameter, String> values) throws Exception {
+			Map<EligibilityParameter, String> values) throws Exception {
 		// Make a service
 		Eligibility service = new EligibilityLocator();
 
@@ -206,8 +206,8 @@ public class GatewayEDIEligibility implements EligibilityInterface {
 	}
 
 	protected void addNameValue(List<MyNameValue> dest,
-			HashMap<EligibilityParameter, String> map, EligibilityParameter mapName,
-			String name) {
+			Map<EligibilityParameter, String> map,
+			EligibilityParameter mapName, String name) {
 		if (map.get(mapName) != null) {
 			MyNameValue nv = new MyNameValue();
 			nv.setName(name);

@@ -24,15 +24,13 @@
 
 package org.remitt.server;
 
-import java.util.HashMap;
-
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.ws.rs.PathParam;
 
 import org.apache.cxf.annotations.GZIP;
 import org.remitt.prototype.ConfigurationOption;
-import org.remitt.prototype.EligibilityParameter;
+import org.remitt.prototype.EligibilityRequest;
 import org.remitt.prototype.EligibilityResponse;
 import org.remitt.prototype.FileListingItem;
 import org.remitt.prototype.UserDTO;
@@ -211,7 +209,7 @@ public interface Service {
 	 */
 	public EligibilityResponse getEligibility(
 			@PathParam("plugin") @WebParam(name = "plugin") String plugin,
-			@PathParam("parameters") @WebParam(name = "parameters") HashMap<EligibilityParameter, String> parameters);
+			@PathParam("parameters") @WebParam(name = "parameters") EligibilityRequest parameters);
 
 	/**
 	 * Insert batches of eligibility checks.
@@ -222,7 +220,7 @@ public interface Service {
 	 */
 	public Integer batchEligibilityCheck(
 			@PathParam("plugin") @WebParam(name = "plugin") String plugin,
-			@PathParam("parameters") @WebParam(name = "parameters") HashMap<EligibilityParameter, String>[] parameters);
+			@PathParam("parameters") @WebParam(name = "parameters") EligibilityRequest[] parameters);
 
 	/**
 	 * Use a REMITT parser to parse source data.

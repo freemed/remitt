@@ -24,17 +24,24 @@
 
 package org.remitt.prototype;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public interface EligibilityInterface {
+public class EligibilityRequest implements Serializable {
 
-	public String getPluginName();
+	private static final long serialVersionUID = -7314219097240200502L;
 
-	public Double getPluginVersion();
+	private Map<EligibilityParameter, String> request;
 
-	public EligibilityResponse checkEligibility(String userName,
-			Map<EligibilityParameter, String> values) throws Exception;
+	public EligibilityRequest() {
+	}
 
-	public String[] getPluginConfigurationOptions();
+	public Map<EligibilityParameter, String> getRequest() {
+		return request;
+	}
+
+	public void setRequest(Map<EligibilityParameter, String> request) {
+		this.request = request;
+	}
 
 }
