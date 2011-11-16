@@ -24,9 +24,11 @@
 
 package org.remitt.prototype;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang.StringUtils;
 
-public class UserDTO {
+public class UserDTO implements Serializable {
 
 	private static final long serialVersionUID = 2010032100000L;
 

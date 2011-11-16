@@ -26,6 +26,7 @@ package org.remitt.prototype;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,7 +51,9 @@ import org.simpleframework.xml.core.Persister;
  * 
  * @author jeff@freemedsoftware.org
  */
-abstract public class X12Message {
+abstract public class X12Message implements Serializable {
+
+	private static final long serialVersionUID = -8011700358920064779L;
 
 	static final Logger log = Logger.getLogger(X12Message.class);
 
