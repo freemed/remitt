@@ -386,6 +386,24 @@ CREATE TABLE `tFileStore` (
 DROP VIEW IF EXISTS vFileStore;
 CREATE VIEW vFileStore AS SELECT id, user, stamp, category, filename, payloadId, processorId, contentsize FROM tFileStore;
 
+### Eligibility ###
+
+DROP TABLE IF EXISTS `tEligibilityJobs`;
+
+CREATE TABLE `tEligibilityJobs` (
+	  id		SERIAL
+	, user		VARCHAR(50) NOT NULL
+	, inserted	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+	, processed	TIMESTAMP NULL DEFAULT NULL
+	, plugin	VARCHAR (100) NOT NULL
+	, payload	LONGBLOB
+	, response	LONGBLOB
+	, completed	BOOL NOT NULL DEFAULT FALSE
+
+	# Keys
+	, FOREIGN KEY ( user ) REFERENCES tUser.username ON DELETE CASCADE
+);
+
 ### Scooper ###
 
 DROP TABLE IF EXISTS `tScooper`;

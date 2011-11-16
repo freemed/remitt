@@ -42,11 +42,13 @@ import javax.ws.rs.Produces;
 import javax.xml.ws.WebServiceContext;
 
 import org.apache.log4j.Logger;
+import org.remitt.datastore.DbEligibilityJob;
 import org.remitt.datastore.DbFileStore;
 import org.remitt.datastore.KeyringStore;
 import org.remitt.datastore.UserManagement;
 import org.remitt.prototype.ConfigurationOption;
 import org.remitt.prototype.EligibilityInterface;
+import org.remitt.prototype.EligibilityParameter;
 import org.remitt.prototype.EligibilityResponse;
 import org.remitt.prototype.FileListingItem;
 import org.remitt.prototype.ParserInterface;
@@ -457,7 +459,7 @@ public class ServiceImpl implements Service {
 	@Produces("application/json")
 	@Override
 	public EligibilityResponse getEligibility(String plugin,
-			HashMap<String, String> parameters) {
+			HashMap<EligibilityParameter, String> parameters) {
 		String userName = getCurrentUserName();
 
 		EligibilityInterface p = null;
@@ -479,6 +481,19 @@ public class ServiceImpl implements Service {
 			log.error(e);
 			return null;
 		}
+	}
+
+	@POST
+	@Path("eligibilitybatch")
+	@Produces("application/json")
+	@Override
+	public Integer batchEligibilityCheck(String plugin,
+			HashMap<EligibilityParameter, String>[] parameters) {
+		String userName = getCurrentUserName();
+		for (HashMap<EligibilityParameter, String> param : parameters) {
+			DbEligibilityJob.addEligibilityJob(userName, plugin, param);
+		}
+		return 1;
 	}
 
 	@POST

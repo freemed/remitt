@@ -35,6 +35,7 @@ import org.apache.axis.client.Call;
 import org.apache.axis.client.Stub;
 import org.apache.log4j.Logger;
 import org.remitt.prototype.EligibilityInterface;
+import org.remitt.prototype.EligibilityParameter;
 import org.remitt.prototype.EligibilityResponse;
 import org.remitt.prototype.EligibilityStatus;
 import org.remitt.prototype.EligibilitySuccessCode;
@@ -65,7 +66,7 @@ public class GatewayEDIEligibility implements EligibilityInterface {
 
 	@Override
 	public EligibilityResponse checkEligibility(String userName,
-			HashMap<String, String> values) throws Exception {
+			HashMap<EligibilityParameter, String> values) throws Exception {
 		// Make a service
 		Eligibility service = new EligibilityLocator();
 
@@ -82,38 +83,56 @@ public class GatewayEDIEligibility implements EligibilityInterface {
 		}
 
 		List<MyNameValue> params = new ArrayList<MyNameValue>();
-		addNameValue(params, values, ELIGIBILITY_PARAMETER_NPI, "NPI");
-		addNameValue(params, values, ELIGIBILITY_PARAMETER_INSURANCE_ID,
+		addNameValue(params, values,
+				EligibilityParameter.ELIGIBILITY_PARAMETER_NPI, "NPI");
+		addNameValue(params, values,
+				EligibilityParameter.ELIGIBILITY_PARAMETER_INSURANCE_ID,
 				"InsuranceNum");
-		addNameValue(params, values, ELIGIBILITY_PARAMETER_INSURED_LAST_NAME,
+		addNameValue(params, values,
+				EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_LAST_NAME,
 				"InsuredLastName");
-		addNameValue(params, values, ELIGIBILITY_PARAMETER_INSURED_FIRST_NAME,
+		addNameValue(params, values,
+				EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_FIRST_NAME,
 				"InsuredFirstName");
-		addNameValue(params, values, ELIGIBILITY_PARAMETER_INSURED_DOB,
+		addNameValue(params, values,
+				EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_DOB,
 				"InsuredDob");
-		addNameValue(params, values, ELIGIBILITY_PARAMETER_INSURED_GENDER,
+		addNameValue(params, values,
+				EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_GENDER,
 				"InsuredGender");
-		addNameValue(params, values, ELIGIBILITY_PARAMETER_INSURED_STATE,
+		addNameValue(params, values,
+				EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_STATE,
 				"InsuredState");
-		addNameValue(params, values, ELIGIBILITY_PARAMETER_INSURED_SSN,
+		addNameValue(params, values,
+				EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_SSN,
 				"InsuredSsn");
-		addNameValue(params, values, ELIGIBILITY_PARAMETER_DEPENDENT_LAST_NAME,
+		addNameValue(params, values,
+				EligibilityParameter.ELIGIBILITY_PARAMETER_DEPENDENT_LAST_NAME,
 				"DependentLastName");
-		addNameValue(params, values,
-				ELIGIBILITY_PARAMETER_DEPENDENT_FIRST_NAME,
+		addNameValue(
+				params,
+				values,
+				EligibilityParameter.ELIGIBILITY_PARAMETER_DEPENDENT_FIRST_NAME,
 				"DependentFirstName");
-		addNameValue(params, values, ELIGIBILITY_PARAMETER_DEPENDENT_DOB,
-				"DependentDob");
-		addNameValue(params, values, ELIGIBILITY_PARAMETER_DEPENDENT_GENDER,
-				"DependentGender");
 		addNameValue(params, values,
-				ELIGIBILITY_PARAMETER_DEPENDENT_RELATIONSHIP,
+				EligibilityParameter.ELIGIBILITY_PARAMETER_DEPENDENT_DOB,
+				"DependentDob");
+		addNameValue(params, values,
+				EligibilityParameter.ELIGIBILITY_PARAMETER_DEPENDENT_GENDER,
+				"DependentGender");
+		addNameValue(
+				params,
+				values,
+				EligibilityParameter.ELIGIBILITY_PARAMETER_DEPENDENT_RELATIONSHIP,
 				"DependentRelationshipCode");
-		addNameValue(params, values, ELIGIBILITY_PARAMETER_SERVICE_TYPE,
+		addNameValue(params, values,
+				EligibilityParameter.ELIGIBILITY_PARAMETER_SERVICE_TYPE,
 				"ServiceTypeCode");
-		addNameValue(params, values, ELIGIBILITY_PARAMETER_CARD_ISSUE_DATE,
+		addNameValue(params, values,
+				EligibilityParameter.ELIGIBILITY_PARAMETER_CARD_ISSUE_DATE,
 				"CardIssueDate");
-		addNameValue(params, values, ELIGIBILITY_PARAMETER_GROUP_NUMBER,
+		addNameValue(params, values,
+				EligibilityParameter.ELIGIBILITY_PARAMETER_GROUP_NUMBER,
 				"GroupNumber");
 
 		// Set HTTP Authentication:
@@ -187,7 +206,8 @@ public class GatewayEDIEligibility implements EligibilityInterface {
 	}
 
 	protected void addNameValue(List<MyNameValue> dest,
-			HashMap<String, String> map, String mapName, String name) {
+			HashMap<EligibilityParameter, String> map, EligibilityParameter mapName,
+			String name) {
 		if (map.get(mapName) != null) {
 			MyNameValue nv = new MyNameValue();
 			nv.setName(name);

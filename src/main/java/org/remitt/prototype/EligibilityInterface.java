@@ -28,29 +28,12 @@ import java.util.HashMap;
 
 public interface EligibilityInterface {
 
-	public final String ELIGIBILITY_PARAMETER_NPI = "npi";
-	public final String ELIGIBILITY_PARAMETER_INSURANCE_ID = "insuranceId";
-	public final String ELIGIBILITY_PARAMETER_INSURED_LAST_NAME = "insuredLastName";
-	public final String ELIGIBILITY_PARAMETER_INSURED_FIRST_NAME = "insuredFirstName";
-	public final String ELIGIBILITY_PARAMETER_INSURED_DOB = "insuredDateOfBirth";
-	public final String ELIGIBILITY_PARAMETER_INSURED_GENDER = "insuredGender";
-	public final String ELIGIBILITY_PARAMETER_INSURED_STATE = "insuredState";
-	public final String ELIGIBILITY_PARAMETER_INSURED_SSN = "insuredSsn";
-	public final String ELIGIBILITY_PARAMETER_DEPENDENT_LAST_NAME = "dependentLastName";
-	public final String ELIGIBILITY_PARAMETER_DEPENDENT_FIRST_NAME = "dependentFirstName";
-	public final String ELIGIBILITY_PARAMETER_DEPENDENT_DOB = "dependentDateOfBirth";
-	public final String ELIGIBILITY_PARAMETER_DEPENDENT_GENDER = "dependentGender";
-	public final String ELIGIBILITY_PARAMETER_DEPENDENT_RELATIONSHIP = "dependentRelationship";
-	public final String ELIGIBILITY_PARAMETER_SERVICE_TYPE = "serviceType";
-	public final String ELIGIBILITY_PARAMETER_CARD_ISSUE_DATE = "cardIssueDate";
-	public final String ELIGIBILITY_PARAMETER_GROUP_NUMBER = "groupId";
-
 	public String getPluginName();
 
 	public Double getPluginVersion();
 
 	public EligibilityResponse checkEligibility(String userName,
-			HashMap<String, String> values) throws Exception;
+			HashMap<EligibilityParameter, String> values) throws Exception;
 
 	public String[] getPluginConfigurationOptions();
 

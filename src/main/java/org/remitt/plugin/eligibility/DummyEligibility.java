@@ -28,6 +28,7 @@ import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 import org.remitt.prototype.EligibilityInterface;
+import org.remitt.prototype.EligibilityParameter;
 import org.remitt.prototype.EligibilityResponse;
 import org.remitt.prototype.EligibilitySuccessCode;
 
@@ -47,7 +48,7 @@ public class DummyEligibility implements EligibilityInterface {
 
 	@Override
 	public EligibilityResponse checkEligibility(String userName,
-			HashMap<String, String> values) throws Exception {
+			HashMap<EligibilityParameter, String> values) throws Exception {
 		log.info("Started dummy eligibility check for user " + userName);
 		EligibilityResponse r = new EligibilityResponse();
 
