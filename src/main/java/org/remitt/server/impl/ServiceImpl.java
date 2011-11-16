@@ -457,13 +457,12 @@ public class ServiceImpl implements Service {
 	@Path("eligibility")
 	@Produces("application/json")
 	@Override
-	public EligibilityResponse getEligibility(String plugin,
-			EligibilityRequest parameters) {
+	public EligibilityResponse getEligibility(EligibilityRequest request) {
 		String userName = getCurrentUserName();
 
 		EligibilityInterface p = null;
 		try {
-			p = (EligibilityInterface) Class.forName(plugin).newInstance();
+			p = (EligibilityInterface) Class.forName(request.getPlugin()).newInstance();
 		} catch (InstantiationException e) {
 			log.error(e);
 			return null;
@@ -475,7 +474,7 @@ public class ServiceImpl implements Service {
 			return null;
 		}
 		try {
-			return p.checkEligibility(userName, parameters.getRequest());
+			return p.checkEligibility(userName, request.getRequest());
 		} catch (Exception e) {
 			log.error(e);
 			return null;
@@ -486,11 +485,10 @@ public class ServiceImpl implements Service {
 	@Path("eligibilitybatch")
 	@Produces("application/json")
 	@Override
-	public Integer batchEligibilityCheck(String plugin,
-			EligibilityRequest[] parameters) {
+	public Integer batchEligibilityCheck(EligibilityRequest[] requests) {
 		String userName = getCurrentUserName();
-		for (EligibilityRequest param : parameters) {
-			DbEligibilityJob.addEligibilityJob(userName, plugin,
+		for (EligibilityRequest param : requests) {
+			DbEligibilityJob.addEligibilityJob(userName, param.getPlugin(),
 					param.getRequest());
 		}
 		return 1;

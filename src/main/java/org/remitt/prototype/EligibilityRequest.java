@@ -31,9 +31,18 @@ public class EligibilityRequest implements Serializable {
 
 	private static final long serialVersionUID = -7314219097240200502L;
 
+	private String plugin;
 	private Map<EligibilityParameter, String> request;
 
 	public EligibilityRequest() {
+	}
+
+	public String getPlugin() {
+		return plugin;
+	}
+
+	public void setPlugin(String plugin) {
+		this.plugin = plugin;
 	}
 
 	public Map<EligibilityParameter, String> getRequest() {

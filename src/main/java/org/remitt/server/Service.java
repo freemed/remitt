@@ -203,24 +203,20 @@ public interface Service {
 	/**
 	 * Check for eligibility.
 	 * 
-	 * @param plugin
-	 * @param parameters
+	 * @param request
 	 * @return
 	 */
 	public EligibilityResponse getEligibility(
-			@PathParam("plugin") @WebParam(name = "plugin") String plugin,
-			@PathParam("parameters") @WebParam(name = "parameters") EligibilityRequest parameters);
+			@PathParam("request") @WebParam(name = "request") EligibilityRequest request);
 
 	/**
 	 * Insert batches of eligibility checks.
 	 * 
-	 * @param plugin
-	 * @param parameters
+	 * @param requests
 	 * @return
 	 */
 	public Integer batchEligibilityCheck(
-			@PathParam("plugin") @WebParam(name = "plugin") String plugin,
-			@PathParam("parameters") @WebParam(name = "parameters") EligibilityRequest[] parameters);
+			@PathParam("requests") @WebParam(name = "requests") EligibilityRequest[] requests);
 
 	/**
 	 * Use a REMITT parser to parse source data.
