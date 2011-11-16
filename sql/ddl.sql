@@ -359,7 +359,10 @@ CREATE TABLE `tJobs` (
 	, jobEnabled	BOOL NOT NULL DEFAULT TRUE
 );
 
-INSERT INTO tJobs VALUES ( 1, '* * * * *', 'org.remitt.server.tasks.ScooperTask', TRUE );
+INSERT INTO tJobs VALUES
+	  ( 1, '* * * * *', 'org.remitt.server.tasks.ScooperTask', TRUE )
+	, ( 2, '*/30 * * * *', 'org.remitt.server.tasks.EligibiltyTask', TRUE )
+;
 
 ### File Store ###
 
