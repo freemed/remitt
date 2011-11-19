@@ -77,6 +77,11 @@ public class Payee implements X12DTO {
 				this.identification.add(new Identification(iter.next()));
 			}
 		}
+		Segment RDM = X12Message.findSegmentByComparator(in,
+				new SegmentComparator("RDM"));
+		if (RDM != null) {
+
+		}
 	}
 
 	public String getIdNumber() {

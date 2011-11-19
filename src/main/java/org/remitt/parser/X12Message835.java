@@ -82,7 +82,8 @@ public class X12Message835 extends X12Message implements ParserInterface {
 						new SegmentComparator("N1", 1, new String[] { "PE" }),
 						new SegmentComparator("N3"),
 						new SegmentComparator("N4"),
-						new SegmentComparator("REF") });
+						new SegmentComparator("REF"),
+						new SegmentComparator("RDM") });
 				Payee payee = new Payee(loop1000b);
 				while (isNextSegmentIdentifier("LX")) {
 					debug.println("***** Loop 2000 *****");
