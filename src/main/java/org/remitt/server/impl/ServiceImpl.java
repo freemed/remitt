@@ -41,6 +41,10 @@ import javax.ws.rs.Produces;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
+import org.apache.cxf.headers.Header;
+import org.apache.cxf.helpers.CastUtils;
+import org.apache.cxf.jaxws.context.WrappedMessageContext;
+import org.apache.cxf.message.Message;
 import org.apache.log4j.Logger;
 import org.remitt.datastore.DbEligibilityJob;
 import org.remitt.datastore.DbFileStore;
@@ -110,10 +114,27 @@ public class ServiceImpl implements Service {
 	@Produces("application/json")
 	public String getCurrentUserName() {
 		MessageContext ctx = context.getMessageContext();
+
 		if (ctx != null) {
-			return (String) ctx.get("principal");
+			Message message = ((WrappedMessageContext) ctx).getWrappedMessage();
+			List<Header> headers = CastUtils.cast((List<?>) message
+					.get(Header.HEADER_LIST));
+			if (headers != null) {
+				for (Header h : headers) {
+					if (h.getName().toString().equals("X-Principal-Username")) {
+						log.info("Found user '" + (String) h.getObject()
+								+ " in X-Principal-Username header.");
+						return (String) h.getObject();
+					}
+				}
+			}
+		} else {
+			log.error("MessageContext is null!");
 		}
-		return context.getUserPrincipal().getName();
+
+		// Fall back if everything else fails!
+		log.error("Hack! Hack! We failed to get the username from the backend!");
+		return "Administrator"; // TODO: FIXME: BROKEN!!: XXX
 	}
 
 	@POST

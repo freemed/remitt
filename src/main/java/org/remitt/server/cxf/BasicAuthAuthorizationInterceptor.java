@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.cxf.binding.soap.interceptor.SoapHeaderInterceptor;
 import org.apache.cxf.configuration.security.AuthorizationPolicy;
@@ -51,6 +52,7 @@ import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.jaxrs.ext.MessageContextImpl;
+import org.apache.cxf.jaxrs.impl.MetadataMap;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.transport.Conduit;
@@ -83,6 +85,10 @@ public class BasicAuthAuthorizationInterceptor extends SoapHeaderInterceptor {
 	/** Map of allowed users to this system with their corresponding passwords. */
 	private static Map<String, String> users = null;
 
+	private static Long lastCached = null;
+	
+	private static Long MAX_CACHE_AGE_IN_MS = 5 * 60 * 1000L; // 5 min
+	
 	/* -Required */
 	public void setUsers(Map<String, String> u) {
 		users = u;
@@ -93,7 +99,8 @@ public class BasicAuthAuthorizationInterceptor extends SoapHeaderInterceptor {
 	 */
 	protected void loadUsers() {
 		debug("BasicAuthAuthorizationInterceptor.loadUsers() called");
-		if (users == null) {
+		if (lastCached == null || System.currentTimeMillis() - lastCached > MAX_CACHE_AGE_IN_MS) {
+			lastCached = System.currentTimeMillis();
 			debug("BasicAuthAuthorizationInterceptor.loadUsers(): users not loaded, loading");
 			Configuration.loadConfiguration();
 			Connection conn = Configuration.getConnection();
@@ -177,7 +184,11 @@ public class BasicAuthAuthorizationInterceptor extends SoapHeaderInterceptor {
 			messageContext = new MessageContextImpl(message);
 			messageContext.put("principal", policy.getUserName());
 		}
-		message.setContextualProperty("principal", policy.getUserName());
+
+		MultivaluedMap<String, Object> headers = new MetadataMap<String, Object>();
+		headers.putSingle("X-Principal-Username", policy.getUserName());
+		message.put(Message.PROTOCOL_HEADERS, headers);
+
 		message.getInterceptorChain().resume();
 	}
 
