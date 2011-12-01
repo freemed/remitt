@@ -20,6 +20,7 @@ public class RemittRemoteServicesServlet extends CXFNonSpringServlet {
 		BusFactory.setDefaultBus(bus);
 		ServerFactoryBean factory = new ServerFactoryBean();
 		factory.setBus(bus);
+		factory.getInInterceptors().add(new BasicAuthAuthorizationInterceptor());
 		factory.setServiceClass(ServiceImpl.class);
 		factory.setAddress("/interface");
 		factory.create();

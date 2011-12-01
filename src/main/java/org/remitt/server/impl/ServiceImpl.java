@@ -39,6 +39,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
 
 import org.apache.log4j.Logger;
 import org.remitt.datastore.DbEligibilityJob;
@@ -61,6 +62,7 @@ import org.remitt.server.Service;
 
 @WebService(targetNamespace = "http://server.remitt.org/", endpointInterface = "org.remitt.server.Service", serviceName = "RemittService")
 public class ServiceImpl implements Service {
+
 	@Resource
 	WebServiceContext context;
 
@@ -107,6 +109,10 @@ public class ServiceImpl implements Service {
 	@Path("username")
 	@Produces("application/json")
 	public String getCurrentUserName() {
+		MessageContext ctx = context.getMessageContext();
+		if (ctx != null) {
+			return (String) ctx.get("principal");
+		}
 		return context.getUserPrincipal().getName();
 	}
 
@@ -462,7 +468,8 @@ public class ServiceImpl implements Service {
 
 		EligibilityInterface p = null;
 		try {
-			p = (EligibilityInterface) Class.forName(request.getPlugin()).newInstance();
+			p = (EligibilityInterface) Class.forName(request.getPlugin())
+					.newInstance();
 		} catch (InstantiationException e) {
 			log.error(e);
 			return null;

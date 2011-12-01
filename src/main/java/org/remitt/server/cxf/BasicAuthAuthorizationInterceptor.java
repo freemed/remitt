@@ -43,10 +43,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.core.Context;
+
 import org.apache.cxf.binding.soap.interceptor.SoapHeaderInterceptor;
 import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.interceptor.Fault;
+import org.apache.cxf.jaxrs.ext.MessageContext;
+import org.apache.cxf.jaxrs.ext.MessageContextImpl;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.transport.Conduit;
@@ -56,6 +60,9 @@ import org.remitt.server.Configuration;
 import org.remitt.server.DbUtil;
 
 public class BasicAuthAuthorizationInterceptor extends SoapHeaderInterceptor {
+
+	@Context
+	private MessageContext messageContext;
 
 	protected boolean DEBUG = true;
 
@@ -163,6 +170,14 @@ public class BasicAuthAuthorizationInterceptor extends SoapHeaderInterceptor {
 			sendErrorResponse(message, HttpURLConnection.HTTP_FORBIDDEN);
 		}
 		debug("Message should be clear to finish being handled, auth succeeded");
+		if (messageContext != null) {
+			debug("MessageContext object set");
+			messageContext.put("principal", policy.getUserName());
+		} else {
+			messageContext = new MessageContextImpl(message);
+			messageContext.put("principal", policy.getUserName());
+		}
+		message.setContextualProperty("principal", policy.getUserName());
 		message.getInterceptorChain().resume();
 	}
 
@@ -175,10 +190,10 @@ public class BasicAuthAuthorizationInterceptor extends SoapHeaderInterceptor {
 		Map<String, List<String>> responseHeaders = (Map<String, List<String>>) message
 				.get(Message.PROTOCOL_HEADERS);
 		if (responseHeaders != null) {
-			responseHeaders.put("WWW-Authenticate", Arrays
-					.asList(new String[] { "Basic realm=" + REALM }));
-			responseHeaders.put("Content-length", Arrays
-					.asList(new String[] { "0" }));
+			responseHeaders.put("WWW-Authenticate",
+					Arrays.asList(new String[] { "Basic realm=" + REALM }));
+			responseHeaders.put("Content-length",
+					Arrays.asList(new String[] { "0" }));
 		}
 		message.getInterceptorChain().abort();
 		try {
