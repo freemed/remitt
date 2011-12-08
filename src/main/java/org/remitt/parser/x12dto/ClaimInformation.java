@@ -80,7 +80,9 @@ public class ClaimInformation implements X12DTO {
 		List<String> serviceCodeComposite = Arrays.asList(SVC.getElement(1)
 				.split("\\|"));
 		this.serviceCodeQualifier = serviceCodeComposite.get(0);
-		this.serviceCode = serviceCodeComposite.get(1);
+		try {
+			this.serviceCode = serviceCodeComposite.get(1);
+		} catch (Exception ex) { }
 		for (int iter = 3; iter <= 6; iter++) {
 			// Jump out of the loop if we have nothing
 			if (iter > serviceCodeComposite.size()) {

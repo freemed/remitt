@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.lang.Double;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -79,6 +80,13 @@ abstract public class X12Message implements Serializable {
 	 */
 	public X12Message(String rawMessage) throws FormatException {
 		parse(rawMessage);
+	}
+
+	public static Double safeDouble(String s) {
+		if (s == null || s.length() == 0) {
+			return new Double(0.0);
+		}
+		return Double.parseDouble(s);
 	}
 
 	/**

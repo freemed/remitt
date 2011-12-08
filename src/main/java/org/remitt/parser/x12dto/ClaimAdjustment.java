@@ -128,7 +128,7 @@ public class ClaimAdjustment implements X12DTO {
 		this.adjustmentGroup = this.adjustmentGroupCodeLookup
 				.get(this.adjustmentGroupCode);
 		this.adjustmentReasonCode = X12Message.getSafeElement(CAS, 2);
-		this.adjustmentAmount = Double.parseDouble(X12Message.getSafeElement(
+		this.adjustmentAmount = X12Message.safeDouble(X12Message.getSafeElement(
 				CAS, 3));
 		// Attempt to populate "reasons"
 		for (int iter = 4; iter < 19; iter += 3) {

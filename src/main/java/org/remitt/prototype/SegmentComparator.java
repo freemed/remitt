@@ -56,6 +56,10 @@ public class SegmentComparator {
 	}
 
 	public boolean check(Segment s) {
+		if (s == null || segmentIdentifier == null) {
+			return false;
+		}
+
 		// Deal with simple cases first
 		if (qualifierSegment == null || qualifiers == null) {
 			if (segmentIdentifier.equals(s.getElement(0))) {

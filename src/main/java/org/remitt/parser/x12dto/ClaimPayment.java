@@ -121,11 +121,11 @@ public class ClaimPayment implements X12DTO {
 			break;
 		}
 
-		this.claimTotalAmount = Double.parseDouble(X12Message.getSafeElement(
+		this.claimTotalAmount = X12Message.safeDouble(X12Message.getSafeElement(
 				CLP, 3));
-		this.claimPaidAmount = Double.parseDouble(X12Message.getSafeElement(
+		this.claimPaidAmount = X12Message.safeDouble(X12Message.getSafeElement(
 				CLP, 4));
-		this.claimPatientResponsibilityAmount = Double.parseDouble(X12Message
+		this.claimPatientResponsibilityAmount = X12Message.safeDouble(X12Message
 				.getSafeElement(CLP, 5));
 		this.claimType = X12Message.getSafeElement(CLP, 6);
 
