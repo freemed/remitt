@@ -26,7 +26,7 @@ package org.remitt.prototype;
 
 public enum EligibilityStatus {
 	OK("OK"), BAD("BAD"), CONTINUATION("CONTINUATION"), SERVER_ERROR(
-			"SERVER_ERROR");
+			"SERVER_ERROR"), PROCESSING("PROCESSING");
 
 	private final String value;
 
