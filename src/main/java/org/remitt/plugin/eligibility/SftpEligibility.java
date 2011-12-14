@@ -72,6 +72,7 @@ public class SftpEligibility implements EligibilityInterface {
 			Map<EligibilityParameter, String> values) throws Exception {
 		// Form X12 5010 270 message
 		X12 m = new X12(new Context());
+		Integer segmentCount = 0;
 
 		{
 			// ST : ST*270*0001*005010X279A1~
@@ -79,6 +80,7 @@ public class SftpEligibility implements EligibilityInterface {
 			ST.addElement(1, "270");
 			ST.addElement(2, "0001"); // FIXME: should increment
 			ST.addElement(3, "005010X279A1");
+			segmentCount++;
 		}
 
 		{
@@ -96,6 +98,7 @@ public class SftpEligibility implements EligibilityInterface {
 																					// FIXME
 			// BHT.addElement(6, ""); // RT = spend down, RU = medical services
 			// reservation
+			segmentCount++;
 		}
 
 		// Loop 2000
@@ -107,6 +110,7 @@ public class SftpEligibility implements EligibilityInterface {
 			HL.addElement(2, "");
 			HL.addElement(3, "20"); // 20 = information source
 			HL.addElement(4, "1"); // 1 = additional HL segments
+			segmentCount++;
 		}
 
 		// Loop 2100A
@@ -123,6 +127,7 @@ public class SftpEligibility implements EligibilityInterface {
 			NM1.addElement(7, "");
 			NM1.addElement(8, "PI"); // PI = payer identifier
 			NM1.addElement(8, getETIN());
+			segmentCount++;
 		}
 
 		// Loop 2000B
@@ -134,14 +139,146 @@ public class SftpEligibility implements EligibilityInterface {
 			HL.addElement(2, "1"); // parent number
 			HL.addElement(3, "21"); // 21 = information receiver
 			HL.addElement(4, "1");
+			segmentCount++;
 		}
 
 		// Loop 2100B
 
 		{
 			// NM1 :
+			Segment NM1 = m.addSegment();
+			NM1.addElement(1, "1P"); // 1P = provider
+			NM1.addElement(2, "1"); // entity type person
+			NM1.addElement(3, ""); // last name
+			NM1.addElement(4, ""); // first name
+			NM1.addElement(5, ""); // middle name
+			NM1.addElement(6, ""); // prefix
+			NM1.addElement(7, ""); // suffix
+			NM1.addElement(8, "XX"); // XX = NPI
+			NM1.addElement(9, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_NPI)); // NPI identifier
+			segmentCount++;
 		}
 
+		if (false)
+		{
+			Segment REF = m.addSegment();
+			REF.addElement(1, "");
+			REF.addElement(2, "");
+			REF.addElement(3, "");
+			segmentCount++;
+		}
+		
+		{
+			Segment N3 = m.addSegment();
+			N3.addElement(1, ""); // address line 1
+			N3.addElement(2, ""); // address line 2
+			segmentCount++;
+		}
+
+		{
+			Segment N4 = m.addSegment();
+			N4.addElement(1, ""); // city
+			N4.addElement(2, ""); // state
+			N4.addElement(3, ""); // postal code
+			segmentCount++;
+		}
+		
+		// Loop 2000C: Subscriber Level
+		
+		{
+			// HL : HL*3*2*22*1~
+			Segment HL = m.addSegment();
+			HL.addElement(1, "3");
+			HL.addElement(2, "2");
+			HL.addElement(3, "22"); // 22 = subscriber level
+			HL.addElement(4, "1"); // 1 = additional HL segments
+			segmentCount++;
+		}
+		
+		// TRN segment, situational
+		
+		// Loop 2100C: Subscriber name
+
+		{
+			// NM1 :
+			Segment NM1 = m.addSegment();
+			NM1.addElement(1, "IL"); // IL = insured/subscribed
+			NM1.addElement(2, "1"); // entity type person
+			NM1.addElement(3, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_LAST_NAME)); // last name
+			NM1.addElement(4, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_FIRST_NAME)); // first name
+			NM1.addElement(5, ""); // middle name
+			NM1.addElement(6, ""); // prefix
+			NM1.addElement(7, ""); // suffix
+			NM1.addElement(8, "MI"); // MI = member identification number
+			NM1.addElement(9, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURANCE_ID));
+			segmentCount++;
+		}
+
+		if (false)
+		{
+			Segment REF = m.addSegment();
+			REF.addElement(1, "");
+			REF.addElement(2, "");
+			REF.addElement(3, "");
+			segmentCount++;
+		}
+		
+		{
+			Segment N3 = m.addSegment();
+			N3.addElement(1, ""); // address line 1
+			N3.addElement(2, ""); // address line 2
+			segmentCount++;
+		}
+
+		{
+			Segment N4 = m.addSegment();
+			N4.addElement(1, ""); // city
+			N4.addElement(2, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_STATE)); // state
+			N4.addElement(3, ""); // postal code
+			segmentCount++;
+		}
+		
+		// PRV - Provider Information
+		
+		// DMG - Subscriber demographic information
+		{
+			Segment DMG = m.addSegment();
+			DMG.addElement(1, "D8"); // D8 = DOB
+			DMG.addElement(2, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_DOB)); // DOB
+			DMG.addElement(3, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_GENDER)); // gender
+			segmentCount++;
+		}		
+
+		// DMG - Subscriber demographic information
+		{
+			Segment DMG = m.addSegment();
+			DMG.addElement(1, "102"); // issue
+			DMG.addElement(2, "D8"); // D8 = date
+			DMG.addElement(3, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_CARD_ISSUE_DATE)); // date issued
+			segmentCount++;
+		}		
+
+		// Loop 2100C
+		
+		// EQ
+		
+		// AMT
+		
+		// AMT
+		
+		// III
+		
+		// REF
+		
+		// DTP
+		
+		{
+			segmentCount++; // this segment
+			Segment SE = m.addSegment();
+			SE.addElement(1, segmentCount.toString());
+			SE.addElement(2, "0001");
+		}
+		
 		// Actual transmittal
 		transmit(userName, m.toString());
 
