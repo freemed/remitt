@@ -39,7 +39,8 @@ public enum EligibilityParameter {
 			"dependentGender"), ELIGIBILITY_PARAMETER_DEPENDENT_RELATIONSHIP(
 			"dependentRelationship"), ELIGIBILITY_PARAMETER_SERVICE_TYPE(
 			"serviceType"), ELIGIBILITY_PARAMETER_CARD_ISSUE_DATE(
-			"cardIssueDate"), ELIGIBILITY_PARAMETER_GROUP_NUMBER("groupId");
+			"cardIssueDate"), ELIGIBILITY_PARAMETER_GROUP_NUMBER("groupId"), ELIGIBILITY_PARAMETER_DATE_OF_SERVICE(
+			"serviceDate");
 
 	private final String value;
 
