@@ -75,8 +75,20 @@ public class SftpEligibility implements EligibilityInterface {
 		Integer segmentCount = 0;
 
 		{
+			// ISA
+			Segment ISA = m.addSegment("ISA");
+			// TODO: populate
+		}
+
+		{
+			// GS
+			Segment GS = m.addSegment("GS");
+			// TODO: populate
+		}
+		
+		{
 			// ST : ST*270*0001*005010X279A1~
-			Segment ST = m.addSegment();
+			Segment ST = m.addSegment("ST");
 			ST.addElement(1, "270");
 			ST.addElement(2, "0001"); // FIXME: should increment
 			ST.addElement(3, "005010X279A1");
@@ -85,7 +97,7 @@ public class SftpEligibility implements EligibilityInterface {
 
 		{
 			// BHT
-			Segment BHT = m.addSegment();
+			Segment BHT = m.addSegment("BHT");
 			BHT.addElement(1, "0022"); // Information source
 			BHT.addElement(2, "13"); // Request
 			BHT.addElement(3, ""); // Reference identifier, situational
@@ -105,7 +117,7 @@ public class SftpEligibility implements EligibilityInterface {
 
 		{
 			// HL : HL*1**20*1~
-			Segment HL = m.addSegment();
+			Segment HL = m.addSegment("HL");
 			HL.addElement(1, "1");
 			HL.addElement(2, "");
 			HL.addElement(3, "20"); // 20 = information source
@@ -117,7 +129,7 @@ public class SftpEligibility implements EligibilityInterface {
 
 		{
 			// NM1 : NM1*PR*2*ABC INSURANCE COMPANY*****PI*842610001~
-			Segment NM1 = m.addSegment();
+			Segment NM1 = m.addSegment("NM1");
 			NM1.addElement(1, "PR"); // PR = payer
 			NM1.addElement(2, "2"); // 2 = non person entity
 			NM1.addElement(3, getInsuranceName());
@@ -134,7 +146,7 @@ public class SftpEligibility implements EligibilityInterface {
 
 		{
 			// HL : HL*2*1*21*1~
-			Segment HL = m.addSegment();
+			Segment HL = m.addSegment("HL");
 			HL.addElement(1, "2"); // this HL segment
 			HL.addElement(2, "1"); // parent number
 			HL.addElement(3, "21"); // 21 = information receiver
@@ -146,7 +158,7 @@ public class SftpEligibility implements EligibilityInterface {
 
 		{
 			// NM1 :
-			Segment NM1 = m.addSegment();
+			Segment NM1 = m.addSegment("NM1");
 			NM1.addElement(1, "1P"); // 1P = provider
 			NM1.addElement(2, "1"); // entity type person
 			NM1.addElement(3, ""); // last name
@@ -161,7 +173,7 @@ public class SftpEligibility implements EligibilityInterface {
 
 		if (false)
 		{
-			Segment REF = m.addSegment();
+			Segment REF = m.addSegment("REF");
 			REF.addElement(1, "");
 			REF.addElement(2, "");
 			REF.addElement(3, "");
@@ -169,14 +181,14 @@ public class SftpEligibility implements EligibilityInterface {
 		}
 		
 		{
-			Segment N3 = m.addSegment();
+			Segment N3 = m.addSegment("N3");
 			N3.addElement(1, ""); // address line 1
 			N3.addElement(2, ""); // address line 2
 			segmentCount++;
 		}
 
 		{
-			Segment N4 = m.addSegment();
+			Segment N4 = m.addSegment("N4");
 			N4.addElement(1, ""); // city
 			N4.addElement(2, ""); // state
 			N4.addElement(3, ""); // postal code
@@ -187,7 +199,7 @@ public class SftpEligibility implements EligibilityInterface {
 		
 		{
 			// HL : HL*3*2*22*1~
-			Segment HL = m.addSegment();
+			Segment HL = m.addSegment("HL");
 			HL.addElement(1, "3");
 			HL.addElement(2, "2");
 			HL.addElement(3, "22"); // 22 = subscriber level
@@ -201,7 +213,7 @@ public class SftpEligibility implements EligibilityInterface {
 
 		{
 			// NM1 :
-			Segment NM1 = m.addSegment();
+			Segment NM1 = m.addSegment("NM1");
 			NM1.addElement(1, "IL"); // IL = insured/subscribed
 			NM1.addElement(2, "1"); // entity type person
 			NM1.addElement(3, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_LAST_NAME)); // last name
@@ -216,7 +228,7 @@ public class SftpEligibility implements EligibilityInterface {
 
 		if (false)
 		{
-			Segment REF = m.addSegment();
+			Segment REF = m.addSegment("REF");
 			REF.addElement(1, "");
 			REF.addElement(2, "");
 			REF.addElement(3, "");
@@ -224,14 +236,14 @@ public class SftpEligibility implements EligibilityInterface {
 		}
 		
 		{
-			Segment N3 = m.addSegment();
+			Segment N3 = m.addSegment("N3");
 			N3.addElement(1, ""); // address line 1
 			N3.addElement(2, ""); // address line 2
 			segmentCount++;
 		}
 
 		{
-			Segment N4 = m.addSegment();
+			Segment N4 = m.addSegment("N4");
 			N4.addElement(1, ""); // city
 			N4.addElement(2, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_STATE)); // state
 			N4.addElement(3, ""); // postal code
@@ -242,7 +254,7 @@ public class SftpEligibility implements EligibilityInterface {
 		
 		// DMG - Subscriber demographic information
 		{
-			Segment DMG = m.addSegment();
+			Segment DMG = m.addSegment("DMG");
 			DMG.addElement(1, "D8"); // D8 = DOB
 			DMG.addElement(2, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_DOB)); // DOB
 			DMG.addElement(3, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_GENDER)); // gender
@@ -251,7 +263,7 @@ public class SftpEligibility implements EligibilityInterface {
 
 		// DMG - Subscriber demographic information
 		{
-			Segment DMG = m.addSegment();
+			Segment DMG = m.addSegment("DMG");
 			DMG.addElement(1, "102"); // issue
 			DMG.addElement(2, "D8"); // D8 = date
 			DMG.addElement(3, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_CARD_ISSUE_DATE)); // date issued
@@ -274,11 +286,23 @@ public class SftpEligibility implements EligibilityInterface {
 		
 		{
 			segmentCount++; // this segment
-			Segment SE = m.addSegment();
+			Segment SE = m.addSegment("SE");
 			SE.addElement(1, segmentCount.toString());
 			SE.addElement(2, "0001");
 		}
-		
+
+		{
+			// GE
+			Segment GE = m.addSegment("GE");
+			// TODO: populate
+		}
+
+		{
+			// IEA
+			Segment IEA = m.addSegment("IEA");
+			// TODO: populate
+		}
+
 		// Actual transmittal
 		transmit(userName, m.toString());
 
