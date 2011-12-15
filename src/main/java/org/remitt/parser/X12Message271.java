@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.pb.x12.Segment;
-import org.remitt.parser.x12dto.Remittance;
 import org.remitt.prototype.ParserInterface;
 import org.remitt.prototype.SegmentComparator;
 import org.remitt.prototype.X12Message;
@@ -41,8 +40,6 @@ import org.remitt.prototype.X12Message;
 public class X12Message271 extends X12Message implements ParserInterface {
 
 	static final Logger log = Logger.getLogger(X12Message271.class);
-
-	private Remittance remittance = null;
 
 	protected void parseSegments() {
 		if (getX12message() == null) {
