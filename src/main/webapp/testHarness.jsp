@@ -151,6 +151,8 @@ function populateFieldFromFrame(f) {
 					<td>Parser Class:</td>
 					<td><select name="plugin">
 						<option value="org.remitt.parser.X12Message835">org.remitt.parser.X12Message835</option>
+						<option value="org.remitt.parser.X12Message271">org.remitt.parser.X12Message271</option>
+						<option value="org.remitt.parser.X12Message997">org.remitt.parser.X12Message997</option>
 					</select></td>
 				</tr>
 				<tr>
