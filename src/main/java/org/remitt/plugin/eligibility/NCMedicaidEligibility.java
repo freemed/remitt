@@ -61,4 +61,9 @@ public class NCMedicaidEligibility extends SftpEligibility {
 		return INSURANCE_ADDRESS_POSTALCODE;
 	}
 
+	@Override
+	public boolean isProduction() {
+		return true;
+	}
+	
 }
