@@ -175,6 +175,7 @@ public class DbEligibilityJob {
 						.getObject("payload"));
 				output.setResponse((EligibilityResponse) r
 						.getObject("response"));
+				output.setResubmission(r.getBoolean("resubmission"));
 				r.close();
 			}
 		} catch (NullPointerException npe) {
