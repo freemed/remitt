@@ -402,6 +402,7 @@ CREATE TABLE `tEligibilityJobs` (
 	, plugin	VARCHAR (100) NOT NULL
 	, payload	LONGBLOB
 	, response	LONGBLOB
+	, resubmission	BOOL NOT NULL DEFAULT FALSE
 	, completed	BOOL NOT NULL DEFAULT FALSE
 
 	# Keys

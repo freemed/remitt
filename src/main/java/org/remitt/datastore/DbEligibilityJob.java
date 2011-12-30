@@ -72,6 +72,56 @@ public class DbEligibilityJob {
 		return success;
 	}
 
+	public static boolean resubmitEligibilityJob(String username, Integer id) {
+		Connection c = Configuration.getConnection();
+
+		boolean success = false;
+
+		// Need to make sure that we're taking the failed job off the stack.
+		{
+			PreparedStatement cStmt = null;
+			try {
+				cStmt = c.prepareStatement("UPDATE tEligibilityJobs "
+						+ " SET processed = NOW(), completed = TRUE "
+						+ " WHERE user = ? AND id = ? ; ");
+				cStmt.setString(1, username);
+				cStmt.setInt(2, id);
+				cStmt.execute();
+				success = true;
+			} catch (NullPointerException npe) {
+				log.error("Caught NullPointerException", npe);
+			} catch (Throwable e) {
+				log.error("Caught Throwable", e);
+			} finally {
+				DbUtil.closeSafely(cStmt);
+			}
+		}
+
+		{
+			PreparedStatement cStmt = null;
+			try {
+				cStmt = c
+						.prepareStatement("INSERT INTO tEligibilityJobs "
+								+ " ( user, stamp, plugin, payload, completed, resubmission ) "
+								+ " SELECT user, stamp, plugin, payload, FALSE, TRUE "
+								+ " FROM tEligibilityJobs WHERE id = ? AND user = ? "
+								+ ";");
+				cStmt.setInt(1, id);
+				cStmt.setString(2, username);
+				cStmt.execute();
+				success = true;
+			} catch (NullPointerException npe) {
+				log.error("Caught NullPointerException", npe);
+			} catch (Throwable e) {
+				log.error("Caught Throwable", e);
+			} finally {
+				DbUtil.closeSafely(cStmt);
+				DbUtil.closeSafely(c);
+			}
+		}
+		return success;
+	}
+
 	public static List<Integer> getUnprocessedEligibilityJobList() {
 		Connection c = Configuration.getConnection();
 

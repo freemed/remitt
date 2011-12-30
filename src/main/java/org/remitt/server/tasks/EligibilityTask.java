@@ -66,6 +66,9 @@ public class EligibilityTask extends Task {
 						job.getId(), job.getResponse());
 			} catch (Exception e) {
 				log.error(e);
+
+				// Resubmit job on failure in transmission, etc.
+				DbEligibilityJob.resubmitEligibilityJob(job.getUsername(), id);
 			}
 		}
 		bigDumbLock.set(false);
