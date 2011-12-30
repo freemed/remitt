@@ -116,11 +116,17 @@ public class ServiceImpl implements Service {
 		MessageContext ctx = context.getMessageContext();
 
 		if (ctx != null) {
+			// System.out.println("ctx != null");
+			// for (String k : ctx.keySet()) {
+			// System.out.println("Found key " + k + " in ctx");
+			// }
 			Message message = ((WrappedMessageContext) ctx).getWrappedMessage();
 			List<Header> headers = CastUtils.cast((List<?>) message
 					.get(Header.HEADER_LIST));
 			if (headers != null) {
 				for (Header h : headers) {
+					// System.out.println("Header " + h.getName().toString()
+					// + " = " + h.getObject().toString());
 					if (h.getName().toString().equals("X-Principal-Username")) {
 						log.info("Found user '" + (String) h.getObject()
 								+ " in X-Principal-Username header.");
@@ -166,6 +172,48 @@ public class ServiceImpl implements Service {
 			cStmt.setString(5, transportPlugin);
 			cStmt.setString(6, transportOption);
 			cStmt.setString(7, originalId);
+
+			@SuppressWarnings("unused")
+			boolean hadResults = cStmt.execute();
+			ResultSet newKey = cStmt.getGeneratedKeys();
+			newKey.next();
+			returnValue = newKey.getInt(1);
+			DbUtil.closeSafely(newKey);
+		} catch (NullPointerException npe) {
+			log.error("Caught NullPointerException", npe);
+		} catch (SQLException e) {
+			log.error("Caught SQLException", e);
+		} finally {
+			DbUtil.closeSafely(cStmt);
+			DbUtil.closeSafely(c);
+		}
+		return returnValue;
+	}
+
+	@POST
+	@Path("resubmit")
+	@Produces("application/json")
+	public Integer resubmitPayload(Integer originalPayloadId) {
+		Connection c = getConnection();
+
+		String userName = getCurrentUserName();
+
+		log.debug("Resubmit job for " + userName + " original id = "
+				+ originalPayloadId);
+
+		Integer returnValue = null;
+		PreparedStatement cStmt = null;
+		try {
+			cStmt = c.prepareStatement("INSERT INTO tPayload ( "
+					+ "user, payload, renderPlugin, renderOption, "
+					+ "transportPlugin, transportOption, originalId "
+					+ " ) SELECT user, payload, renderPlugin, renderOption, "
+					+ "transportPlugin, transportOption, originalId "
+					+ " FROM tPayload WHERE id = ? AND user = ?;",
+					PreparedStatement.RETURN_GENERATED_KEYS);
+
+			cStmt.setInt(1, originalPayloadId);
+			cStmt.setString(2, userName);
 
 			@SuppressWarnings("unused")
 			boolean hadResults = cStmt.execute();

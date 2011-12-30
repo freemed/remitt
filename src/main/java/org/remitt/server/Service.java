@@ -90,6 +90,16 @@ public interface Service {
 			@PathParam("transportOption") @WebParam(name = "transportOption") String transportOption);
 
 	/**
+	 * Resubmit an existing payload.
+	 * 
+	 * @param originalPayloadId
+	 *            tPayload unique identifier for the original payload.
+	 * @return New tPayload unique identifier for this job.
+	 */
+	public Integer resubmitPayload(
+			@PathParam("originalPayloadId") @WebParam(name = "originalPayloadId") Integer originalPayloadId);
+
+	/**
 	 * Get all configuration values for a user.
 	 * 
 	 * @return
