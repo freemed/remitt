@@ -550,7 +550,8 @@ public class ServiceImpl implements Service {
 			return null;
 		}
 		try {
-			return p.checkEligibility(userName, request.getRequest());
+			return p.checkEligibility(userName, request.getRequest(), false,
+					(int) System.currentTimeMillis() % 1000000000);
 		} catch (Exception e) {
 			log.error(e);
 			return null;

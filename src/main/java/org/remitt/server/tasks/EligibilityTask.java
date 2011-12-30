@@ -61,7 +61,7 @@ public class EligibilityTask extends Task {
 				p = (EligibilityInterface) Class.forName(job.getPlugin())
 						.newInstance();
 				job.setResponse(p.checkEligibility(job.getUsername(),
-						job.getPayload()));
+						job.getPayload(), job.isResubmission(), id));
 				DbEligibilityJob.saveEligibilityJob(job.getUsername(),
 						job.getId(), job.getResponse());
 			} catch (Exception e) {

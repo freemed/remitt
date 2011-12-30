@@ -66,7 +66,8 @@ public class GatewayEDIEligibility implements EligibilityInterface {
 
 	@Override
 	public EligibilityResponse checkEligibility(String userName,
-			Map<EligibilityParameter, String> values) throws Exception {
+			Map<EligibilityParameter, String> values, boolean resubmission,
+			Integer jobId) throws Exception {
 		// Make a service
 		Eligibility service = new EligibilityLocator();
 

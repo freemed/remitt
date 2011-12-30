@@ -48,7 +48,8 @@ public class DummyEligibility implements EligibilityInterface {
 
 	@Override
 	public EligibilityResponse checkEligibility(String userName,
-			Map<EligibilityParameter, String> values) throws Exception {
+			Map<EligibilityParameter, String> values, boolean resubmission,
+			Integer jobId) throws Exception {
 		log.info("Started dummy eligibility check for user " + userName);
 		EligibilityResponse r = new EligibilityResponse();
 

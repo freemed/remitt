@@ -1,6 +1,7 @@
 package org.remitt.plugin.eligibility;
 
 import java.io.ByteArrayInputStream;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -57,6 +58,10 @@ public class SftpEligibility implements EligibilityInterface {
 		return "";
 	}
 
+	public boolean isProduction() {
+		return true;
+	}
+
 	@Override
 	public String getPluginName() {
 		return "SftpEligibility";
@@ -69,23 +74,51 @@ public class SftpEligibility implements EligibilityInterface {
 
 	@Override
 	public EligibilityResponse checkEligibility(String userName,
-			Map<EligibilityParameter, String> values) throws Exception {
+			Map<EligibilityParameter, String> values, boolean resubmission,
+			Integer jobId) throws Exception {
 		// Form X12 5010 270 message
 		X12 m = new X12(new Context());
 		Integer segmentCount = 0;
 
+		SimpleDateFormat yyyymmdd = new SimpleDateFormat("yyyyMMdd");
+		SimpleDateFormat hhmm = new SimpleDateFormat("hhmm");
+
+		DecimalFormat nineDigitFormat = new DecimalFormat("000000000");
+
 		{
 			// ISA
 			Segment ISA = m.addSegment("ISA");
-			// TODO: populate
+			ISA.addElement(1, "00"); // Authorization implementation qualifier
+			ISA.addElement(2, "          "); // Authorization information
+			ISA.addElement(3, "00"); // No security info present
+			ISA.addElement(4, "          "); // Authorization information
+			ISA.addElement(5, "ZZ"); // Sender qualifier
+			ISA.addElement(6, ""); // Sender id
+			ISA.addElement(7, "ZZ"); // Receiver qualifier
+			ISA.addElement(8, ""); // Receiver id
+			ISA.addElement(9, yyyymmdd.format(new Date())); // YYYYMMDD
+			ISA.addElement(10, hhmm.format(new Date())); // HHMM
+			ISA.addElement(11, "^"); // Separator
+			ISA.addElement(12, "00501");
+			ISA.addElement(13, nineDigitFormat.format(jobId)); // Control number
+																// (9 digits)
+			ISA.addElement(14, "1"); // ACK requested
+			ISA.addElement(15, isProduction() ? "P" : "T"); // Production/testing
 		}
 
 		{
 			// GS
 			Segment GS = m.addSegment("GS");
-			// TODO: populate
+			GS.addElement(1, "XX");
+			GS.addElement(2, ""); // Sender code
+			GS.addElement(3, ""); // Receiver code
+			GS.addElement(4, yyyymmdd.format(new Date())); // YYYYMMDD
+			GS.addElement(5, hhmm.format(new Date())); // HHMM
+			GS.addElement(6, nineDigitFormat.format(jobId));
+			GS.addElement(7, "X");
+			GS.addElement(8, "005010X279A1");
 		}
-		
+
 		{
 			// ST : ST*270*0001*005010X279A1~
 			Segment ST = m.addSegment("ST");
@@ -167,19 +200,20 @@ public class SftpEligibility implements EligibilityInterface {
 			NM1.addElement(6, ""); // prefix
 			NM1.addElement(7, ""); // suffix
 			NM1.addElement(8, "XX"); // XX = NPI
-			NM1.addElement(9, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_NPI)); // NPI identifier
+			NM1.addElement(9,
+					values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_NPI)); // NPI
+																					// identifier
 			segmentCount++;
 		}
 
-		if (false)
-		{
+		if (false) {
 			Segment REF = m.addSegment("REF");
 			REF.addElement(1, "");
 			REF.addElement(2, "");
 			REF.addElement(3, "");
 			segmentCount++;
 		}
-		
+
 		{
 			Segment N3 = m.addSegment("N3");
 			N3.addElement(1, ""); // address line 1
@@ -194,9 +228,9 @@ public class SftpEligibility implements EligibilityInterface {
 			N4.addElement(3, ""); // postal code
 			segmentCount++;
 		}
-		
+
 		// Loop 2000C: Subscriber Level
-		
+
 		{
 			// HL : HL*3*2*22*1~
 			Segment HL = m.addSegment("HL");
@@ -206,9 +240,9 @@ public class SftpEligibility implements EligibilityInterface {
 			HL.addElement(4, "1"); // 1 = additional HL segments
 			segmentCount++;
 		}
-		
+
 		// TRN segment, situational
-		
+
 		// Loop 2100C: Subscriber name
 
 		{
@@ -216,25 +250,32 @@ public class SftpEligibility implements EligibilityInterface {
 			Segment NM1 = m.addSegment("NM1");
 			NM1.addElement(1, "IL"); // IL = insured/subscribed
 			NM1.addElement(2, "1"); // entity type person
-			NM1.addElement(3, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_LAST_NAME)); // last name
-			NM1.addElement(4, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_FIRST_NAME)); // first name
+			NM1.addElement(
+					3,
+					values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_LAST_NAME)); // last
+																								// name
+			NM1.addElement(
+					4,
+					values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_FIRST_NAME)); // first
+																								// name
 			NM1.addElement(5, ""); // middle name
 			NM1.addElement(6, ""); // prefix
 			NM1.addElement(7, ""); // suffix
 			NM1.addElement(8, "MI"); // MI = member identification number
-			NM1.addElement(9, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURANCE_ID));
+			NM1.addElement(
+					9,
+					values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURANCE_ID));
 			segmentCount++;
 		}
 
-		if (false)
-		{
+		if (false) {
 			Segment REF = m.addSegment("REF");
 			REF.addElement(1, "");
 			REF.addElement(2, "");
 			REF.addElement(3, "");
 			segmentCount++;
 		}
-		
+
 		{
 			Segment N3 = m.addSegment("N3");
 			N3.addElement(1, ""); // address line 1
@@ -245,45 +286,54 @@ public class SftpEligibility implements EligibilityInterface {
 		{
 			Segment N4 = m.addSegment("N4");
 			N4.addElement(1, ""); // city
-			N4.addElement(2, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_STATE)); // state
+			N4.addElement(
+					2,
+					values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_STATE)); // state
 			N4.addElement(3, ""); // postal code
 			segmentCount++;
 		}
-		
+
 		// PRV - Provider Information
-		
+
 		// DMG - Subscriber demographic information
 		{
 			Segment DMG = m.addSegment("DMG");
 			DMG.addElement(1, "D8"); // D8 = DOB
-			DMG.addElement(2, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_DOB)); // DOB
-			DMG.addElement(3, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_GENDER)); // gender
+			DMG.addElement(
+					2,
+					values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_DOB)); // DOB
+			DMG.addElement(
+					3,
+					values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_INSURED_GENDER)); // gender
 			segmentCount++;
-		}		
+		}
 
 		// DMG - Subscriber demographic information
 		{
 			Segment DMG = m.addSegment("DMG");
 			DMG.addElement(1, "102"); // issue
 			DMG.addElement(2, "D8"); // D8 = date
-			DMG.addElement(3, values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_CARD_ISSUE_DATE)); // date issued
+			DMG.addElement(
+					3,
+					values.get(EligibilityParameter.ELIGIBILITY_PARAMETER_CARD_ISSUE_DATE)); // date
+																								// issued
 			segmentCount++;
-		}		
+		}
 
 		// Loop 2100C
-		
+
 		// EQ
-		
+
 		// AMT
-		
+
 		// AMT
-		
+
 		// III
-		
+
 		// REF
-		
+
 		// DTP
-		
+
 		{
 			segmentCount++; // this segment
 			Segment SE = m.addSegment("SE");
@@ -294,13 +344,15 @@ public class SftpEligibility implements EligibilityInterface {
 		{
 			// GE
 			Segment GE = m.addSegment("GE");
-			// TODO: populate
+			GE.addElement(1, "1"); // Number of transactions
+			GE.addElement(2, nineDigitFormat.format(jobId)); // == GS06
 		}
 
 		{
 			// IEA
 			Segment IEA = m.addSegment("IEA");
-			// TODO: populate
+			IEA.addElement(1, "1"); // Number of included functional groups
+			IEA.addElement(2, nineDigitFormat.format(jobId)); // Interchange control number
 		}
 
 		// Actual transmittal

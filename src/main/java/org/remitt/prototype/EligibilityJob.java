@@ -36,6 +36,7 @@ public class EligibilityJob implements Serializable {
 	private String plugin;
 	private HashMap<EligibilityParameter, String> payload;
 	private EligibilityResponse response;
+	private boolean resubmission = false;
 
 	public EligibilityJob() {
 	}
@@ -78,6 +79,14 @@ public class EligibilityJob implements Serializable {
 
 	public void setResponse(EligibilityResponse response) {
 		this.response = response;
+	}
+
+	public boolean isResubmission() {
+		return resubmission;
+	}
+
+	public void setResubmission(boolean resubmission) {
+		this.resubmission = resubmission;
 	}
 
 }

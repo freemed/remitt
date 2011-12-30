@@ -33,7 +33,8 @@ public interface EligibilityInterface {
 	public Double getPluginVersion();
 
 	public EligibilityResponse checkEligibility(String userName,
-			Map<EligibilityParameter, String> values) throws Exception;
+			Map<EligibilityParameter, String> values, boolean resubmission,
+			Integer jobId) throws Exception;
 
 	public String[] getPluginConfigurationOptions();
 
