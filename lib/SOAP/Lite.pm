@@ -441,7 +441,7 @@ sub proxy {
 
   (my $protocol_class = "${class}::$protocol") =~ s/-/_/g;
   no strict 'refs';
-  unless (defined %{"$protocol_class\::Client::"} && UNIVERSAL::can("$protocol_class\::Client" => 'new')) {
+  unless (%{"$protocol_class\::Client::"} && UNIVERSAL::can("$protocol_class\::Client" => 'new')) {
     eval "require $protocol_class";
     die "Unsupported protocol '$protocol'\n" if $@ =~ m!^Can't locate SOAP/Transport/!;
     die if $@;
@@ -2255,7 +2255,7 @@ sub find_target {
   }
 
   no strict 'refs';
-  unless (defined %{"${class}::"}) {   
+  unless (%{"${class}::"}) {   
     # allow all for static and only specified path for dynamic bindings
     local @INC = (($static ? @INC : ()), grep {!ref && m![/\\.]!} $self->dispatch_to);
     eval 'local $^W; ' . "require $class";
