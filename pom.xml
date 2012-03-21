@@ -214,6 +214,14 @@
 								<exclude>**/.svn</exclude>
 							</excludes>
 						</resource>
+						<resource>
+							<directory>dependencies</directory>
+							<targetPath>WEB-INF/lib</targetPath>
+							<filtering>false</filtering>
+							<excludes>
+								<exclude>**/.svn</exclude>
+							</excludes>
+						</resource>
 					</webResources>
 				</configuration>
 			</plugin>
