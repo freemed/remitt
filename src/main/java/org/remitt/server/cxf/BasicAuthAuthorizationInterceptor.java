@@ -185,6 +185,8 @@ public class BasicAuthAuthorizationInterceptor extends SoapHeaderInterceptor {
 			messageContext.put("principal", policy.getUserName());
 		}
 
+		message.put("X-Principal-Username", policy.getUserName());
+		
 		MultivaluedMap<String, Object> headers = new MetadataMap<String, Object>();
 		headers.putSingle("X-Principal-Username", policy.getUserName());
 		message.put(Message.PROTOCOL_HEADERS, headers);
