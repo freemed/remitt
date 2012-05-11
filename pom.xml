@@ -79,19 +79,15 @@
 		</dependency>
 
 		<dependency>
-			<groupId>j2ssh</groupId>
+			<groupId>sshtools</groupId>
 			<artifactId>j2ssh-common</artifactId>
 			<version>0.2.9</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/dependencies/j2ssh-common-0.2.9.jar</systemPath>
 		</dependency>
 
 		<dependency>
-			<groupId>j2ssh</groupId>
+			<groupId>sshtools</groupId>
 			<artifactId>j2ssh-core</artifactId>
 			<version>0.2.9</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/dependencies/j2ssh-core-0.2.9.jar</systemPath>
 		</dependency>
 
 		<dependency>
@@ -127,11 +123,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>sojo</groupId>
+			<groupId>net.sf.sojo</groupId>
 			<artifactId>sojo</artifactId>
-			<version>1.0.0</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/dependencies/sojo-1.0.0.jar</systemPath>
+			<version>1.0.5</version>
 		</dependency>
 
 		<dependency>
