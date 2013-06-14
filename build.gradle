@@ -1,0 +1,54 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+apply plugin: 'war'
+
+version = System.properties['sysVersion'] != null ? System.properties['sysVersion'] : '0.5.1-SNAPSHOT'
+
+repositories {
+   flatDir name: 'dependencies', dirs: "$projectDir/dependencies"
+   mavenCentral()
+}
+
+dependencies {
+  compile 'axis:axis:1.4'
+  compile 'org.bouncycastle:bcpg-jdk16:1.46'
+  compile 'c3p0:c3p0:0.9.1.2'
+  compile 'commons-configuration:commons-configuration:1.8'
+  // compile 'cron4j:cron4j:2.2.2'
+  compile files('./dependencies/cron4j-2.2.2.jar')
+  compile 'org.apache.cxf:cxf-bundle:2.6.1'
+  compile 'net.sourceforge.htmlunit:htmlunit:2.9'
+  compile 'org.jsoup:jsoup:1.6.3'
+  compile 'com.lowagie:itext:2.1.7'
+  compile 'sshtools:j2ssh-core:0.2.9'
+  compile 'javax.mail:mail:1.4.1'
+  // compile 'junitee:junitee:1.11'
+  compile files('./dependencies/junitee-1.11.jar')
+  compile 'mysql:mysql-connector-java:5.1.21'
+  compile 'rhino:js:1.7R2'
+  compile 'org.simpleframework:simple-xml:2.6.4'
+  compile 'net.sf.sojo:sojo:1.0.5'
+  // compile 'x12:x12:0.6'
+  compile files('./dependencies/X12-0.6.jar')
+  compile 'xerces:xercesImpl:2.9.1'
+  compile 'log4j:log4j:1.2.16'
+  compile 'junit:junit:3.8.2'
+}
+
+test {
+  systemProperty 'RAVE_HOME', project.buildDir.toString() + '/resources/test'
+  systemProperty 'mail.smtp.port', '2525'
+  enableAssertions = false
+  exclude "**/*Disabled.class"
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+  classifier = 'sources'
+  from sourceSets.main.allSource
+}
+
+artifacts {
+  archives sourcesJar
+}
+
