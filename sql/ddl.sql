@@ -4,7 +4,7 @@
 # 	Jeff Buchbinder <jeff@freemedsoftware.org>
 #
 # REMITT Electronic Medical Information Translation and Transmission
-# Copyright (C) 1999-2012 FreeMED Software Foundation
+# Copyright (C) 1999-2013 FreeMED Software Foundation
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ CREATE TABLE `tUser` (
 	, callbackservicewsdluri	VARCHAR(150) COMMENT 'WSDL for RemittCallback service'
 	, callbackusername		VARCHAR(50)
 	, callbackpassword		VARCHAR(50)
+	, INDEX				( `username` )
 );
 
 INSERT INTO `tUser` ( id, username, passhash, callbackserviceuri, callbackservicewsdluri ) VALUES ( 1, 'Administrator', MD5('password'), 'http://localhost/freemed/services/RemittCallback.php', 'http://localhost/freemed/services/RemittCallback.php?wsdl' );
@@ -41,8 +42,8 @@ CREATE TABLE `tRole` (
 	, rolename	VARCHAR(50) NOT NULL
 
 	# Enforce unique combinations and cascading deletions
-	, CONSTRAINT UNIQUE KEY ( username, rolename )
-	, FOREIGN KEY ( username ) REFERENCES tUser.username ON DELETE CASCADE
+	, CONSTRAINT UNIQUE KEY ( `username`, `rolename` )
+	, FOREIGN KEY ( `username` ) REFERENCES tUser ( `username` ) ON DELETE CASCADE
 );
 
 INSERT INTO `tRole` VALUES ( NULL, 'Administrator', 'admin' );
@@ -55,7 +56,7 @@ CREATE TABLE `tUserConfig` (
 	, cOption	VARCHAR(50) NOT NULL
 	, cValue	BLOB
 
-	, FOREIGN KEY ( user ) REFERENCES tUser.username ON DELETE CASCADE
+	, FOREIGN KEY ( `user` ) REFERENCES tUser ( `username` ) ON DELETE CASCADE
 );
 
 INSERT INTO `tUserConfig` VALUES
@@ -112,7 +113,7 @@ DELIMITER ;
 DROP TABLE IF EXISTS `tPayload`;
 CREATE TABLE `tPayload` (
 	  id			SERIAL
-	, insert_stamp		TIMESTAMP(16) NOT NULL DEFAULT CURRENT_TIMESTAMP
+	, insert_stamp		TIMESTAMP NOT NULL
 	, user			VARCHAR(50) NOT NULL
 	, payload		LONGBLOB
 	, originalId		VARCHAR(100)
@@ -122,8 +123,8 @@ CREATE TABLE `tPayload` (
 	, transportOption	VARCHAR(100)
 	, payloadState		ENUM ( 'valid', 'failed', 'completed' ) DEFAULT 'valid'
 
-	, KEY			( payloadState )
-	, FOREIGN KEY		( user ) REFERENCES tUser.username ON DELETE CASCADE
+	, KEY			( `payloadState` )
+	, FOREIGN KEY		( `user` ) REFERENCES tUser ( `username` ) ON DELETE CASCADE
 );
 
 DROP VIEW IF EXISTS vPayload;
@@ -135,15 +136,15 @@ DROP TABLE IF EXISTS `tProcessor`;
 CREATE TABLE `tProcessor` (
 	  id		SERIAL
 	, threadId	INT UNSIGNED NOT NULL DEFAULT 0
-	, payloadId	INT UNSIGNED NOT NULL
+	, payloadId	BIGINT UNSIGNED NOT NULL
 	, stage		ENUM ( 'validation', 'render', 'translation', 'transport' )
 	, plugin	VARCHAR (100) NOT NULL
-	, tsStart	TIMESTAMP(16) NULL DEFAULT NULL
-	, tsEnd		TIMESTAMP(16) NULL DEFAULT NULL
+	, tsStart	TIMESTAMP NULL DEFAULT NULL
+	, tsEnd		TIMESTAMP NULL DEFAULT NULL
 	, pInput	LONGBLOB
 	, pOutput	LONGBLOB
 
-	, FOREIGN KEY ( payloadId ) REFERENCES tPayload.id ON DELETE CASCADE
+	, FOREIGN KEY ( `payloadId` ) REFERENCES tPayload ( `id` ) ON DELETE CASCADE
 );
 
 DROP PROCEDURE IF EXISTS p_GetStatus;
@@ -372,19 +373,19 @@ DROP TABLE IF EXISTS `tFileStore`;
 CREATE TABLE `tFileStore` (
 	  id		SERIAL
 	, user		VARCHAR(50) NOT NULL
-	, stamp		TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+	, stamp		TIMESTAMP NOT NULL
 	, category	VARCHAR(50) NOT NULL
 	, filename	VARCHAR(150) NOT NULL
-	, payloadId	INT UNSIGNED NOT NULL
-	, processorId	INT UNSIGNED NOT NULL
+	, payloadId	BIGINT UNSIGNED NOT NULL
+	, processorId	BIGINT UNSIGNED NOT NULL
 	, content	LONGBLOB
 	, contentsize	BIGINT NOT NULL DEFAULT 0
 
 	# Force db constraint to avoid multiple files for users
-	, CONSTRAINT UNIQUE KEY	( user, category, filename )
-	, KEY			( stamp )
-	, FOREIGN KEY		( payloadId ) REFERENCES tPayload.id ON DELETE CASCADE
-	, FOREIGN KEY		( processorId ) REFERENCES tProcessor.id ON DELETE CASCADE
+	, CONSTRAINT UNIQUE KEY	( `user`, `category`, `filename` )
+	, KEY			( `stamp` )
+	, FOREIGN KEY		( `payloadId` ) REFERENCES tPayload ( `id` ) ON DELETE CASCADE
+	, FOREIGN KEY		( `processorId` ) REFERENCES tProcessor ( `id` ) ON DELETE CASCADE
 );
 
 DROP VIEW IF EXISTS vFileStore;
@@ -397,7 +398,7 @@ DROP TABLE IF EXISTS `tEligibilityJobs`;
 CREATE TABLE `tEligibilityJobs` (
 	  id		SERIAL
 	, user		VARCHAR(50) NOT NULL
-	, inserted	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+	, inserted	TIMESTAMP NOT NULL
 	, processed	TIMESTAMP NULL DEFAULT NULL
 	, plugin	VARCHAR (100) NOT NULL
 	, payload	LONGBLOB
@@ -406,7 +407,7 @@ CREATE TABLE `tEligibilityJobs` (
 	, completed	BOOL NOT NULL DEFAULT FALSE
 
 	# Keys
-	, FOREIGN KEY ( user ) REFERENCES tUser.username ON DELETE CASCADE
+	, FOREIGN KEY ( `user` ) REFERENCES tUser ( `username` ) ON DELETE CASCADE
 );
 
 ### Scooper ###
@@ -423,8 +424,8 @@ CREATE TABLE `tScooper` (
 	, filename	VARCHAR(150) NOT NULL
 	, content	LONGBLOB
 
-	, KEY		( scooperClass, user, host, path, filename )
-	, FOREIGN KEY	( user ) REFERENCES tUser.username ON DELETE CASCADE
+	, KEY		( `scooperClass`, `user`, `host`, `path`, `filename` )
+	, FOREIGN KEY	( `user` ) REFERENCES tUser ( `username` ) ON DELETE CASCADE
 );
 
 ### Key Ring ###
@@ -438,8 +439,8 @@ CREATE TABLE `tKeyring` (
 	, privatekey	BLOB
 	, publickey	BLOB
 
-	, KEY		( user, keyname )
-	, FOREIGN KEY	( user ) REFERENCES tUser.username ON DELETE CASCADE
+	, KEY		( `user`, `keyname` )
+	, FOREIGN KEY	( `user` ) REFERENCES tUser ( `username` ) ON DELETE CASCADE
 );
 
 ### Host Keys ###
@@ -452,7 +453,7 @@ CREATE TABLE `tSshHostKeys` (
 	, port		INT UNSIGNED NOT NULL DEFAULT 22
 	, hostkey	TEXT
 
-	, CONSTRAINT UNIQUE KEY ( hostname, port )
+	, CONSTRAINT UNIQUE KEY ( `hostname`, `port` )
 );
 
 ###INSERT INTO `tSshHostKeys` ( hostname, hostkey ) VALUES ( 'sftp.claimlogic.com', '' );
@@ -468,7 +469,7 @@ CREATE TABLE `tPatch` (
 	, stamp		TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 
 	# Ensure patches are unique entries
-	, CONSTRAINT UNIQUE KEY ( patchName )
+	, CONSTRAINT UNIQUE KEY ( `patchName` )
 );
 
 INSERT INTO tPatch VALUES
