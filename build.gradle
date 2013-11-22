@@ -37,8 +37,6 @@ dependencies {
 }
 
 test {
-  systemProperty 'RAVE_HOME', project.buildDir.toString() + '/resources/test'
-  systemProperty 'mail.smtp.port', '2525'
   enableAssertions = false
   exclude "**/*Disabled.class"
 }
