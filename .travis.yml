@@ -6,5 +6,5 @@ jdk:
 services: mysql
 before_script:
   - mysql -e 'create database remitt;'
-  - echo "USE mysql;\nUPDATE user SET password=PASSWORD('password') WHERE user='travis';\nFLUSH PRIVILEGES;\n" | mysql -u root
-  - mysql -utravis -ppassword -e 'SOURCE sql/ddl.sql'
+  - echo "USE mysql;\nUPDATE user SET password=PASSWORD('password') WHERE user='travis';\nGRANT ALL ON remitt.* TO travis@localhost;\nFLUSH PRIVILEGES;\n" | mysql -u root
+  - mysql -utravis -ppassword remitt -e 'SOURCE sql/ddl.sql'
