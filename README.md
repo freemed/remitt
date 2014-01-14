@@ -1,5 +1,7 @@
 # REMITT Electronic Medical Information Translation and Transmission
 
+[![Build Status](https://secure.travis-ci.org/freemed/remitt.png)](http://travis-ci.org/freemed/remitt)
+
 * Website: http://remitt.org
 * Development: https://github.com/freemed/remitt
 * Wiki: https://github.com/freemed/remitt/wiki
