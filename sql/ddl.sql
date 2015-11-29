@@ -113,7 +113,7 @@ DELIMITER ;
 DROP TABLE IF EXISTS `tPayload`;
 CREATE TABLE `tPayload` (
 	  id			SERIAL
-	, insert_stamp		TIMESTAMP NOT NULL
+	, insert_stamp		TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 	, user			VARCHAR(50) NOT NULL
 	, payload		LONGBLOB
 	, originalId		VARCHAR(100)
