@@ -669,6 +669,10 @@ public class ControlThread extends Thread {
 		case RENDER:
 			return payload.getRenderPlugin();
 		case TRANSLATION:
+			if (payload == null) {
+				log.error("resolvePlugin(): null payload passed");
+				return null;
+			}
 			return Configuration.resolveTranslationPlugin(payload
 					.getRenderPlugin(), payload.getRenderOption(), payload
 					.getTransportPlugin(), payload.getTransportOption());
