@@ -32,7 +32,7 @@ $wsdl = $url . "?wsdl";
 $sc = new SoapClient( $wsdl, array (
 	  'login' => $username
 	, 'password' => $password
-	, 'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP
+	, 'compression' => SOAP_COMPRESSION_ACCEPT
 	, 'location' => $url
 ));
 
