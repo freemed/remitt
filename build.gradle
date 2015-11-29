@@ -2,8 +2,18 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'eclipse'
 apply plugin: 'war'
+apply plugin: 'fpm-packaging'
 
 version = System.properties['sysVersion'] != null ? System.properties['sysVersion'] : '0.5.1-SNAPSHOT'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.kenshoo:gradle-fpm:0.5'
+    }
+}
 
 repositories {
    flatDir name: 'dependencies', dirs: "$projectDir/dependencies"
@@ -13,18 +23,18 @@ repositories {
 dependencies {
   compile 'axis:axis:1.4'
   compile 'org.bouncycastle:bcpg-jdk16:1.46'
-  compile 'c3p0:c3p0:0.9.1.2'
+  compile 'com.mchange:c3p0:0.9.5.1'
   compile 'commons-configuration:commons-configuration:1.10'
   compile 'it.sauronsoftware.cron4j:cron4j:2.2.5'
-  compile 'org.apache.cxf:cxf-bundle:2.7.13'
-  compile 'net.sourceforge.htmlunit:htmlunit:2.15'
-  compile 'org.jsoup:jsoup:1.8.1'
+  compile 'org.apache.cxf:cxf-bundle:2.7.18'
+  compile 'net.sourceforge.htmlunit:htmlunit:2.19'
+  compile 'org.jsoup:jsoup:1.8.3'
   compile 'com.lowagie:itext:2.1.7'
   compile 'sshtools:j2ssh-core:0.2.9'
-  compile 'javax.mail:mail:1.4.1'
+  compile 'javax.mail:javax.mail-api:1.5.4'
   // compile 'junitee:junitee:1.11'
   compile files('./dependencies/junitee-1.11.jar')
-  compile 'mysql:mysql-connector-java:5.1.28'
+  compile 'mysql:mysql-connector-java:5.1.37'
   compile 'rhino:js:1.7R2'
   compile 'org.simpleframework:simple-xml:2.7.1'
   compile 'net.sf.sojo:sojo:1.0.8'
@@ -32,7 +42,7 @@ dependencies {
   compile files('./dependencies/X12-0.6.jar')
   compile 'xerces:xercesImpl:2.9.1'
   compile 'log4j:log4j:1.2.16'
-  compile 'junit:junit:3.8.2'
+  compile 'junit:junit:4.12'
 }
 
 test {
@@ -49,3 +59,13 @@ artifacts {
   archives sourcesJar
 }
 
+packaging {
+    packageName  = 'remitt'
+    dependencies = ['openjdk-6-jre', 'tomcat7']
+    baseDir      = project.buildDir// Optional, base directory to package, default: project.buildDir
+    prefix       = '/usr/share/remitt' // Optional, a path to prefix files when building package, default: root (/)
+    extraOptions = ['--vendor': 'FreeMED Software Foundation', '--maintainer': 'Jeff Buchbinder']
+    extraFlags   = ['--rpm-auto-add-directories'] // Optional, a list of additional flags to fpm
+    // filesArgs    = ['dir1', 'file1'] //Optional, array of files/dirs to package, relative to baseDir, default: .
+    force        = false
+}

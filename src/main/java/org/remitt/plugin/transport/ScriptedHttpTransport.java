@@ -119,7 +119,7 @@ public class ScriptedHttpTransport implements PluginInterface {
 				.getServletContext().getRealPath(scriptPath);
 
 		// Instantiate web client (htmlunit)
-		WebClient webClient = new WebClient(BrowserVersion.FIREFOX_17);
+		WebClient webClient = new WebClient(BrowserVersion.CHROME);
 		// DEPRECATED: webClient.setJavaScriptEnabled(true);
 		webClient.setRefreshHandler(new RefreshHandler() {
 			@Override
