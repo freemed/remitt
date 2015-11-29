@@ -24,28 +24,31 @@ override default config properties which are defined inside the war
 file.
 
 (In Debian or Ubuntu packaged tomcat instances, you would add
-`-Dremitt.properties=/path/to/my/remitt.properties` to the options passed
-to tomcat in `/etc/defaults/tomcat` or `/etc/defaults/tomcat55`, depending on
+``-Dremitt.properties=/path/to/my/remitt.properties`` to the options passed
+to tomcat in ```/etc/defaults/tomcat``` or ```/etc/defaults/tomcat7```, depending on
 the version you're using.)
 
 You can also run it from source using Maven with
-`mvn -Dorg.mortbay.jetty.Request.maxFormContentSize=6000000 jetty:run`, or
-simply `mvn jetty:run` if you're not going to be testing large documents
+```mvn -Dorg.mortbay.jetty.Request.maxFormContentSize=6000000 jetty:run```, or
+simply ```mvn jetty:run``` if you're not going to be testing large documents
 in the test harness.
 
 The only prerequisite for installing this software is importing the
-database definitions from sql/*.sql into your working database server.
+database definitions from ```sql/*.sql``` into your working database server.
 
 At the moment, MySQL is the supported / preferred database server. The
 remitt user should probably have all privileges on the remitt database,
 but also SELECT on mysql.proc (otherwise you'll need
-"noAccessToProcedureBodies=true" in the JDBC URL).
+``noAccessToProcedureBodies=true`` in the JDBC URL).
 
 ## Remote Services Information
 
 REST services are exposed at /remitt/services/rest/service/(functionname)
 and SOAP services are available through the WSDL at
-/remitt/services/interface?wsdl
+``/remitt/services/interface?wsdl``
+
+**Caveat**: CXF does not support gzip compression in the current REMITT
+configuration, so please disable it in your client.
 
 ## Who is responsible for this thing?
 
