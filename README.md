@@ -41,6 +41,15 @@ remitt user should probably have all privileges on the remitt database,
 but also SELECT on mysql.proc (otherwise you'll need
 ``noAccessToProcedureBodies=true`` in the JDBC URL).
 
+### Tomcat7 on Debian
+
+One caveat is that the autodetection of tomcat's base location will result in
+a log directory which is not writeable.
+
+```
+cd /usr/share/tomcat7 ; ln -s /var/lib/tomcat7/logs .
+```
+
 ## Remote Services Information
 
 REST services are exposed at /remitt/services/rest/service/(functionname)
