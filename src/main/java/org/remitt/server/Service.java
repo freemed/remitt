@@ -172,13 +172,13 @@ public interface Service {
 	 * 
 	 * @param category
 	 *            Output file category.
-	 * @param fileName
+	 * @param filename
 	 *            Name of file to be retrieved.
 	 * @return Contents of target file as byte array.
 	 */
 	public byte[] getFile(
 			@PathParam("category") @WebParam(name = "category") String category,
-			@PathParam("filename") @WebParam(name = "filename") String fileName);
+			@PathParam("filename") @WebParam(name = "filename") String filename);
 
 	/**
 	 * Get list of years for which the system has output files.

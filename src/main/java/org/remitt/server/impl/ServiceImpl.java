@@ -343,13 +343,13 @@ public class ServiceImpl implements Service {
 	@Path("file/{category}/{filename}")
 	@Produces("application/json")
 	@Override
-	public byte[] getFile(String category, String fileName) {
+	public byte[] getFile(String category, String filename) {
 		String userName = getCurrentUserName();
 
 		log.debug("getFile for " + userName + " [category = " + category
-				+ ", filename = " + fileName + "]");
+				+ ", filename = " + filename + "]");
 
-		return DbFileStore.getFile(userName, category, fileName);
+		return DbFileStore.getFile(userName, category, filename);
 	}
 
 	@POST
