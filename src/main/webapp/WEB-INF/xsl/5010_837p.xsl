@@ -1339,7 +1339,65 @@
 			</xsl:for-each>
 		</x12segment>
 
-		<!-- 2310A Loop: NM1 Referring Provider Name (p282) -->
+		<xsl:if test="boolean(string($procs[1]/referringproviderkey))">
+
+			<!-- Get referring provider from procedure 1 -->
+			<xsl:variable name="referprov" select="//provider[@id = $procs[1]/referringproviderkey]" />
+
+			<!-- 2310A Loop: NM1 Referring Provider Name (p282) -->
+			<x12segment sid="NM1">
+				<element>
+					<!-- 2310A NM101: Referring provider -->
+					<content>DN</content>
+				</element>
+				<element>
+					<!-- 2310A NM102: Person -->
+					<content>1</content>
+				</element>
+				<element>
+					<!-- 2310A NM103: Name, Last -->
+					<content><xsl:value-of select="translate($referprov/name/last, $lowercase, $uppercase)" /></content>
+				</element>
+				<element>
+					<!-- 2310A NM104: Name, First -->
+					<content><xsl:value-of select="translate($referprov/name/first, $lowercase, $uppercase)" /></content>
+				</element>
+				<element>
+				<!-- 2310A NM105: Name, Middle -->
+					<content><xsl:value-of select="translate($referprov/name/middle, $lowercase, $uppercase)" /></content>
+				</element>
+				<element>
+					<!-- 2310A NM106: Prefix -->
+					<content />
+				</element>
+				<element>
+					<!-- 2310A NM107: Suffix -->
+					<content />
+				</element>
+				<element>
+					<!-- 2310A NM108: ID Code qualifier -->
+					<!-- ( 24 = EIN, 34 = SSN, XX = HCFA ID/NPI ) -->
+					<content>XX</content>
+				</element>
+				<element>
+					<!-- 2310A NM109: Provider NPI -->
+					<content><xsl:value-of select="$referprov/npi" /></content>
+				</element>
+			</x12segment>
+
+			<!-- 2310A Loop: REF -->
+			<x12segment sid="REF">
+				<element>
+					<!-- 2310A REF01: Rendering provider -->
+					<content>G2</content>
+				</element>
+				<element>
+					<!-- 2310A REF01: ID -->
+					<content><xsl:value-of select="$referprov/npi" /></content>
+				</element>
+			</x12segment>
+
+		</xsl:if> <!-- if referring provider -->
 
 		<!-- Get TIN/NPI from procedure 1 -->
 		<xsl:variable name="firstprov" select="//provider[@id = $procs[1]/providerkey]" />
