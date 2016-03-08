@@ -5,7 +5,7 @@
  *      Jeff Buchbinder <jeff@freemedsoftware.org>
  *
  * REMITT Electronic Medical Information Translation and Transmission
- * Copyright (C) 1999-2014 FreeMED Software Foundation
+ * Copyright (C) 1999-2016 FreeMED Software Foundation
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ function populateFieldFromFrame(f) {
 					<td><select name="option">
 						<option value="4010_837p">4010 X12 837P</option>
 						<option value="5010_837p">5010 X12 837P</option>
-						<option value="hcfa1500">HCFA-1500/CMS-1500</option>
+						<option value="cms1500">HCFA-1500/CMS-1500</option>
 					</select></td>
 				</tr>
 				<tr>
