@@ -129,6 +129,7 @@ public class MasterControl extends HttpServlet {
 		control.start();
 
 		// Start scheduler
+		/*
 		scheduler = new Scheduler();
 		scheduler.addSchedulerListener(new SchedulerListener() {
 			@Override
@@ -217,6 +218,7 @@ public class MasterControl extends HttpServlet {
 		log.info("Starting scheduler");
 		scheduler.start();
 	}
+	*/
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
