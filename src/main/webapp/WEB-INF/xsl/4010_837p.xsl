@@ -1265,7 +1265,7 @@
 			<xsl:for-each select="$diags">
 				<element>
 					<!-- 2300 HI01: Diagnosis Code -->
-					<!-- <content><xsl:choose><xsl:when test="position() = 1">BK</xsl:when><xsl:otherwise>BF</xsl:otherwise></xsl:choose>:<xsl:value-of select="//diagnosis[@id=$code]/icd9code" /> (<xsl:value-of select="$code" />)</content>
+					<!-- <content><xsl:choose><xsl:when test="position() = 1">BK</xsl:when><xsl:otherwise>BF</xsl:otherwise></xsl:choose>:<xsl:value-of select="//diagnosis[@id=$code]/icd10code" /> (<xsl:value-of select="$code" />)</content>
 -->
 					<content><xsl:choose><xsl:when test="position() = 1">BK</xsl:when><xsl:otherwise>BF</xsl:otherwise></xsl:choose>:<xsl:call-template name="display-diagnosis">
 						<xsl:with-param name="diag" select="." />
@@ -1462,7 +1462,7 @@
 	-->
 	<xsl:template name="display-diagnosis">
 		<xsl:param name="diag" />
-		<xsl:value-of select="translate(//diagnosis[@id=$diag]/icd9code, '.', '')" />
+		<xsl:value-of select="translate(//diagnosis[@id=$diag]/icd10code, '.', '')" />
 	</xsl:template>
 
 	<xsl:template name="process-procedure">
